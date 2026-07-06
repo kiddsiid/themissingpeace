@@ -1,63 +1,170 @@
-# Deploying The Missing Peace — GitHub → Cloudflare Workers
+# Deploying The Missing Peace: GitHub -> Cloudflare Workers
 
-The repo is already configured for Cloudflare (OpenNext adapter): `wrangler.jsonc`,
-`open-next.config.ts`, and the `deploy`/`preview` scripts are in place. Three stages,
-~20 minutes. Goodbye, localhost.
+The repo is already configured for Cloudflare Workers through the OpenNext adapter. The important files and scripts are:
 
-## 1. Push to GitHub (one double-click)
+- `wrangler.jsonc`
+- `open-next.config.ts`
+- `pnpm run preview`
+- `pnpm run deploy`
 
-Run **`push-to-github.bat`**. It commits everything (`.env.local` is gitignored — your keys
-never leave your machine) and creates a private repo via GitHub CLI.
-No GitHub CLI? `winget install GitHub.cli`, then run it again.
+Cloudflare's current Next.js guidance uses `@opennextjs/cloudflare`, Wrangler, `nodejs_compat`, and the `.open-next` output. This repo already matches that shape.
 
-## 2. Connect the repo to Cloudflare (push-to-deploy, like the other pages)
+## 1. Push The Repo To GitHub
 
-1. Dashboard → **Workers & Pages → Create → Workers → Import a repository**, pick
-   `the-missing-peace` (authorize GitHub the first time).
-2. Build command: `npx opennextjs-cloudflare build` · Deploy command: `npx wrangler deploy`
-   (Cloudflare usually detects both from the repo config).
-3. **Build variables** (Settings → Builds → Variables — needed at BUILD time because
-   `NEXT_PUBLIC_*` values are inlined into the pages):
-   - `NEXT_PUBLIC_APP_URL` → `https://the-missing-peace.<your-subdomain>.workers.dev`
-     (update once you know the exact URL, then redeploy)
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-   - `NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in`, `NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up`
-   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY`
-4. **Runtime secrets** (Worker → Settings → Variables & Secrets → add as *Secret*):
-   - `CLERK_SECRET_KEY`, `CLERK_WEBHOOK_SECRET`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `LIVEBLOCKS_SECRET_KEY`
-   - `ANTHROPIC_API_KEY`, and `ANTHROPIC_MODEL` (plain variable is fine)
-5. Deploy. Every `git push` now builds and ships automatically (Workers Builds).
+The remote is expected to be:
 
-*Prefer terminal? `pnpm install` then `pnpm run deploy` deploys straight from your machine —
-same result, no GitHub needed. And `pnpm run preview` runs the app locally in the real
-Workers runtime before you ship.*
+```text
+https://github.com/kiddsiid/the-missing-peace.git
+```
 
-## 3. Point the services at production
+If the remote is already connected, commit and push normally:
 
-**Clerk** (dashboard.clerk.com):
-- Dev keys (`pk_test_/sk_test_`) work for previewing on the workers.dev URL. For real
-  guests, create a **production instance**, add your domain, swap the two Clerk keys.
-- **Webhook** (replaces the ngrok tunnel): endpoint
-  `https://YOUR-URL/api/webhooks/clerk` with user/organization/membership events; put the
-  signing secret in the Worker as `CLERK_WEBHOOK_SECRET`.
+```bash
+git status
+git add -A
+git commit -m "Update The Missing Peace docs"
+git push
+```
 
-**Supabase**: nothing URL-specific — the app talks to it server-side. Make sure migrations
-**0001 → 0013** are run. Before real users: Clerk↔Supabase third-party auth + `0003` RLS
-hardening (HANDOFF.md "Critical RLS Note").
+There is also a Windows helper:
 
-**After first deploy**: set `NEXT_PUBLIC_APP_URL` to the real URL (build variable) and
-redeploy — the Website Studio share links use it. Then publish in `/website`: your guests'
-links (`/w/your-slug/...`) are live on the internet. ✦
+```text
+push-to-github.bat
+```
 
-## Custom domain (optional)
-Worker → Settings → Domains & Routes → add e.g. `themissingpeace.app` (DNS is instant if
-the domain is on Cloudflare). Update `NEXT_PUBLIC_APP_URL` + Clerk domain to match.
+That helper stages, commits, and pushes to the existing GitHub remote. It also creates a private GitHub repo through GitHub CLI if no remote exists yet.
+
+## 2. Connect GitHub To Cloudflare
+
+In Cloudflare:
+
+1. Open the Cloudflare dashboard.
+2. Go to **Workers & Pages**.
+3. Create or import a Worker from a Git repository.
+4. Authorize GitHub if Cloudflare asks.
+5. Choose `kiddsiid/the-missing-peace`.
+6. Set the production branch to `master` unless the repo is later renamed to `main`.
+
+Cloudflare should read `wrangler.jsonc` from the repo root.
+
+Recommended build/deploy settings:
+
+```text
+Root directory: /
+Build command: pnpm exec opennextjs-cloudflare build
+Deploy command: pnpm exec wrangler deploy
+```
+
+Cloudflare Workers Builds runs the build command first and the deploy command second. The local `pnpm run deploy` script still works on your machine, but in Cloudflare the split commands make the pipeline easier to read and debug.
+
+```text
+Install command: pnpm install
+```
+
+## 3. Add Build Variables
+
+Add these in Cloudflare as build variables. The `NEXT_PUBLIC_*` values are needed during the Next.js build because they are inlined into the client bundle.
+
+```text
+NEXT_PUBLIC_APP_URL=https://the-missing-peace.<your-subdomain>.workers.dev
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=
+```
+
+After the first successful deploy, update `NEXT_PUBLIC_APP_URL` to the real production URL and redeploy. The Wedding Website share links use this value.
+
+## 4. Add Runtime Secrets
+
+Add these as Cloudflare secrets, not plain text variables:
+
+```text
+CLERK_SECRET_KEY
+CLERK_WEBHOOK_SECRET
+SUPABASE_SERVICE_ROLE_KEY
+LIVEBLOCKS_SECRET_KEY
+ANTHROPIC_API_KEY
+```
+
+`ANTHROPIC_MODEL` can be a normal variable.
+
+## 5. Verify Production Services
+
+Clerk:
+
+- For real guests, use a Clerk production instance.
+- Add the production domain in Clerk.
+- Set the webhook endpoint to:
+
+  ```text
+  https://YOUR-PRODUCTION-URL/api/webhooks/clerk
+  ```
+
+- Subscribe the webhook to the user, organization, and membership events used by the app.
+- Put the webhook signing secret into `CLERK_WEBHOOK_SECRET`.
+
+Supabase:
+
+- Run migrations `0000_reset.sql` through `0013_guest_pages.sql` in order for a fresh database.
+- Confirm Clerk-to-Supabase auth and RLS behavior before inviting real users.
+- Keep `SUPABASE_SERVICE_ROLE_KEY` server-side only.
+
+Liveblocks:
+
+- Use the public key as a build variable.
+- Use the secret key as a runtime secret.
+
+Anthropic:
+
+- Use `ANTHROPIC_API_KEY` as a runtime secret.
+- Set `ANTHROPIC_MODEL` to the model you want the Peace Engine to use.
+
+## 6. First Deploy Checklist
+
+- GitHub repo has the latest `master` branch.
+- Cloudflare Worker is connected to the GitHub repo.
+- `wrangler.jsonc` is being read from the repo root.
+- Build variables are present.
+- Runtime secrets are present.
+- Supabase migrations are applied.
+- Clerk webhook points to production.
+- `NEXT_PUBLIC_APP_URL` matches the Cloudflare production URL.
+
+Once that is done, every push to the production branch should trigger a new Cloudflare build and deployment.
+
+## Local Cloudflare Preview
+
+Use this before shipping when you want to test the app in the Cloudflare Workers runtime:
+
+```bash
+pnpm run preview
+```
+
+Use this for a direct deploy from your machine:
+
+```bash
+pnpm run deploy
+```
+
+The GitHub-connected Cloudflare flow is still the better ongoing setup because GitHub becomes the source of truth and Cloudflare redeploys automatically after each push.
+
+## Custom Domain
+
+In Cloudflare:
+
+1. Open the Worker.
+2. Go to domains and routes.
+3. Add the custom domain, such as `themissingpeace.app`.
+4. Update `NEXT_PUBLIC_APP_URL` to the custom domain.
+5. Add the same domain in Clerk.
+6. Redeploy.
 
 ## Notes
-- The Worker needs `nodejs_compat` (already set in wrangler.jsonc) — don't remove it.
-- File uploads are capped at 10MB by next.config; Workers request limits are well above that.
-- If a build fails on Workers Builds, check that Build variables include ALL `NEXT_PUBLIC_*`
-  values — missing ones bake `undefined` into the client bundle.
+
+- Keep `nodejs_compat` in `wrangler.jsonc`; OpenNext needs it for this Next.js app.
+- Keep `.open-next/` and `.wrangler/` out of Git. They are generated build artifacts.
+- If a Cloudflare build fails, check build variables first. Missing `NEXT_PUBLIC_*` values often cause broken client-side configuration.
+- If the deployed app loads but auth, RSVP, uploads, or realtime behavior fails, check runtime secrets and third-party dashboard URLs.
