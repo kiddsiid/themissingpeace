@@ -100,19 +100,31 @@ See [HANDOFF.md](./HANDOFF.md) for the latest engineering handoff and remaining 
 
 ## Cloudflare Deployment
 
-This repo is configured for Cloudflare Workers using the OpenNext adapter:
+This repo deploys the product to the existing Cloudflare Pages URL:
+
+```text
+https://themissingpeace.pages.dev
+```
+
+The app is still built with the OpenNext adapter. `pnpm run pages:build` prepares a Pages advanced-mode output in `.open-next/pages`, and `pnpm run deploy` uploads that product build to the `themissingpeace` Pages project.
+
+The important files and scripts are:
 
 - `wrangler.jsonc`
+- `cloudflare-pages/wrangler.jsonc`
 - `open-next.config.ts`
-- `pnpm run preview`
+- `scripts/prepare-cloudflare-pages.mjs`
+- `pnpm run pages:build`
+- `pnpm run pages:deploy`
 - `pnpm run deploy`
+- `pnpm run preview`
 
 The recommended production flow is:
 
-1. Push the repo to GitHub.
-2. In Cloudflare, connect the GitHub repository through Workers Builds.
+1. Build the product with `pnpm run pages:build`.
+2. Deploy to the existing Pages project with `pnpm run deploy`.
 3. Set all build variables and runtime secrets in Cloudflare.
-4. Let Cloudflare build and deploy on every push to the production branch.
+4. Keep future marketing/landing pages in a separate project so this URL stays the product.
 
 Full instructions are in [DEPLOY.md](./DEPLOY.md).
 
