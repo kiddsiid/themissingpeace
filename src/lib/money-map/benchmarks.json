@@ -1,0 +1,25 @@
+{
+  "_doc": "Cost benchmark seed for Money Map (Build Plan v2 / Money Map spec). Seeds the cost_benchmarks table Codex is building. Figures are PLANNING BENCHMARKS, not quotes. Source: The Knot 2026 Real Weddings Study (as provided by product owner). cost_per_guest is only known nationally; state/city per-guest is left null and can be derived (avg / avg_guest_count) or filled from richer data later. Always show the source to the user.",
+  "national_guest_average": 117,
+  "benchmarks": [
+    { "country": "US", "state": null, "city": null, "level": "country", "average_cost": 34200, "average_guest_count": 117, "cost_per_guest": 292, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "high", "notes": "National average. Location changes this picture dramatically." },
+    { "country": "US", "state": "Indiana", "city": null, "level": "state", "average_cost": 24000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "Below national average." },
+    { "country": "US", "state": "North Carolina", "city": null, "level": "state", "average_cost": 29000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "" },
+    { "country": "US", "state": "New Jersey", "city": null, "level": "state", "average_cost": 57000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "High-cost region." },
+    { "country": "US", "state": "New York", "city": null, "level": "state", "average_cost": 49000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "Statewide; NYC is much higher." },
+    { "country": "US", "state": "Indiana", "city": "Indianapolis", "level": "city", "average_cost": 25000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "" },
+    { "country": "US", "state": "North Carolina", "city": "Charlotte", "level": "city", "average_cost": 32000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "" },
+    { "country": "US", "state": "Illinois", "city": "Chicago", "level": "city", "average_cost": 54000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "medium", "notes": "" },
+    { "country": "US", "state": "New York", "city": "New York City", "level": "city", "average_cost": 88000, "average_guest_count": null, "cost_per_guest": null, "source_name": "The Knot 2026 Real Weddings Study", "source_year": 2026, "confidence": "high", "notes": "Among the highest-cost markets in the US." }
+  ],
+  "wedding_type_modifiers": {
+    "_doc": "Heuristic multipliers applied on top of a location benchmark. The Knot reports destination weddings trend higher on average but did not publish a single multiplier, so treat these as adjustable planning heuristics and label them as such to the user.",
+    "local": 1.0,
+    "backyard": 0.85,
+    "restaurant": 0.9,
+    "venue": 1.0,
+    "domestic_destination": 1.15,
+    "international_destination": 1.3,
+    "multi_day": 1.35
+  }
+}

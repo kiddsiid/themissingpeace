@@ -1,0 +1,10 @@
+{
+  "_doc": "Vendor taxonomy (spec §12) — also the vendor_category enum in 0001_init.sql.",
+  "categories": [
+    "venue","planner","photographer","videographer","caterer","bar_service","cake_desserts",
+    "florist","decorator","rental_company","dj","band","ceremony_musicians","officiant","hair",
+    "makeup","attire","alterations","stationery","signage","transportation","hotel_room_block",
+    "travel_advisor","honeymoon_advisor","content_creator","photo_booth","childcare",
+    "pet_attendant","security","insurance","other"
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "_doc": "Decision categories (spec §10).",
+  "types": ["budget","guest","vendor","design","attire","menu","venue","timeline","family","cultural_religious","honeymoon"]
+}

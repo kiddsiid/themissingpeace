@@ -1,0 +1,19 @@
+{
+  "_doc": "Default boards created by Generate Workspace (Build Plan v2 §2½ / spec §9). optional boards depend on enabled modules.",
+  "boards": [
+    { "type": "master_vision", "title": "Master Vision", "optional": false },
+    { "type": "venue", "title": "Venue", "optional": false },
+    { "type": "ceremony", "title": "Ceremony", "optional": false },
+    { "type": "reception", "title": "Reception", "optional": false },
+    { "type": "attire", "title": "Attire", "optional": false },
+    { "type": "food_beverage", "title": "Food & Beverage", "optional": false },
+    { "type": "florals_decor", "title": "Florals & Decor", "optional": false },
+    { "type": "photo_video", "title": "Photography & Video", "optional": false },
+    { "type": "guest_experience", "title": "Guest Experience", "optional": false },
+    { "type": "music_entertainment", "title": "Music & Entertainment", "optional": false },
+    { "type": "stationery_signage", "title": "Stationery & Signage", "optional": false },
+    { "type": "honeymoon", "title": "Honeymoon", "optional": true },
+    { "type": "prewedding", "title": "Pre-Wedding Parties", "optional": true }
+  ],
+  "collections": ["Dream", "Maybe", "Shortlist", "Approved", "Booked", "Not now", "Questions"]
+}

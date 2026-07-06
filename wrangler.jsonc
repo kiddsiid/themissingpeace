@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "the-missing-peace",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-05",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Secrets (CLERK_SECRET_KEY, SUPABASE_SERVICE_ROLE_KEY, LIVEBLOCKS_SECRET_KEY,
+  // ANTHROPIC_API_KEY, CLERK_WEBHOOK_SECRET) are set via `wrangler secret put` or the
+  // dashboard — never in this file. NEXT_PUBLIC_* vars are inlined at build time, so set
+  // them as Build variables in Workers Builds (see DEPLOY.md).
+}

@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Missing Peace — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink2:#7A726A;--faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--sage:#8A9A80;--sagebg:#EDF0E9;--goldbg:#F4ECDA;--clay:#BC7459;--clayink:#8A4A33;--claybg:#F3E2DB}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+.frame{max-width:980px;margin:24px auto;background:var(--cream);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--pearl)}
+.chip{font-size:12px;padding:4px 11px;border-radius:999px;background:var(--sagebg);color:#566049}
+.body{display:flex}
+.side{width:172px;border-right:1px solid var(--line);padding:12px 10px;flex-shrink:0}
+.nav{padding:8px 11px;border-radius:9px;font-size:13px;color:var(--ink2)}
+.nav.on{background:var(--claybg);color:var(--clayink)}
+.main{flex:1;padding:20px 22px;min-width:0}
+.card{background:var(--pearl);border:1px solid var(--line);border-radius:12px}
+.lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--faint)}
+.board{border-top:1px solid var(--line);background:var(--cream);padding:16px 22px}
+.pcard{flex:1;min-width:190px;padding:11px;position:relative}
+.thumb{height:62px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.pf{font-size:12px;border:1px solid #D9C7B0;background:var(--pearl);color:var(--clayink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.menu{position:absolute;z-index:5;left:11px;bottom:46px;background:var(--pearl);border:1px solid var(--line);border-radius:10px;padding:6px;min-width:160px;box-shadow:0 8px 22px rgba(58,54,49,.14)}
+.mi{font-size:12.5px;padding:7px 9px;border-radius:7px;cursor:pointer}.mi:hover{background:var(--claybg);color:var(--clayink)}
+.seal{display:none;font-size:11px;color:#9A7B33;background:var(--goldbg);border-radius:999px;padding:2px 8px}
+.toast{display:none;margin-top:12px;font-size:13px;color:#566049;background:var(--sagebg);border:1px solid #D7E0CF;border-radius:9px;padding:9px 12px}
+</style></head><body>
+<div class="frame">
+  <div class="top">
+    <div><div class="voice" style="font-size:20px">The Missing Peace</div><div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)">Wedding Planning Engine</div></div>
+    <div class="chip">Peace Score · Peaceful</div>
+  </div>
+  <div class="body">
+    <nav class="side">
+      <div class="nav on">Peace Center</div><div class="nav">The Board</div><div class="nav">Budget</div>
+      <div class="nav">Vendors</div><div class="nav">Guests</div><div class="nav">Timeline</div>
+      <div class="nav">Decisions</div><div class="nav">Documents</div><div class="nav" style="color:#A1748F">Peace Notes</div>
+    </nav>
+    <main class="main">
+      <div class="card" style="padding:13px 16px;border-left:3px solid var(--gold)">
+        <div class="lbl">Wedding Compass</div>
+        <div class="voice" style="font-size:17px;margin-top:3px">An intimate, family-centered dinner — warmth over production, food over decor.</div>
+      </div>
+      <div style="font-size:12px;font-weight:500;color:var(--ink2);margin:18px 0 8px">Next best actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:10px 13px;font-size:13px">Set a guest count range before comparing venues.</div>
+        <div class="card" style="padding:10px 13px;font-size:13px">Choose: a formal reception, or a family dinner?</div>
+        <div class="card" style="padding:10px 13px;font-size:13px">Request quotes from two photographers this week.</div>
+      </div>
+      <div style="display:flex;gap:11px;margin-top:16px;flex-wrap:wrap">
+        <div class="card" style="flex:1;min-width:170px;padding:12px 14px"><div class="lbl">Risk radar</div>
+          <div style="font-size:12.5px;color:var(--clayink);margin-top:6px">Guest count is the largest unresolved cost driver.</div></div>
+        <div class="card" style="flex:1;min-width:170px;padding:12px 14px"><div class="lbl">Vendor gaps</div>
+          <div style="font-size:12.5px;color:var(--ink2);margin-top:6px">Venue, catering started · photography, florals, officiant missing.</div></div>
+      </div>
+    </main>
+  </div>
+  <div class="board">
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px"><div style="font-size:12px;font-weight:500;color:var(--ink2)">The Board · Venue &amp; food fragments</div><div style="font-size:11px;color:var(--faint)">drag · vote · poof</div></div>
+    <div style="display:flex;gap:11px;flex-wrap:wrap">
+      <div class="card pcard"><div class="thumb" style="background:var(--sagebg);color:var(--sage)">❀</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span style="font-size:12.5px">Florist · Instagram</span><span class="seal">✦ set in peace</span></div>
+        <div style="margin-top:8px"><button class="pf">✦ Poof this</button></div></div>
+      <div class="card pcard"><div class="thumb" style="background:var(--goldbg);color:var(--gold)">⌂</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span style="font-size:12.5px">Courtyard venue · link</span><span class="seal">✦ set in peace</span></div>
+        <div style="margin-top:8px"><button class="pf">✦ Poof this</button></div></div>
+      <div class="card pcard"><div class="thumb" style="background:var(--claybg);color:var(--clay)">✦</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span style="font-size:12.5px">Family-style dinner</span><span class="seal">✦ set in peace</span></div>
+        <div style="margin-top:8px"><button class="pf">✦ Poof this</button></div></div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+<script>
+var targets=['Poof into vendor','Poof into task','Poof into budget item','Poof into decision','Poof into timeline event','Poof into document','Poof into Peace Note'];
+var open=null;function close(){if(open){open.remove();open=null}}
+document.addEventListener('click',function(e){if(!e.target.closest('.menu')&&!e.target.closest('.pf'))close()});
+document.querySelectorAll('.pf').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();close();
+  var card=b.closest('.pcard');var m=document.createElement('div');m.className='menu';
+  targets.forEach(function(t){var i=document.createElement('div');i.className='mi';i.textContent=t;
+    i.addEventListener('click',function(ev){ev.stopPropagation();card.querySelector('.seal').style.display='inline-block';
+      var to=document.getElementById('toast');to.style.display='block';to.textContent='✦ '+t.replace('Poof into','Created')+' · linked to its inspiration. View →';close();});
+    m.appendChild(i);});
+  b.parentNode.appendChild(m);open=m;});});
+</script>
+</body></html>

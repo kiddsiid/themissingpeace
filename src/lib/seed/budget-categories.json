@@ -1,0 +1,10 @@
+{
+  "_doc": "Default budget categories (spec §11). 'Emergency buffer' always included; honeymoon/prewedding only when those modules are on.",
+  "categories": [
+    "Venue","Catering","Bar","Cake & desserts","Photography","Videography","Planner",
+    "Florals","Decor","Rentals","Entertainment","Officiant","Attire","Alterations",
+    "Hair & makeup","Stationery","Signage","Transportation","Lodging","Guest experience",
+    "Favors & gifts","Marriage license","Insurance","Tips & gratuities","Emergency buffer",
+    "Honeymoon","Pre-wedding events"
+  ]
+}

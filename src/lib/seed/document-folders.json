@@ -1,0 +1,4 @@
+{
+  "_doc": "Default document folders (spec §15).",
+  "folders": ["Contracts","Quotes","Invoices","Mood Sheets","Attire","Menu","Guest Lists","Legal Documents","Venue Documents","Floor Plans","Seating Charts","Honeymoon","Insurance","Miscellaneous"]
+}
