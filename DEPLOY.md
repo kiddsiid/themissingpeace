@@ -66,7 +66,7 @@ Install command: pnpm install
 Add these in Cloudflare as build variables. The `NEXT_PUBLIC_*` values are needed during the Next.js build because they are inlined into the client bundle.
 
 ```text
-NEXT_PUBLIC_APP_URL=https://the-missing-peace.<your-subdomain>.workers.dev
+NEXT_PUBLIC_APP_URL=https://themissingpeace.<your-subdomain>.workers.dev
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up

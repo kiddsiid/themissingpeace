@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "the-missing-peace",
+  "name": "themissingpeace",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-06-05",
   "compatibility_flags": ["nodejs_compat"],
