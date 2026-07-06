@@ -1,3 +1,5 @@
+packages:
+  - .
 allowBuilds:
   '@clerk/shared': true
   core-js: true
