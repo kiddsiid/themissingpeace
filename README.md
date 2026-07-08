@@ -100,31 +100,34 @@ See [HANDOFF.md](./HANDOFF.md) for the latest engineering handoff and remaining 
 
 ## Cloudflare Deployment
 
-This repo deploys the product to the existing Cloudflare Pages URL:
+This repo currently deploys the prototype to the existing Cloudflare Pages URL:
 
 ```text
 https://themissingpeace.pages.dev
 ```
 
-The app is still built with the OpenNext adapter. `pnpm run pages:build` prepares a Pages advanced-mode output in `.open-next/pages`, and `pnpm run deploy` uploads that product build to the `themissingpeace` Pages project.
+`pnpm run prototype:build` prepares `.pages-prototype/`, and `pnpm run deploy` uploads that prototype build to the `themissingpeace` Pages project. When Cloudflare Pages is connected to GitHub, pushes to `master` should use the same build command and output directory.
 
 The important files and scripts are:
 
-- `wrangler.jsonc`
-- `cloudflare-pages/wrangler.jsonc`
-- `open-next.config.ts`
-- `scripts/prepare-cloudflare-pages.mjs`
-- `pnpm run pages:build`
-- `pnpm run pages:deploy`
+- `prototype/`
+- `cloudflare-prototype/wrangler.jsonc`
+- `scripts/prepare-prototype-pages.mjs`
+- `pnpm run prototype:build`
+- `pnpm run prototype:deploy`
 - `pnpm run deploy`
-- `pnpm run preview`
+- `pnpm run deploy:product`
 
-The recommended production flow is:
+Cloudflare Git integration settings for the current live prototype:
 
-1. Build the product with `pnpm run pages:build`.
-2. Deploy to the existing Pages project with `pnpm run deploy`.
-3. Set all build variables and runtime secrets in Cloudflare.
-4. Keep future marketing/landing pages in a separate project so this URL stays the product.
+```text
+Production branch: master
+Root directory: cloudflare-prototype
+Build command: node ../scripts/prepare-prototype-pages.mjs
+Build output directory: ../.pages-prototype
+```
+
+The Next.js product deploy is still available as `pnpm run deploy:product` when the product is ready to replace the prototype.
 
 Full instructions are in [DEPLOY.md](./DEPLOY.md).
 

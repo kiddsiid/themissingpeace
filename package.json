@@ -15,7 +15,11 @@
     "pages:build": "opennextjs-cloudflare build && node scripts/prepare-cloudflare-pages.mjs",
     "pages:preview": "pnpm run pages:build && wrangler --cwd cloudflare-pages pages dev ../.open-next/pages",
     "pages:deploy": "pnpm run pages:build && wrangler --cwd cloudflare-pages pages deploy ../.open-next/pages --project-name=themissingpeace",
-    "deploy": "pnpm run pages:deploy",
+    "prototype:build": "node scripts/prepare-prototype-pages.mjs",
+    "prototype:preview": "pnpm run prototype:build && wrangler --cwd cloudflare-prototype pages dev ../.pages-prototype",
+    "prototype:deploy": "pnpm run prototype:build && wrangler --cwd cloudflare-prototype pages deploy ../.pages-prototype --project-name=themissingpeace --commit-dirty=true",
+    "deploy": "pnpm run prototype:deploy",
+    "deploy:product": "pnpm run pages:deploy",
     "deploy:worker": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },

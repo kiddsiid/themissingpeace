@@ -1,28 +1,47 @@
-# Deploying The Missing Peace Product
+# Deploying The Missing Peace
 
-The `themissingpeace.pages.dev` URL is the product URL for now. Do not deploy a separate landing page from this repo; a marketing/landing site can live in its own project later.
+The live `themissingpeace.pages.dev` URL should serve the prototype for now. A separate landing page can be created later without changing this repository.
 
-This app is a full-stack Next.js app. Cloudflare's current guidance points full server-rendered Next.js apps at Workers/OpenNext, while Pages can run a generated Worker through Pages Functions advanced mode. This repo uses that advanced-mode path so the existing `themissingpeace.pages.dev` project serves the product instead of a static landing page.
+## Current Live Deploy
 
-## Product Deploy To `themissingpeace.pages.dev`
+The prototype in `prototype/` is the source for the current Cloudflare Pages build.
 
-The important files and scripts are:
+Important files and scripts:
 
-- `open-next.config.ts`
-- `wrangler.jsonc`
-- `cloudflare-pages/wrangler.jsonc`
-- `scripts/prepare-cloudflare-pages.mjs`
-- `pnpm run pages:build`
-- `pnpm run pages:deploy`
+- `prototype/`
+- `scripts/prepare-prototype-pages.mjs`
+- `cloudflare-prototype/wrangler.jsonc`
+- `pnpm run prototype:build`
+- `pnpm run prototype:deploy`
 - `pnpm run deploy`
 
-`pnpm run pages:build` runs the OpenNext build and prepares `.open-next/pages` for Cloudflare Pages. The generated Pages output contains:
+`pnpm run prototype:build` prepares `.pages-prototype/` for Cloudflare Pages. It keeps public URLs clean while still supporting the exported prototype runtime internally.
 
-- the built static assets from `.open-next/assets`
-- the generated OpenNext Worker as `_worker.js`
-- the server/runtime files that `_worker.js` imports
+Public routes include:
 
-Deploy the product to the existing Pages project with:
+```text
+/
+/dreamwalk
+/dream
+/peacecenter
+/board
+/decisions
+/moneymap
+/vendors
+/guests
+/seatingstudio
+/website
+/printables
+/timeline
+/documents
+/playlist
+/honeymoon
+/peacenotes
+```
+
+Old `.html` and `.dc.html` paths redirect to the clean versions.
+
+Deploy the current prototype directly with:
 
 ```bash
 pnpm run deploy
@@ -33,35 +52,48 @@ That command targets:
 ```text
 Project: themissingpeace
 URL: https://themissingpeace.pages.dev
-Output directory: .open-next/pages
+Output directory: .pages-prototype
 ```
 
-## Cloudflare Pages Settings
+## GitHub To Cloudflare Automation
 
-In the Cloudflare dashboard, open **Workers & Pages -> themissingpeace -> Settings**.
-
-Use these settings for the product project:
+Once the Cloudflare Pages project is connected to GitHub, use these settings:
 
 ```text
-Build command: pnpm run pages:build
-Build output directory: .open-next/pages
-Root directory: /
-Pages config: cloudflare-pages/wrangler.jsonc
-Compatibility date: 2026-06-05 or newer
-Compatibility flags: nodejs_compat
+Repository: kiddsiid/themissingpeace
+Production branch: master
+Root directory: cloudflare-prototype
+Build command: node ../scripts/prepare-prototype-pages.mjs
+Build output directory: ../.pages-prototype
 ```
 
-If deploying through direct upload, the script handles the build/output directory:
+With those settings, every push to `master` builds and deploys the current prototype automatically.
+
+## Product Deploy Later
+
+The Next.js product deploy setup is still available. Use it when the product is ready to replace the prototype:
 
 ```bash
-pnpm run pages:deploy
+pnpm run deploy:product
 ```
 
-Do not use `cloudflare-page/` as the Pages output. That folder was the temporary landing page and has been removed. The `cloudflare-pages/` folder is only Wrangler configuration for the product deploy.
+Product deploy files and scripts:
+
+- `open-next.config.ts`
+- `wrangler.jsonc`
+- `cloudflare-pages/wrangler.jsonc`
+- `scripts/prepare-cloudflare-pages.mjs`
+- `pnpm run pages:build`
+- `pnpm run pages:deploy`
+- `pnpm run deploy:product`
+
+The product output directory is `.open-next/pages`.
 
 ## Build Variables And Secrets
 
-Add these in Cloudflare as build/runtime variables. The `NEXT_PUBLIC_*` values are needed during the Next.js build because they are inlined into the client bundle.
+The prototype deploy does not require product secrets.
+
+When deploying the full product, add these build/runtime variables in Cloudflare. The `NEXT_PUBLIC_*` values are needed during the Next.js build because they are inlined into the client bundle.
 
 ```text
 NEXT_PUBLIC_APP_URL=https://themissingpeace.pages.dev
@@ -84,56 +116,3 @@ ANTHROPIC_API_KEY
 ```
 
 `ANTHROPIC_MODEL` can be a normal variable.
-
-## Service Checks
-
-Clerk:
-
-- Use a Clerk production instance for real guests.
-- Add `themissingpeace.pages.dev` in Clerk while this Pages URL is the product URL.
-- Set the webhook endpoint to:
-
-  ```text
-  https://themissingpeace.pages.dev/api/webhooks/clerk
-  ```
-
-- Subscribe the webhook to the user, organization, and membership events used by the app.
-- Put the webhook signing secret into `CLERK_WEBHOOK_SECRET`.
-
-Supabase:
-
-- Run migrations `0000_reset.sql` through `0013_guest_pages.sql` in order for a fresh database.
-- Confirm Clerk-to-Supabase auth and RLS behavior before inviting real users.
-- Keep `SUPABASE_SERVICE_ROLE_KEY` server-side only.
-
-Liveblocks:
-
-- Use the public key as a build variable.
-- Use the secret key as a runtime secret.
-
-Anthropic:
-
-- Use `ANTHROPIC_API_KEY` as a runtime secret.
-- Set `ANTHROPIC_MODEL` to the model you want the Peace Engine to use.
-
-## Worker Deploy Fallback
-
-The OpenNext Worker deployment is still available for a future custom domain or Worker-only deployment:
-
-```bash
-pnpm run deploy:worker
-```
-
-Use the Pages deploy while `https://themissingpeace.pages.dev` is the URL you want people to visit.
-
-## First Deploy Checklist
-
-- Cloudflare Pages project `themissingpeace` exists.
-- `pnpm run pages:build` completes locally or in Cloudflare.
-- Pages output directory is `.open-next/pages`.
-- Compatibility flag includes `nodejs_compat`.
-- Build variables are present.
-- Runtime secrets are present.
-- Supabase migrations are applied.
-- Clerk webhook points to `https://themissingpeace.pages.dev/api/webhooks/clerk`.
-- `NEXT_PUBLIC_APP_URL` is `https://themissingpeace.pages.dev`.
