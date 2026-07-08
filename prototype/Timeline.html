@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(184,146,74,.4)}50%{box-shadow:0 0 0 8px rgba(184,146,74,0)}}
+.card{background:var(--pearl);border:1px solid var(--line);border-radius:14px;transition:transform .2s ease,box-shadow .2s ease}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;min-width:0;overflow-y:auto;padding:22px 30px 60px;position:relative">
+      <span style="position:absolute;left:24%;top:12px;color:var(--gold);font-size:11px;animation:twinkle 3.4s ease-in-out infinite;pointer-events:none">✦</span>
+      <span style="position:absolute;right:20%;top:44px;color:var(--gold);font-size:13px;animation:twinkle 4s ease-in-out .7s infinite;pointer-events:none">✦</span>
+
+      <div style="text-align:center;max-width:640px;margin:0 auto 16px">
+        <div style="font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--ink-faint)">The road and the day itself</div>
+        <div class="voice" style="font-size:34px;line-height:1.05;margin-top:4px">Timeline</div>
+        <div style="font-size:13px;color:var(--ink-soft);margin-top:6px">The <span class="voice" style="font-style:italic;font-size:15px">Roadmap</span> carries you to the day. The <span class="voice" style="font-style:italic;font-size:15px">Run of Day</span> carries you through it.</div>
+      </div>
+
+      <!-- date / dream state -->
+      <div style="max-width:900px;margin:0 auto 20px">
+        <div style=" {{ stateBandStyle }}">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px">
+              <div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color: {{ stateEyebrowColor }}">{{ stateEyebrow }}</div>
+              <div class="voice" style="font-size:24px;line-height:1.1;margin-top:3px">{{ stateHeadline }}</div>
+              <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;max-width:520px;line-height:1.5">{{ stateSub }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+              <input type="date" value="{{ dateVal }}" onInput="{{ onDate }}" style="font-family:inherit;font-size:13px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:11px;padding:9px 12px;outline:none" />
+              <sc-if value="{{ isDreaming }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ setDate }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:10px 18px;cursor:pointer;box-shadow:0 4px 14px rgba(188,116,89,.28)">Set our date ✦</button>
+              </sc-if>
+              <sc-if value="{{ isSet }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ setDate }}" style="font-size:12px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:9px 15px;cursor:pointer">Update</button>
+                <button onClick="{{ unsetDate }}" style="font-size:12px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 13px;cursor:pointer">Back to dreaming</button>
+              </sc-if>
+            </div>
+          </div>
+          <sc-if value="{{ hasRealized }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px;padding-top:13px;border-top:1px solid var(--line)">
+              <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Dreams made real ✦ — woven into your road</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ realized }}" as="r" hint-placeholder-count="2">
+                  <span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9A7B33;background:var(--gold-bg);border:1px solid #E4D3AC;border-radius:999px;padding:6px 13px"><span style="color:var(--gold)">✦</span>{{ r.label }}<span style="color:var(--ink-faint);font-size:11px">· {{ r.kind }}</span></span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin-bottom:22px">
+        <div style="display:inline-flex;background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:4px">
+          <button onClick="{{ showRoadmap }}" style=" {{ roadmapTabStyle }}">Planning Roadmap</button>
+          <button onClick="{{ showDay }}" style=" {{ dayTabStyle }}">Run of Day</button>
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <sc-if value="{{ isRoadmap }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:900px;margin:0 auto">
+          <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start">
+            <!-- journey spine -->
+            <div class="card" style="padding:20px 24px">
+              <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:16px">The road ahead · {{ milestoneReached }}/{{ milestoneTotal }} milestones reached</div>
+              <div style="position:relative;padding-left:6px">
+                <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="5">
+                  <div style="display:flex;gap:16px;align-items:flex-start;position:relative;padding-bottom:22px">
+                    <div style=" {{ m.lineStyle }}"></div>
+                    <div style=" {{ m.nodeStyle }}">{{ m.icon }}</div>
+                    <div style="flex:1;min-width:0;padding-top:1px">
+                      <div style="font-size:10px;letter-spacing:.4px;text-transform:uppercase;color: {{ m.dateColor }}">{{ m.date }}</div>
+                      <div class="voice" style="font-size:18px;line-height:1.15;color: {{ m.titleColor }}">{{ m.title }}</div>
+                      <div style="font-size:11.5px;color:var(--ink-soft);margin-top:2px">{{ m.note }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- tasks -->
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="card" style="padding:16px 18px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <div class="voice" style="font-size:19px">Tasks in motion</div>
+                  <div style="font-size:11px;color:var(--ink-faint)">{{ doneTasks }}/{{ totalTasks }} done</div>
+                </div>
+                <div style="height:7px;background:var(--cream);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:12px"><div style="height:100%;background:linear-gradient(90deg,var(--sage),#A6B79A);border-radius:999px;transition:width .4s;width: {{ taskPct }}"></div></div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="5">
+                    <div style=" {{ t.rowStyle }}">
+                      <button onClick="{{ t.onToggle }}" title="Toggle" style=" {{ t.checkStyle }}">{{ t.check }}</button>
+                      <div style="flex:1;min-width:0">
+                        <div style=" {{ t.titleStyle }}">{{ t.title }}</div>
+                        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:1px">{{ t.meta }}</div>
+                      </div>
+                      <sc-if value="{{ t.blocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;color:var(--clay-ink);background:var(--clay-bg);border-radius:999px;padding:2px 8px;white-space:nowrap">waits on a decision</span></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div class="card" style="padding:16px 18px">
+                <div class="voice" style="font-size:18px;margin-bottom:8px">What waits on what</div>
+                <sc-for list="{{ deps }}" as="d" hint-placeholder-count="2">
+                  <div style="display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--ink);line-height:1.5;margin-bottom:6px"><span style="color:var(--gold)">◆</span><span><b style="font-weight:500">{{ d.a }}</b> waits on <b style="font-weight:500">{{ d.b }}</b><span style="color:var(--ink-faint)"> — {{ d.why }}</span></span></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- RUN OF DAY -->
+      <sc-if value="{{ isDay }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ isDreaming }}" hint-placeholder-val="{{ true }}">
+          <div class="card" style="max-width:620px;margin:0 auto;text-align:center;padding:34px 26px">
+            <div style="font-size:26px;color:var(--gold)">✦</div>
+            <div class="voice" style="font-size:24px;margin-top:6px">The order of the day is still a dream</div>
+            <div style="font-size:13px;color:var(--ink-soft);margin-top:8px;line-height:1.6;max-width:440px;margin-left:auto;margin-right:auto">Once you set a date above, the Run of Day blooms into a full hour-by-hour sequence — arrivals, vows, the long table, the last dance. For now, let it stay a dream.</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isSet }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:720px;margin:0 auto">
+          <div class="card" style="padding:24px 28px;background:linear-gradient(180deg,#fffaf2,var(--pearl))">
+            <div style="text-align:center;margin-bottom:20px"><div class="voice" style="font-size:24px">{{ dayDateLabel }}</div><div style="font-size:12px;color:var(--ink-soft)">Willowbrook Estate · sunset 6:41pm</div></div>
+            <div style="position:relative;padding-left:8px">
+              <sc-for list="{{ runOfDay }}" as="e" hint-placeholder-count="8">
+                <div style="display:flex;gap:18px;align-items:flex-start;position:relative;padding-bottom:20px">
+                  <div style=" {{ e.lineStyle }}"></div>
+                  <div style="width:70px;flex-shrink:0;text-align:right;padding-top:1px"><div class="voice" style="font-size:16px;color:var(--gold)">{{ e.time }}</div></div>
+                  <div style=" {{ e.dotStyle }}"></div>
+                  <div style="flex:1;min-width:0;padding-top:1px">
+                    <div style="font-size:14px;font-weight:500;color:var(--ink)">{{ e.title }}</div>
+                    <div style="font-size:11.5px;color:var(--ink-soft);margin-top:1px">{{ e.who }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:11.5px;color:var(--ink-faint);margin-top:12px">Vendor arrivals, photos, meals &amp; music cues all thread into this one sequence.</div>
+        </div>
+        </sc-if>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  MILE = [
+    {title:'Save the dates sent',date:'Reached · March',note:'128 households notified',done:true},
+    {title:'Invitations mailed',date:'Reached · June',note:'Formal invites out the door',done:true},
+    {title:'RSVPs close',date:'Now · early Sept',note:'92 of 128 replied so far',now:true},
+    {title:'Final headcount to caterer',date:'Sept 12',note:'Locks the menu & seating',done:false},
+    {title:'The day itself',date:'October 3rd',note:'Everything you dreamed',done:false},
+  ];
+  TASKS = [
+    {id:'t1',title:'Settle a guest-count range',cat:'guest',due:'this week',pri:'high',done:false,blocked:false},
+    {id:'t2',title:'Request two photographer quotes',cat:'vendor',due:'Sept 10',pri:'high',done:false,blocked:false},
+    {id:'t3',title:'Choose family-style or plated',cat:'food',due:'Sept 12',pri:'high',done:false,blocked:true},
+    {id:'t4',title:'Book florist consultation',cat:'design',due:'Sept 18',pri:'med',done:false,blocked:false},
+    {id:'t5',title:'Confirm officiant',cat:'ceremony',due:'done',pri:'high',done:true,blocked:false},
+    {id:'t6',title:'Reserve hotel room block',cat:'travel',due:'done',pri:'med',done:true,blocked:false},
+  ];
+  DEPS = [
+    {a:'Catering quote',b:'a guest-count range',why:'price is per head'},
+    {a:'Seating chart',b:'final RSVPs',why:'you can only seat who is coming'},
+  ];
+  DAY = [
+    {time:'1:00',title:'Hair & makeup begins',who:'Bridal suite · 6 people',phase:'day'},
+    {time:'3:30',title:'First look & couple portraits',who:'Garden · with Priya (photo)',phase:'day'},
+    {time:'4:30',title:'Guests arrive',who:'Ceremony lawn · quartet plays',phase:'day'},
+    {time:'5:00',title:'Ceremony',who:'Officiant · vows & rings',phase:'dusk'},
+    {time:'5:30',title:'Cocktail hour',who:'Terrace · passed bites',phase:'dusk'},
+    {time:'6:45',title:'Dinner — the long table',who:'Family-style, passed plates',phase:'night'},
+    {time:'8:00',title:'First dance & toasts',who:'Then the floor opens',phase:'night'},
+    {time:'11:00',title:'Last dance, everyone in',who:'No exit — one final song',phase:'night'},
+  ];
+  state = { mode:'roadmap', done:Object.fromEntries(this.TASKS.map(t=>[t.id,t.done])), wed:null, dateInput:'' };
+
+  componentDidMount(){ this._initWS(); }
+  _initWS=(t=0)=>{ if(window.WeddingState){ const w=WeddingState.get(); this.setState({wed:w, dateInput:(w.wedding&&w.wedding.date)||''}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50); } };
+  componentWillUnmount(){ if(this._off) this._off(); }
+  fmt(iso){ if(!iso) return 'A date, still dreamed'; try{ const d=new Date(iso+'T00:00:00'); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const mons=['January','February','March','April','May','June','July','August','September','October','November','December']; const n=d.getDate(); const suf=(n%10==1&&n!=11)?'st':(n%10==2&&n!=12)?'nd':(n%10==3&&n!=13)?'rd':'th'; return days[d.getDay()]+', '+mons[d.getMonth()]+' '+n+suf; }catch(e){ return iso; } }
+  onDate=(e)=>this.setState({dateInput:e.target.value});
+  setDate=()=>{ const v=this.state.dateInput; if(!v) return; if(window.WeddingState) WeddingState.update(s=>{ s.wedding.date=v; s.wedding.dateStatus='set'; }); };
+  unsetDate=()=>{ if(window.WeddingState) WeddingState.update(s=>{ s.wedding.dateStatus='dream'; }); };
+
+  toggle=(id)=>this.setState(s=>({done:{...s.done,[id]:!s.done[id]}}));
+
+  renderVals(){
+    const done=this.state.done;
+    const st=this.state.wed; const dreaming = !st || !st.wedding || st.wedding.dateStatus!=='set';
+    const dateISO = st&&st.wedding? st.wedding.date : null;
+    const realizedAll = (st&&st.realized)? st.realized : [];
+    const dayDateLabel = dreaming? 'A date, still dreamed' : this.fmt(dateISO);
+    const milestones=this.MILE.map((m,i)=>{
+      const state = dreaming? 'todo' : (m.done?'done': m.now?'now':'todo');
+      const date = dreaming? (m.title==='The day itself'?'When you’re ready':'In time') : (m.title==='The day itself'? this.fmt(dateISO) : m.date);
+      const col = state==='done'?'var(--sage)': state==='now'?'var(--gold)':'var(--ink-faint)';
+      const bg = state==='done'?'var(--sage-bg)': state==='now'?'var(--gold-bg)':'var(--cream)';
+      const doneFlag = state==='done';
+      return {title:m.title,date:date,note:m.note,icon: doneFlag?'✓':'✦',
+        titleColor: state==='todo'?'var(--ink-soft)':'var(--ink)',
+        dateColor: col,
+        nodeStyle:'flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:'+col+';background:'+bg+';border:1.5px solid '+col+';z-index:2;'+(state==='now'?'animation:pulse 2.4s ease-in-out infinite':''),
+        lineStyle: i<this.MILE.length-1?'position:absolute;left:16px;top:34px;bottom:-2px;width:2px;background:'+(doneFlag?'var(--sage)':'var(--line)'):'display:none'};
+    });
+    const milestoneReachedCount = dreaming?0:this.MILE.filter(m=>m.done).length;
+    const tasks=this.TASKS.map(t=>{
+      const d=done[t.id];
+      return {id:t.id,title:t.title,meta:(t.due==='done'?'complete':'by '+t.due)+' · '+t.cat+' · '+t.pri,blocked:t.blocked&&!d,
+        onToggle:()=>this.toggle(t.id),check:d?'✓':'',
+        rowStyle:'display:flex;gap:11px;align-items:flex-start;padding:9px 11px;border-radius:11px;background:'+(d?'var(--sage-bg)':'var(--cream)')+';border:1px solid '+(d?'#D7E0CF':'var(--line)'),
+        checkStyle:'flex-shrink:0;width:21px;height:21px;border-radius:50%;border:1.5px solid '+(d?'var(--sage)':'var(--ink-faint)')+';background:'+(d?'var(--sage)':'var(--pearl)')+';color:'+(d?'#fff':'transparent')+';cursor:pointer;font-size:11px;line-height:1;margin-top:1px',
+        titleStyle:'font-size:13px;color:var(--ink);'+(d?'text-decoration:line-through;color:var(--ink-faint)':'')};
+    });
+    const doneCount=tasks.filter(t=>done[t.id]).length;
+    const phaseColor={day:'#E4D3AC',dusk:'#E6CBBE',night:'#CFDBE3'};
+    const runOfDay=this.DAY.map((e,i)=>({time:e.time,title:e.title,who:e.who,
+      dotStyle:'flex-shrink:0;width:13px;height:13px;border-radius:50%;background:var(--gold);border:2px solid var(--pearl);box-shadow:0 0 0 1px '+phaseColor[e.phase]+';margin-top:3px;z-index:2',
+      lineStyle: i<this.DAY.length-1?'position:absolute;left:94px;top:14px;bottom:-2px;width:2px;background:var(--line)':'display:none'}));
+    const active='font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:8px 18px;cursor:pointer';
+    const idle='font-size:13px;color:var(--ink-soft);background:transparent;border:none;border-radius:999px;padding:8px 18px;cursor:pointer';
+    const isDreaming=dreaming, isSet=!dreaming;
+    return {
+      isRoadmap:this.state.mode==='roadmap', isDay:this.state.mode==='day',
+      showRoadmap:()=>this.setState({mode:'roadmap'}), showDay:()=>this.setState({mode:'day'}),
+      roadmapTabStyle:this.state.mode==='roadmap'?active:idle, dayTabStyle:this.state.mode==='day'?active:idle,
+      milestones, milestoneReached:milestoneReachedCount, milestoneTotal:this.MILE.length,
+      tasks, doneTasks:doneCount, totalTasks:tasks.length, taskPct:Math.round(doneCount/tasks.length*100)+'%',
+      deps:this.DEPS, runOfDay, dayDateLabel,
+      isDreaming, isSet,
+      dateVal:this.state.dateInput, onDate:this.onDate, setDate:this.setDate, unsetDate:this.unsetDate,
+      realized:realizedAll, hasRealized:realizedAll.length>0,
+      stateBandStyle:'background:'+(isDreaming?'linear-gradient(160deg,var(--gold-bg),var(--pearl) 76%)':'var(--pearl)')+';border:1px solid '+(isDreaming?'#E4D3AC':'var(--line)')+';border-radius:16px;padding:18px 20px',
+      stateEyebrow: isDreaming?'Still a dream':'The date is set',
+      stateEyebrowColor: isDreaming?'#9A7B33':'var(--sage)',
+      stateHeadline: isDreaming?'No date yet — and that’s okay':dayDateLabel,
+      stateSub: isDreaming?'Everything hangs on the timeline. Set a date when you’re ready and the whole plan takes shape around it — until then, dream freely.':'Your whole plan is anchored here. Every milestone, task, and vendor counts back from this day.',
+    };
+  }
+}
+</script>
+</body>
+</html>

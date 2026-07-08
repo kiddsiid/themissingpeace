@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes dream-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.9;transform:scale(1.15)}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop-in{0%{opacity:0;transform:translateY(8px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes moon-glow{0%,100%{box-shadow:0 0 0 1px rgba(184,146,74,.18),0 18px 50px rgba(58,54,49,.12),inset 0 -10px 26px rgba(184,146,74,.10),0 0 44px rgba(184,146,74,.10)}50%{box-shadow:0 0 0 1px rgba(184,146,74,.24),0 18px 50px rgba(58,54,49,.14),inset 0 -10px 26px rgba(184,146,74,.14),0 0 60px rgba(184,146,74,.22)}}
+@keyframes orbit-drift{0%,100%{opacity:.5}50%{opacity:.9}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;display:flex;flex-direction:column;min-width:0;position:relative;overflow:hidden">
+      <div style="padding:14px 30px 6px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+        <div style="min-width:280px">
+          <div class="voice" style="font-size:30px;line-height:1">Your Dream Clouds</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px;max-width:520px">The pieces of meaning that shape your Compass, drifting around it. Drag a cloud <span class="voice" style="font-style:italic;font-size:15px">closer to the moon</span> to raise it — the Compass listens.</div>
+        </div>
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div>
+            <div style="font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint)">Season</div>
+            <div style="display:flex;gap:5px;margin-top:6px">
+              <sc-for list="{{ seasons }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onPick }}" style=" {{ s.style }}"><span style=" {{ s.dotStyle }}"></span>{{ s.label }}</button></sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint)">The light</div>
+            <div style="display:flex;gap:5px;margin-top:6px;max-width:236px;flex-wrap:wrap">
+              <sc-for list="{{ lights }}" as="l" hint-placeholder-count="4"><button onClick="{{ l.onPick }}" style=" {{ l.style }}">{{ l.label }}</button></sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- sky -->
+      <div style="flex:1;position:relative;min-height:0;overflow:hidden;user-select:none;-webkit-user-select:none;background:radial-gradient(120% 92% at 50% 40%,#FCF7ED 0%,#F4EDDF 68%,#EFE7D6 100%)">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+          <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1EBDD"/></linearGradient>
+          <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCF4E0"/><stop offset="1" stop-color="#EEDFBB"/></linearGradient>
+          <linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F6ED"/><stop offset="1" stop-color="#DBE5D1"/></linearGradient>
+          <linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEAE1"/><stop offset="1" stop-color="#EFCBBA"/></linearGradient>
+          <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EEF3F6"/><stop offset="1" stop-color="#D3DFE7"/></linearGradient>
+          <linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBECE6"/><stop offset="1" stop-color="#F0D6C9"/></linearGradient>
+        </defs></svg>
+
+        <!-- season tint -->
+        <div style="position:absolute;inset:0;z-index:0;pointer-events:none;transition:background .7s ease;background: {{ seasonTint }}"></div>
+
+        <!-- twinkles -->
+        <sc-for list="{{ twinkles }}" as="k" hint-placeholder-count="12"><span style=" {{ k.style }}">✦</span></sc-for>
+
+        <!-- compass moon -->
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5">
+          <div style="position:relative;width:184px;height:184px;border-radius:50%;background:radial-gradient(58% 58% at 50% 34%,#FFFDF9,#F6EFE1 68%,#EEE4D1);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;animation:moon-glow 6s ease-in-out infinite">
+            <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(130% 130% at 80% 26%,transparent 52%,rgba(184,146,74,.12));pointer-events:none"></div>
+            <div style="position:absolute;inset:0;border-radius:50%;pointer-events:none;transition:background .6s ease;background: {{ moonAura }}"></div>
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);position:relative">Wedding Compass</div>
+            <div style="font-size:18px;color:var(--gold);margin:2px 0 3px;position:relative">✦</div>
+            <div class="voice" style="font-size:14px;line-height:1.28;color:var(--ink);font-style:italic;position:relative">{{ compassShort }}</div>
+            <div style="font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-top:6px;position:relative">{{ lightCaption }}</div>
+          </div>
+        </div>
+
+        <!-- clouds -->
+        <sc-for list="{{ clouds }}" as="c" hint-placeholder-count="7">
+          <div data-cloud="{{ c.id }}" onPointerDown="{{ onCloudDown }}" style=" {{ c.wrapStyle }}">
+            <div style=" {{ c.floatStyle }}">
+              <svg viewBox="0 0 260 170" style=" {{ c.svgStyle }}" aria-hidden="true">
+                <g fill="url(#{{ c.grad }})">
+                  <rect x="24" y="106" width="212" height="40" rx="20"></rect>
+                  <circle cx="60" cy="106" r="34"></circle><circle cx="96" cy="82" r="41"></circle><circle cx="138" cy="64" r="47"></circle>
+                  <circle cx="184" cy="80" r="41"></circle><circle cx="216" cy="106" r="30"></circle><circle cx="120" cy="102" r="45"></circle>
+                  <circle cx="172" cy="106" r="41"></circle><circle cx="80" cy="115" r="30"></circle><circle cx="202" cy="118" r="26"></circle>
+                </g>
+              </svg>
+              <span style="position:absolute;top:14%;left:70%;color:#C6A44E;font-size:9px;animation:twinkle 3.2s ease-in-out infinite;opacity: {{ c.sparkOpacity }}">✦</span>
+              <span style="position:absolute;top:22%;left:20%;color:#C6A44E;font-size:7px;animation:twinkle 4s ease-in-out .6s infinite;opacity: {{ c.sparkOpacity }}">✦</span>
+              <span style="position:absolute;top:26%;left:11%;right:11%;bottom:12%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;overflow:hidden">
+                <span style=" {{ c.typeStyle }}">{{ c.type }}</span>
+                <span class="voice" style=" {{ c.labelStyle }}">{{ c.label }}</span>
+                <span style=" {{ c.rankStyle }}">{{ c.rankLabel }}</span>
+                <sc-if value="{{ c.isReal }}" hint-placeholder-val="{{ false }}"><span style="margin-top:4px;font-size:8px;letter-spacing:.6px;text-transform:uppercase;color:#fff;background:var(--gold);border-radius:999px;padding:2px 8px">✦ Real</span></sc-if>
+              </span>
+            </div>
+          </div>
+        </sc-for>
+
+        <!-- season + light controls live in the header row -->
+
+        <!-- corner widget: add a dream -->
+        <div style="position:absolute;left:16px;bottom:14px;z-index:16">
+          <sc-if value="{{ addOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="width:196px;margin-bottom:8px;background:var(--pearl);border:1px solid var(--line);border-radius:14px;padding:10px;box-shadow:0 14px 34px rgba(58,54,49,.14);animation:pop-in .25s ease both">
+              <div style="font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;padding:0 2px">Wish it into the sky</div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <sc-for list="{{ addPresets }}" as="p" hint-placeholder-count="4">
+                  <button onClick="{{ p.onPick }}" style="text-align:left;font-size:12px;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:8px 10px;cursor:pointer" style-hover="background:var(--gold-bg);border-color:#E4D3AC">✦ {{ p.label }}</button>
+                </sc-for>
+                <sc-if value="{{ noPresets }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:var(--ink-faint);padding:4px 2px 2px">Every wish is already in your sky ✦</div></sc-if>
+              </div>
+            </div>
+          </sc-if>
+          <button onClick="{{ toggleAdd }}" style=" {{ addBtnStyle }}"><span style="font-size:14px;line-height:1">＋</span> Add a dream</button>
+        </div>
+
+        <!-- corner widget: palette -->
+        <div style="position:absolute;right:16px;bottom:14px;z-index:15;width:172px;background:rgba(252,249,243,.74);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:14px;padding:11px 12px;box-shadow:0 8px 22px rgba(58,54,49,.06)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px"><span style="font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint)">Our palette</span><span style="font-size:9.5px;color:var(--gold)">{{ paletteName }}</span></div>
+          <div style="display:flex;gap:7px;margin-top:9px">
+            <sc-for list="{{ palettes }}" as="pl" hint-placeholder-count="4">
+              <button onClick="{{ pl.onPick }}" title="{{ pl.name }}" style=" {{ pl.style }}"><span style=" {{ pl.aStyle }}"></span><span style=" {{ pl.bStyle }}"></span></button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- compass bar -->
+      <div style="flex-shrink:0;border-top:1px solid var(--line);background:var(--pearl);padding:12px 30px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:340px">
+          <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint)">Your Compass reads</div>
+          <div class="voice" style="font-size:20px;line-height:1.35;color:var(--ink);margin-top:4px;max-width:680px">{{ compassSentence }}</div>
+        </div>
+        <div style="display:flex;gap:9px;align-items:center">
+          <sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12px;color:#9A7B33;background:var(--gold-bg);border:1px solid #E4D3AC;border-radius:999px;padding:8px 15px">✦ Compass approved</span>
+            <button onClick="{{ unapprove }}" style="font-size:12px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 13px;cursor:pointer">Revisit</button>
+          </sc-if>
+          <sc-if value="{{ notApproved }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ approve }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:10px 20px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)">Approve this Compass ✦</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- cloud drawer -->
+      <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:0;right:0;bottom:0;width:340px;z-index:20;background:var(--pearl);border-left:1px solid var(--line);box-shadow:-14px 0 40px rgba(58,54,49,.12);display:flex;flex-direction:column;animation:rise .3s ease both">
+          <div style="padding:20px 22px;border-bottom:1px solid var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">{{ drawer.type }} cloud</div>
+                <div class="voice" style="font-size:25px;margin-top:2px">{{ drawer.label }}</div>
+                <div style=" {{ drawer.statusStyle }}">{{ drawer.statusText }}</div>
+              </div>
+              <button onClick="{{ closeDrawer }}" style="font-size:18px;color:var(--ink-faint);background:transparent;border:none;cursor:pointer;line-height:1">✕</button>
+            </div>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:20px 22px">
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)">Why it matters</div>
+            <div class="voice" style="font-size:17px;line-height:1.5;color:var(--ink);margin-top:6px;font-style:italic">"{{ drawer.reflection }}"</div>
+            <div style="margin-top:18px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)">Priority</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+              <div style="flex:1;height:8px;background:var(--cream);border:1px solid var(--line);border-radius:999px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,var(--gold),#D9B877);border-radius:999px;transition:width .3s;width: {{ drawer.priorityPct }}"></div></div>
+              <span style="font-size:12px;color:var(--ink-soft);white-space:nowrap">{{ drawer.priorityLabel }}</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink-faint);margin-top:6px">Drag the cloud toward the moon to raise it.</div>
+            <sc-if value="{{ drawer.isDream }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top:22px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint)">Make it real — choose where it lands</div>
+              <div style="display:flex;flex-direction:column;gap:7px;margin-top:9px">
+                <sc-for list="{{ realTargets }}" as="p" hint-placeholder-count="4">
+                  <button onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:10px;text-align:left;font-size:13px;color:var(--clay-ink);background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 13px;cursor:pointer" style-hover="background:var(--clay-bg);border-color:#D9C7B0"><span style="font-size:13px">{{ p.icon }}</span><span style="flex:1">{{ p.label }}</span><span style="font-size:15px;color:var(--ink-faint)">→</span></button>
+                </sc-for>
+              </div>
+              <div style="margin-top:13px;display:flex;align-items:flex-start;gap:8px;font-size:11.5px;line-height:1.5;color:var(--ink-faint)"><span style="font-size:13px;color:var(--gold)">✦</span><span>Or simply let it keep floating — a dream is allowed to stay a dream.</span></div>
+            </sc-if>
+            <sc-if value="{{ drawer.isReal }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:22px;background:linear-gradient(160deg,var(--gold-bg),var(--pearl) 78%);border:1px solid #E4D3AC;border-radius:14px;padding:15px 16px">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#9A7B33">Now real ✦</div>
+                <div class="voice" style="font-size:17px;font-style:italic;color:var(--ink);margin-top:4px;line-height:1.4">Anchored as {{ drawer.realmLabel }}. It still glows in your sky — but now it has a home in the plan.</div>
+                <button onClick="{{ returnToDream }}" style="margin-top:12px;font-size:12px;color:var(--ink-soft);background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer">Return it to dreaming</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ drawer.custom }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ releaseCloud }}" style="margin-top:16px;font-size:12px;color:var(--ink-faint);background:transparent;border:none;cursor:pointer;text-decoration:underline">Let this dream drift away</button>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+  <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:110;font-size:13px;color:#566049;background:var(--pearl);border:1px solid #D7E0CF;border-radius:999px;padding:10px 20px;box-shadow:0 10px 30px rgba(58,54,49,.16);animation:rise .3s ease both">{{ notice }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  CLOUDS = [
+    {id:'family',label:'Family & our people',type:'Our people',grad:'gs',phrase:'family and the people we love at the center',reflection:'If everyone we love is in one room, laughing, the rest is just decoration.',pr:0.92},
+    {id:'warmth',label:'Warmth over show',type:'The feeling',grad:'gc',phrase:'warmth over production',reflection:'We want it to feel like the best dinner party we have ever thrown — not a performance.',pr:0.82},
+    {id:'table',label:'A shared table',type:'Hospitality',grad:'gg',phrase:'one long, generous table of food',reflection:'Family-style plates, passed around, nobody rushing. The meal is the event.',pr:0.74},
+    {id:'music',label:'Music & dancing',type:'Atmosphere',grad:'gb',phrase:'music and dancing well past midnight',reflection:'The dance floor should never be empty. That is the memory we want.',pr:0.6},
+    {id:'beauty',label:'Soft beauty',type:'Aesthetic',grad:'gr',phrase:'a soft, candlelit, natural beauty',reflection:'Greenery, candlelight, nothing stiff or over-styled.',pr:0.55},
+    {id:'ease',label:'Ease & calm',type:'A boundary',grad:'gs',phrase:'a calm that lets us be fully present',reflection:'We do not want to be running the day. We want to be in it.',pr:0.5},
+    {id:'memory',label:'Memory & photos',type:'What it means',grad:'gg',phrase:'photographs that remember how it felt',reflection:'Not posed — the real faces, the tears, the toasts.',pr:0.66},
+  ];
+  EXTRA = [
+    {id:'x1',label:'A sparkler send-off',type:'A wish',grad:'gg',phrase:'a sparkler send-off under the stars',reflection:'The last image of the night — everyone we love, lighting the way out.',custom:true},
+    {id:'x2',label:'Late-night tacos',type:'A wish',grad:'gc',phrase:'late-night tacos when the dancing peaks',reflection:'Nothing says love like a taco at midnight, heels off, still laughing.',custom:true},
+    {id:'x3',label:'Our dog in a bow tie',type:'A wish',grad:'gs',phrase:'our dog walking down the aisle',reflection:'He was there before the ring. He belongs in the aisle.',custom:true},
+    {id:'x4',label:'Grandma’s recipe',type:'Tradition',grad:'gr',phrase:'grandma’s recipe on the menu',reflection:'One dish that tastes like her kitchen, so she is at the table too.',custom:true},
+    {id:'x5',label:'A live sax at sunset',type:'Atmosphere',grad:'gb',phrase:'a live sax solo at golden hour',reflection:'One warm, unhurried song as the light goes gold.',custom:true},
+    {id:'x6',label:'Handwritten vows',type:'What it means',grad:'gp',phrase:'vows we wrote ourselves',reflection:'Our own words, shaking hands and all.',custom:true},
+  ];
+  POS = {family:[0,-104],memory:[-156,-52],warmth:[156,-52],ease:[-224,40],table:[224,40],beauty:[-104,120],music:[104,120]};
+  ADDSLOTS = [[-152,-98],[152,-98],[0,-150],[-72,150],[72,150],[0,150]];
+  SLOTS = [[0,-104],[156,-52],[-156,-52],[224,40],[-224,40],[104,120],[-104,120],[0,146]];
+  SEASONS = [
+    {key:'Spring',dot:'#A9C6A0',tint:'radial-gradient(90% 82% at 26% 16%,rgba(169,198,160,.30),transparent 62%)'},
+    {key:'Summer',dot:'#E7C86A',tint:'radial-gradient(90% 82% at 26% 16%,rgba(231,200,106,.26),transparent 62%)'},
+    {key:'Fall',dot:'#D08A5B',tint:'radial-gradient(96% 88% at 30% 18%,rgba(208,138,91,.24),transparent 64%)'},
+    {key:'Winter',dot:'#9DB4C4',tint:'radial-gradient(90% 82% at 74% 16%,rgba(157,180,196,.30),transparent 62%)'},
+  ];
+  LIGHTS = [
+    {key:'Sunrise',cap:'At sunrise',aura:'radial-gradient(120% 120% at 50% 62%,rgba(231,162,120,.22),transparent 62%)'},
+    {key:'Golden hour',cap:'At golden hour',aura:'radial-gradient(120% 120% at 50% 62%,rgba(184,146,74,.24),transparent 62%)'},
+    {key:'Candlelight',cap:'By candlelight',aura:'radial-gradient(120% 120% at 50% 62%,rgba(201,140,74,.24),transparent 62%)'},
+    {key:'Starlight',cap:'Under starlight',aura:'radial-gradient(120% 120% at 50% 62%,rgba(124,147,166,.22),transparent 62%)'},
+  ];
+  PALETTES = [
+    {name:'Sage & Clay',a:'#8A9A80',b:'#BC7459',ring:'rgba(138,154,128,.42)'},
+    {name:'Gilded',a:'#B8924A',b:'#E7D2A6',ring:'rgba(184,146,74,.34)'},
+    {name:'Blush & Slate',a:'#E7D2C8',b:'#7C93A6',ring:'rgba(124,147,166,.40)'},
+    {name:'Fern & Ivory',a:'#6E8A63',b:'#F1EBDD',ring:'rgba(110,138,99,.40)'},
+  ];
+
+  layout(){ return this.CLOUDS.map(c=>{ const p=this.POS[c.id]||[0,0]; return {...c, x:p[0], y:p[1], status:'dream'}; }); }
+
+  state = { clouds:this.layout(), selected:null, approved:false, notice:null, season:'Fall', light:'Golden hour', palette:'Sage & Clay', addOpen:false, addCount:0, savedCompass:null, savedShort:null };
+
+  flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2400); }
+  priority(c){ const d=Math.hypot(c.x,c.y); return Math.max(0.04, Math.min(1, 1 - (d-120)/300)); }
+  ranked(){ return [...this.state.clouds].map(c=>({...c,p:this.priority(c)})).sort((a,b)=>b.p-a.p); }
+  sentence(){ const r=this.ranked(); return 'A wedding built around '+r[0].phrase+' — '+r[1].phrase+', and '+r[2].phrase+'.'; }
+
+  onCloudDown=(e)=>{ e.stopPropagation(); const id=e.currentTarget.dataset.cloud; const c=this.state.clouds.find(c=>c.id===id);
+    this.drag={id,ox:c.x,oy:c.y,sx:e.clientX,sy:e.clientY,moved:false,el:e.currentTarget}; };
+  onMove=(e)=>{ const d=this.drag; if(!d) return; const dx=e.clientX-d.sx, dy=e.clientY-d.sy;
+    if(!d.moved){ if(Math.hypot(dx,dy)<4) return; d.moved=true; d.el.style.zIndex='40'; }
+    const nx=d.ox+dx, ny=d.oy+dy;
+    this.setState(s=>({clouds:s.clouds.map(c=>c.id===d.id?{...c,x:nx,y:ny}:c)})); };
+  onUp=(e)=>{ const d=this.drag; this.drag=null; if(!d) return; if(d.el) d.el.style.zIndex='';
+    if(!d.moved){ this.setState(s=>({selected:s.selected===d.id?null:d.id})); } else { this.persist(); } };
+  componentDidMount(){ document.addEventListener('pointermove',this.onMove); document.addEventListener('pointerup',this.onUp); this._initWS(); }
+  _initWS=(t=0)=>{ if(window.WeddingState){ this.hydrate(); this._off=WeddingState.subscribe(()=>{ if(!this._muting) this.hydrate(); }); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50); } };
+  componentWillUnmount(){ document.removeEventListener('pointermove',this.onMove); document.removeEventListener('pointerup',this.onUp); if(this._off) this._off(); }
+  hydrate(){ if(!window.WeddingState) return; const s=WeddingState.get();
+    const built=(s.dreams&&s.dreams.length)? s.dreams.map(d=>({id:d.id,label:d.label,type:d.type||'A wish',grad:d.grad||'gp',reflection:d.reflection||'',phrase:(d.phrase||d.label||'').toLowerCase(),x:d.x||0,y:d.y||0,status:d.status||'dream',realm:d.realm||null,realmLabel:d.realmLabel||null,custom:!!d.custom})) : this.layout();
+    this.setState({clouds:built, season:s.wedding.season||this.state.season, light:s.wedding.light||this.state.light, palette:s.wedding.palette||this.state.palette, approved:!!s.compass.approved, savedShort:s.compass.short||null}); }
+  persist(extra){ if(!window.WeddingState) return; this._muting=true; const clouds=this.state.clouds; const sentence=this.sentence();
+    WeddingState.update(st=>{ st.dreams=clouds.map(c=>({id:c.id,label:c.label,type:c.type,grad:c.grad,reflection:c.reflection,phrase:c.phrase||(c.label||'').toLowerCase(),x:c.x,y:c.y,status:c.status||'dream',realm:c.realm||null,realmLabel:c.realmLabel||null,custom:!!c.custom}));
+      st.wedding.season=this.state.season; st.wedding.light=this.state.light; st.wedding.palette=this.state.palette;
+      st.compass.sentence=sentence; st.compass.approved=this.state.approved; if(extra) extra(st); });
+    this._muting=false; }
+  pick=(k,v)=>this.setState({[k]:v},()=>this.persist());
+  makeReal=(kind,label)=>{ const id=this.state.selected; if(!id) return;
+    this.setState(s=>({clouds:s.clouds.map(c=>c.id===id?{...c,status:'real',realm:kind,realmLabel:label}:c)}),()=>{
+      const c=this.state.clouds.find(x=>x.id===id)||{};
+      this.persist(st=>{ st.realized=(st.realized||[]).filter(r=>r.id!==id); st.realized.push({id,label:c.label,phrase:c.phrase,kind,realmLabel:label,ts:Date.now()}); });
+      this.flash('✦ "'+c.label+'" is now real — anchored to your '+kind); }); };
+  returnToDream=()=>{ const id=this.state.selected; if(!id) return;
+    this.setState(s=>({clouds:s.clouds.map(c=>c.id===id?{...c,status:'dream',realm:null,realmLabel:null}:c)}),()=>{
+      this.persist(st=>{ st.realized=(st.realized||[]).filter(r=>r.id!==id); });
+      this.flash('It drifts back into dreaming ✦'); }); };
+
+  approve=()=>{ this.setState({approved:true},()=>this.persist()); this.flash('✦ Compass approved — the Peace Engine will protect it'); };
+  unapprove=()=>this.setState({approved:false},()=>this.persist());
+  closeDrawer=()=>this.setState({selected:null});
+  releaseCloud=()=>{ const id=this.state.selected; if(!id) return; this.setState(s=>({clouds:s.clouds.filter(c=>c.id!==id),selected:null}),()=>this.persist(st=>{ st.realized=(st.realized||[]).filter(r=>r.id!==id); })); this.flash('The dream drifts gently away'); };
+
+  toggleAdd=()=>this.setState(s=>({addOpen:!s.addOpen}));
+  addDream=(p)=>{ this.setState(s=>{ const slot=this.ADDSLOTS[s.addCount%this.ADDSLOTS.length]; const pr=0.42;
+    return {clouds:[...s.clouds,{...p,pr,x:slot[0],y:slot[1],status:'dream'}], addCount:s.addCount+1, addOpen:false}; },()=>this.persist());
+    this.flash('✦ "'+p.label+'" drifts into your sky'); };
+
+  renderVals(){
+    const r=this.ranked(); const rank={}; r.forEach((c,i)=>rank[c.id]=i);
+    const clouds=this.state.clouds.map(c=>{
+      const p=this.priority(c); const idx=rank[c.id]; const real=c.status==='real';
+      const w = 128 + p*46; const h = Math.round(w*170/260); const ls = Math.max(11.5, Math.min(17.5, w*0.108));
+      const rl = real?'Real': idx===0?'North star': idx<3?'Held high': p>0.4?'Held close':'Drifting';
+      const rc = real?'var(--gold)': idx<3?'var(--gold)':'var(--ink-faint)';
+      return {id:c.id,label:c.label,type:c.type,grad:c.grad,rankLabel:rl,rankColor:rc,isReal:real,
+        typeStyle:'font-size:'+Math.max(7,ls*0.5).toFixed(1)+'px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap',
+        labelStyle:'font-size:'+ls.toFixed(1)+'px;line-height:1.04;color:var(--ink);margin-top:1px;overflow-wrap:anywhere',
+        rankStyle:'font-size:'+Math.max(7.5,ls*0.56).toFixed(1)+'px;letter-spacing:.4px;text-transform:uppercase;margin-top:2px;color:'+rc,
+        sparkOpacity: (real||idx<3)?'.95':'.4',
+        wrapStyle:'position:absolute;left:50%;top:50%;width:'+w+'px;transform:translate(calc(-50% + '+c.x+'px),calc(-50% + '+c.y+'px));cursor:grab;touch-action:none;z-index:'+(real?13:idx<3?12:10),
+        floatStyle:'position:relative;width:100%;animation:dream-float '+(real?11:(7.5+idx*0.5))+'s ease-in-out '+((idx%4)*0.5)+'s infinite;will-change:transform',
+        svgStyle:'display:block;width:100%;height:'+h+'px;overflow:visible;filter:drop-shadow(0 9px 9px rgba(58,54,49,.15))'+(real?' drop-shadow(0 0 11px rgba(184,146,74,.6))':'')};
+    });
+    const twinkles=Array.from({length:13}).map((_,i)=>({style:'position:absolute;color:var(--gold);font-size:'+(7+i%4*3)+'px;left:'+((i*8.1+3)%96)+'%;top:'+((i*15+5)%90)+'%;animation:twinkle '+(3+i%4)+'s ease-in-out '+(i*0.3)+'s infinite;pointer-events:none'}));
+
+    const chip=(on)=>'display:flex;align-items:center;gap:5px;font-size:11px;padding:5px 8px;border-radius:9px;cursor:pointer;transition:all .18s;'+(on?'background:var(--clay-bg);border:1px solid #D9C7B0;color:var(--clay-ink)':'background:var(--pearl);border:1px solid var(--line);color:var(--ink-soft)');
+    const seasons=this.SEASONS.map(s=>({label:s.key,onPick:()=>this.pick('season',s.key),style:chip(this.state.season===s.key),
+      dotStyle:'width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+s.dot}));
+    const seasonTint=(this.SEASONS.find(s=>s.key===this.state.season)||this.SEASONS[2]).tint;
+
+    const lchip=(on)=>'text-align:left;font-size:11.5px;padding:6px 9px;border-radius:9px;cursor:pointer;transition:all .18s;'+(on?'background:var(--gold-bg);border:1px solid #E4D3AC;color:#9A7B33':'background:var(--pearl);border:1px solid var(--line);color:var(--ink-soft)');
+    const lights=this.LIGHTS.map(l=>({label:l.key,onPick:()=>this.pick('light',l.key),style:lchip(this.state.light===l.key)}));
+    const curLight=this.LIGHTS.find(l=>l.key===this.state.light)||this.LIGHTS[1];
+
+    const palettes=this.PALETTES.map(pl=>{ const on=this.state.palette===pl.name;
+      return {name:pl.name,onPick:()=>this.pick('palette',pl.name),
+        style:'display:flex;border-radius:8px;overflow:hidden;cursor:pointer;width:34px;height:22px;padding:0;transition:all .18s;border:2px solid '+(on?'var(--gold)':'var(--line)')+';box-shadow:'+(on?'0 0 0 2px var(--gold-bg)':'none'),
+        aStyle:'flex:1;background:'+pl.a, bStyle:'flex:1;background:'+pl.b}; });
+    const curPal=this.PALETTES.find(pl=>pl.name===this.state.palette)||this.PALETTES[0];
+
+    const usedIds=new Set(this.state.clouds.map(c=>c.id));
+    const addPresets=this.EXTRA.filter(p=>!usedIds.has(p.id)).map(p=>({label:p.label,onPick:()=>this.addDream(p)}));
+
+    const sel=this.state.selected? this.state.clouds.find(c=>c.id===this.state.selected):null;
+    let drawer=null;
+    if(sel){ const p=this.priority(sel); const real=sel.status==='real'; drawer={label:sel.label,type:sel.type,reflection:sel.reflection,priorityPct:Math.round(p*100)+'%',
+      custom:!!sel.custom, isDream:!real, isReal:real, realmLabel:sel.realmLabel||sel.realm||'the plan',
+      statusText: real?'✦ Real — part of the plan':'✦ A dream, still floating',
+      statusStyle:'display:inline-block;margin-top:7px;font-size:10px;letter-spacing:.6px;text-transform:uppercase;padding:3px 10px;border-radius:999px;'+(real?'color:#9A7B33;background:var(--gold-bg);border:1px solid #E4D3AC':'color:var(--ink-soft);background:var(--cream);border:1px solid var(--line)'),
+      priorityLabel: p>0.75?'North star': p>0.5?'High': p>0.3?'Held close':'Drifting'}; }
+    const realTargets=[{kind:'Decision',icon:'◆',label:'A Decision to settle'},{kind:'Timeline',icon:'✦',label:'A moment on the Timeline'},{kind:'Money Map',icon:'✎',label:'A line in the Money Map'},{kind:'Peace Note',icon:'✉',label:'A Peace Note'}].map(t=>({icon:t.icon,label:t.label,onClick:()=>this.makeReal(t.kind,t.label)}));
+
+    return {
+      clouds, twinkles,
+      compassSentence:this.sentence(),
+      compassShort:(r.length>=2?('Rooted in '+String(r[0].label).toLowerCase()+', lifted by '+String(r[1].label).toLowerCase()+'.'):(r[0]?r[0].label:(this.state.savedShort||'An intimate, family-first celebration.'))),
+      approved:this.state.approved, notApproved:!this.state.approved,
+      drawerOpen:!!sel, drawer:drawer||{label:'',type:'',reflection:'',priorityPct:'0%',priorityLabel:'',custom:false,isDream:true,isReal:false,realmLabel:'',statusText:'',statusStyle:''}, realTargets, returnToDream:this.returnToDream,
+      notice:this.state.notice,
+      seasons, seasonTint,
+      lights, moonAura:curLight.aura, lightCaption:curLight.cap,
+      palettes, paletteName:curPal.name, ringColor:curPal.ring,
+      addOpen:this.state.addOpen, toggleAdd:this.toggleAdd, addPresets, noPresets:addPresets.length===0,
+      addBtnStyle:'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--clay-ink);background:rgba(252,249,243,.82);border:1px dashed #D0B48A;border-radius:999px;padding:8px 15px;cursor:pointer;box-shadow:0 8px 22px rgba(58,54,49,.06)',
+      onCloudDown:this.onCloudDown, approve:this.approve, unapprove:this.unapprove, closeDrawer:this.closeDrawer, releaseCloud:this.releaseCloud,
+    };
+  }
+}
+</script>
+</body>
+</html>

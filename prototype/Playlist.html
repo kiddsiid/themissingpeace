@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;--rose:#B56576;--rose-bg:#F3E3E6;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.card{background:var(--pearl);border:1px solid var(--line);border-radius:14px;transition:transform .2s ease,box-shadow .2s ease}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;min-width:0;overflow-y:auto;padding:22px 30px 60px;position:relative">
+      <span style="position:absolute;left:22%;top:12px;color:var(--gold);font-size:11px;animation:twinkle 3.4s ease-in-out infinite;pointer-events:none">✦</span>
+      <span style="position:absolute;right:18%;top:46px;color:var(--gold);font-size:13px;animation:twinkle 4s ease-in-out .7s infinite;pointer-events:none">✦</span>
+
+      <div style="text-align:center;max-width:640px;margin:0 auto 18px">
+        <div style="font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--ink-faint)">The soundtrack to your forever</div>
+        <div class="voice" style="font-size:34px;line-height:1.05;margin-top:4px">Playlist</div>
+        <div style="font-size:13px;color:var(--ink-soft);margin-top:6px">Songs for every moment, requested by your circle. The most-<span class="voice" style="font-style:italic;font-size:15px">loved</span> rise to the top.</div>
+      </div>
+
+      <!-- now-playing hero -->
+      <div class="card" style="max-width:840px;margin:0 auto 22px;padding:18px 22px;display:flex;align-items:center;gap:18px;background:linear-gradient(120deg,var(--gold-bg),var(--pearl) 65%)">
+        <div style="position:relative;width:64px;height:64px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,#2B2723 22%,#4A423B 23%,#3A342E 40%,#57504A 41%,#3A342E 60%);animation:spin 6s linear infinite;display:flex;align-items:center;justify-content:center"><div style="width:16px;height:16px;border-radius:50%;background:var(--gold-bg);border:2px solid var(--gold)"></div></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold)">Your first dance</div>
+          <div class="voice" style="font-size:22px;line-height:1.1">{{ firstDance }}</div>
+          <div style="font-size:12px;color:var(--ink-soft);margin-top:1px">{{ firstDanceMeta }}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0"><div class="voice" style="font-size:26px;color:var(--sage)">{{ approvedCount }}</div><div style="font-size:10.5px;color:var(--ink-faint)">approved · {{ proposedCount }} pending</div></div>
+      </div>
+
+      <div style="max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+        <sc-for list="{{ moments }}" as="m" hint-placeholder-count="5">
+          <div>
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:9px">
+              <span style=" {{ m.iconStyle }}">{{ m.icon }}</span>
+              <div class="voice" style="font-size:21px">{{ m.label }}</div>
+              <div style="font-size:11px;color:var(--ink-faint)">{{ m.hint }}</div>
+              <div style="flex:1;height:1px;background:var(--line)"></div>
+              <div style="font-size:11px;color:var(--ink-faint)">{{ m.count }}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <sc-for list="{{ m.tracks }}" as="t" hint-placeholder-count="2">
+                <div style=" {{ t.rowStyle }}">
+                  <div style=" {{ t.artStyle }}">♪</div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style=" {{ t.titleStyle }}">{{ t.title }}</span> <span style="color:var(--ink-faint)">· {{ t.artist }}</span></div>
+                    <div style="font-size:10.5px;color:var(--ink-faint)">{{ t.by }}</div>
+                  </div>
+                  <button onClick="{{ t.onHeart }}" title="Love it" style=" {{ t.heartStyle }}">{{ t.heart }}<span style="font-size:11px">{{ t.hearts }}</span></button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+
+        <!-- do not play -->
+        <div class="card" style="padding:16px 18px;border-color:#E6C7CD;background:linear-gradient(120deg,var(--rose-bg),var(--pearl) 70%)">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span style="color:var(--rose);font-size:15px">⊘</span><div class="voice" style="font-size:19px;color:var(--rose)">Do not play</div><div style="font-size:11px;color:var(--ink-faint)">the hard-no list — honored by the DJ</div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <sc-for list="{{ doNotPlay }}" as="d" hint-placeholder-count="3">
+              <span style="font-size:12px;color:var(--rose);background:var(--pearl);border:1px solid #E6C7CD;border-radius:999px;padding:5px 12px;text-decoration:line-through;text-decoration-color:#D9A9B1">{{ d }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  MOMENTS = [
+    {value:'ceremony',label:'Ceremony',hint:'processional, vows, recessional',icon:'❦',color:'var(--sage)'},
+    {value:'cocktail',label:'Cocktail hour',hint:'mingling and smiles',icon:'✧',color:'var(--gold)'},
+    {value:'dinner',label:'Dinner',hint:'warm and low',icon:'☾',color:'var(--clay)'},
+    {value:'first_dance',label:'First dance',hint:'your moment',icon:'♥',color:'var(--rose)'},
+    {value:'party',label:'Dance floor',hint:'bring everyone in',icon:'✦',color:'var(--slate)'},
+  ];
+  TRACKS = [
+    {id:'s1',moment:'ceremony',title:'Sunrise',artist:'Norah Jones',by:'added by Maya',hearts:2,mine:true,approved:true},
+    {id:'s2',moment:'ceremony',title:'Turning Page',artist:'Sleeping at Last',by:'added by Julian',hearts:1,mine:false,approved:true},
+    {id:'s3',moment:'cocktail',title:'Fly Me to the Moon',artist:'Sinatra',by:'added by Aria',hearts:1,mine:false,approved:false},
+    {id:'s4',moment:'cocktail',title:'Put Your Records On',artist:'Corinne Bailey Rae',by:'added by Maya',hearts:2,mine:true,approved:true},
+    {id:'s5',moment:'dinner',title:'La Vie en Rose',artist:'Louis Armstrong',by:'added by Julian',hearts:1,mine:false,approved:true},
+    {id:'s6',moment:'first_dance',title:'First Day of My Life',artist:'Bright Eyes',by:'both of you ♥',hearts:2,mine:true,approved:true},
+    {id:'s7',moment:'party',title:'September',artist:'Earth, Wind & Fire',by:'added by Uncle Ray',hearts:2,mine:false,approved:false},
+    {id:'s8',moment:'party',title:'Dancing Queen',artist:'ABBA',by:'added by Maya',hearts:1,mine:true,approved:true},
+    {id:'s9',moment:'party',title:'Mr. Brightside',artist:'The Killers',by:'added by Julian',hearts:1,mine:false,approved:false},
+  ];
+  DNP = ['Cha Cha Slide','Chicken Dance','Anything by our exes'];
+  state = { tracks:this.TRACKS.map(t=>({...t})) };
+
+  heart=(id)=>this.setState(s=>({tracks:s.tracks.map(t=>t.id===id?{...t,mine:!t.mine,hearts:t.hearts+(t.mine?-1:1)}:t)}));
+
+  renderVals(){
+    const T=this.state.tracks;
+    const moments=this.MOMENTS.map(m=>{
+      const list=T.filter(t=>t.moment===m.value).sort((a,b)=>b.hearts-a.hearts).map(t=>({
+        id:t.id,title:t.title,artist:t.artist,by:t.by,hearts:t.hearts,heart:t.mine?'♥':'♡',
+        titleStyle:'font-weight:500;color:'+(t.approved?'var(--ink)':'var(--ink-soft)'),
+        rowStyle:'display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:11px;background:'+(t.approved?'var(--pearl)':'var(--cream)')+';border:1px solid '+(t.approved?'var(--line)':'#E7DFCF'),
+        artStyle:'flex-shrink:0;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:'+m.color+';background:var(--cream);border:1px solid var(--line)',
+        heartStyle:'flex-shrink:0;display:flex;align-items:center;gap:4px;font-size:14px;cursor:pointer;border-radius:999px;padding:5px 10px;border:1px solid '+(t.mine?'#E6C7CD':'var(--line)')+';background:'+(t.mine?'var(--rose-bg)':'var(--pearl)')+';color:'+(t.mine?'var(--rose)':'var(--ink-faint)')+';'+(t.mine?'animation:pop .4s ease':''),
+        onHeart:()=>this.heart(t.id)}));
+      return {label:m.label,hint:m.hint,icon:m.icon,count:list.length+' song'+(list.length===1?'':'s'),
+        iconStyle:'color:'+m.color+';font-size:16px', tracks:list};
+    });
+    const fd=T.find(t=>t.moment==='first_dance');
+    return {moments,doNotPlay:this.DNP,
+      firstDance: fd?fd.title:'—', firstDanceMeta: fd?fd.artist+' · '+fd.by:'',
+      approvedCount:T.filter(t=>t.approved).length, proposedCount:T.filter(t=>!t.approved).length};
+  }
+}
+</script>
+</body>
+</html>

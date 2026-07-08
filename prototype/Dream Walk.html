@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--plum:#A1748F;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:999px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--clay);cursor:pointer;border:3px solid var(--pearl);box-shadow:0 2px 8px rgba(188,116,89,.4)}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+@media(max-width:860px){
+  [style*="font-size: 46px"]{font-size:30px !important}
+  [style*="font-size: 40px"]{font-size:28px !important}
+  [style*="font-size: 34px"]{font-size:25px !important}
+  .dw-bar{flex-wrap:wrap;row-gap:8px;padding-left:18px !important;padding-right:18px !important}
+}
+</style>
+<script src="./wedding-state.js"></script>
+</helmet>
+<div style="position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(120% 80% at 50% 6%,#FDF9F0 0%,#F5EEDF 60%,#EFE7D6 100%);display:flex;flex-direction:column">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <linearGradient id="dp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1EBDD"/></linearGradient>
+    <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCF4E0"/><stop offset="1" stop-color="#EEDFBB"/></linearGradient>
+    <linearGradient id="ds" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F6ED"/><stop offset="1" stop-color="#DBE5D1"/></linearGradient>
+    <linearGradient id="dc2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEAE1"/><stop offset="1" stop-color="#EFCBBA"/></linearGradient>
+  </defs></svg>
+  <sc-for list="{{ twinkles }}" as="k" hint-placeholder-count="9"><span style=" {{ k.style }}">✦</span></sc-for>
+
+  <!-- top bar: brand + progress moon -->
+  <div class="dw-bar" style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 30px">
+    <a href="Homepage.html" style="display:flex;align-items:baseline;gap:11px"><span class="voice" style="font-size:19px;color:var(--ink)">The Missing Peace</span><span style="font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Dream Walk</span></a>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="text-align:right"><div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint)">The dream, forming</div><div style="font-size:12px;color:var(--gold)">{{ progressPct }}% gathered</div></div>
+      <div style="position:relative;width:52px;height:52px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 40% 34%,#FDF3D8,#E7CB88);border:1px solid rgba(184,146,74,.3);box-shadow:0 0 18px rgba(184,146,74,.28)">
+        <div style="position:absolute;top:-3px;bottom:-3px;width:56px;border-radius:50%;background:var(--cream);transition:left .6s ease;left: {{ moonMaskLeft }}"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- stage -->
+  <div style="position:relative;z-index:10;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 24px">
+    <div style="width:100%;max-width:780px">
+
+      <!-- INTRO -->
+      <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
+        <div style="text-align:center;animation:rise .5s ease both">
+          <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faint)">Dream Walk</div>
+          <div class="voice" style="font-size:46px;line-height:1.05;margin-top:12px;max-width:640px;margin-left:auto;margin-right:auto">Before the budget, the guest list, and the decisions…</div>
+          <div style="font-size:14px;line-height:1.7;color:var(--ink-soft);max-width:480px;margin:18px auto 0">Let's find the <span class="voice" style="font-style:italic;font-size:16px">feeling</span> you're planning toward. You don't have to imagine it yet — just choose what's true. Each answer becomes a Dream Cloud and shapes your Wedding Compass.</div>
+        </div>
+      </sc-if>
+
+      <!-- SHAPE OF THE DAY -->
+      <sc-if value="{{ isShape }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:rise .5s ease both">
+          <div style="font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--ink-faint)">the shape of the day</div>
+          <div class="voice" style="font-size:34px;line-height:1.1;margin-top:6px">First, the outline of it all.</div>
+          <div style="margin-top:22px;display:grid;gap:20px">
+            <div>
+              <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">The season you dream of</div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <sc-for list="{{ seasons }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onPick }}" style=" {{ s.style }}"><span style=" {{ s.dotStyle }}"></span>{{ s.label }}</button></sc-for>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">The light you marry in</div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <sc-for list="{{ lights }}" as="l" hint-placeholder-count="4"><button onClick="{{ l.onPick }}" style=" {{ l.style }}">{{ l.label }}</button></sc-for>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between"><div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">How many people</div><div class="voice" style="font-size:17px;color:var(--clay-ink)">{{ intimacyWord }} · ~{{ intimacy }}</div></div>
+              <input type="range" min="2" max="300" value="{{ intimacy }}" onInput="{{ onIntimacy }}" style="width:100%" />
+              <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-faint);margin-top:4px"><span>Just us</span><span>Everyone we know</span></div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- QUESTION -->
+      <sc-if value="{{ isQuestion }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:rise .5s ease both">
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold)">{{ q.eyebrow }}</span><span style="font-size:11px;color:var(--ink-faint)">· choose all that feel true</span></div>
+          <div class="voice" style="font-size:34px;line-height:1.15;margin-top:8px;max-width:660px">{{ q.question }}</div>
+          <div style="margin-top:22px;display:flex;flex-wrap:wrap;gap:10px">
+            <sc-for list="{{ q.choices }}" as="c" hint-placeholder-count="8">
+              <button onClick="{{ c.onPick }}" style=" {{ c.style }}"><span style=" {{ c.dotStyle }}"></span>{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <input value="{{ q.customVal }}" onInput="{{ q.onCustom }}" placeholder="＋ add your own fragment" style="margin-top:16px;width:100%;max-width:420px;border:1px solid var(--line);background:var(--pearl);border-radius:999px;padding:10px 16px;font-size:13px;color:var(--ink);font-family:inherit;outline:none" />
+        </div>
+      </sc-if>
+
+      <!-- FINISH -->
+      <sc-if value="{{ isFinish }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;animation:rise .5s ease both">
+          <div style="font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--ink-faint)">the dream, bottled</div>
+          <div class="voice" style="font-size:40px;line-height:1.05;margin-top:8px">Your Compass has found its words.</div>
+          <div style="margin:22px auto 0;max-width:560px;background:linear-gradient(160deg,var(--gold-bg),var(--pearl) 72%);border:1px solid #E4D3AC;border-radius:18px;padding:22px 26px;box-shadow:0 14px 40px rgba(184,146,74,.14)">
+            <div style="font-size:20px;color:var(--gold)">✦</div>
+            <div class="voice" style="font-size:22px;line-height:1.4;font-style:italic;color:var(--ink);margin-top:4px">{{ compassSentence }}</div>
+          </div>
+          <div style="display:flex;gap:22px;justify-content:center;margin-top:22px;flex-wrap:wrap">
+            <div style="text-align:center"><div class="voice" style="font-size:26px;color:var(--clay-ink)">{{ cloudCount }}</div><div style="font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-faint)">Dream Clouds</div></div>
+            <div style="text-align:center"><div class="voice" style="font-size:26px;color:var(--gold)">1</div><div style="font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-faint)">Wedding Compass</div></div>
+            <div style="text-align:center"><div class="voice" style="font-size:26px;color:var(--sage)">{{ watchCount }}</div><div style="font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-faint)">Peace Center watch-list</div></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- gathering sky (during questions/shape) -->
+      <sc-if value="{{ showGathered }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:26px;padding-top:16px;border-top:1px solid var(--line)">
+          <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">Your dream, gathering</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;min-height:28px">
+            <sc-for list="{{ gathered }}" as="g" hint-placeholder-count="3">
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:5px 12px;animation:pop .3s ease both"><span style=" {{ g.dotStyle }}"></span>{{ g.text }}</span>
+            </sc-for>
+            <sc-if value="{{ noGathered }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;color:var(--ink-faint)">Choose above and watch your clouds appear…</span></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- nav -->
+  <div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 30px;max-width:840px;margin:0 auto;width:100%">
+    <button onClick="{{ back }}" style=" {{ backStyle }}">← Back</button>
+    <span style="font-size:11px;color:var(--ink-faint)">{{ stepLabel }}</span>
+    <sc-if value="{{ notFinish }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ next }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:11px 24px;cursor:pointer;box-shadow:0 4px 14px rgba(188,116,89,.28)">{{ nextLabel }}</button>
+    </sc-if>
+    <sc-if value="{{ isFinish }}" hint-placeholder-val="{{ false }}">
+      <a href="Dream.html" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border-radius:999px;padding:11px 24px;box-shadow:0 4px 14px rgba(188,116,89,.28)">Enter the Dream Workspace ✦</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  QUESTIONS = [
+    {id:'feeling',eyebrow:'the first breath',hue:'clay',question:'When your people walk in, what should they feel first?',choices:['Warmth','Awe','Peace','Joy','Intimacy','Celebration','Nostalgia','Belonging']},
+    {id:'meaning',eyebrow:'what this day carries',hue:'gold',question:'What do you want this wedding to mean for the two of you?',choices:['A beginning','A homecoming','A promise','A family gathering','A sacred moment','A joyful feast','A second chance','A quiet vow']},
+    {id:'people',eyebrow:'the people in the room',hue:'sage',question:'What should your guests remember when they leave?',choices:['They were cared for','They felt close to us','The food was generous','The music carried everyone','The ceremony felt true','Nothing felt rushed','They danced all night','Happy tears']},
+    {id:'roots',eyebrow:'roots & rituals',hue:'plum',question:'What traditions, culture, or meaning should be honored?',choices:['Family blessings','Faith tradition','Cultural rituals','Ancestral memory','Chosen-family rituals','A private vow moment','A moment of silence','A shared language']},
+    {id:'food',eyebrow:'food as feeling',hue:'gold',question:'What should the table say about you?',choices:['Warm family dinner','An abundant feast','Elegant service','Comfort food','Local flavor','Late-night bites','One long table','Grandma’s recipe']},
+    {id:'music',eyebrow:'the atmosphere',hue:'slate',question:'What should the music do for the room?',choices:['Move everyone','Hold the ceremony gently','Make dinner glow','Tell our story','Honor family favorites','Keep the floor full','A live band','A do-not-play line']},
+    {id:'boundaries',eyebrow:'what must stay protected',hue:'sage',question:'What should never get lost in the planning?',choices:['Time together','Private vows','A clear budget','Family peace','No rushed photos','Enough rest','Being present','Our own pace']},
+    {id:'budget',eyebrow:'money with meaning',hue:'clay',question:'Where should the Money Map protect the Dream first?',choices:['Food & drink','Photography','Guest comfort','Venue feeling','Music','Florals & candlelight','Ease & support','The honeymoon']},
+  ];
+  HUE_DOT = {clay:'var(--clay)',gold:'var(--gold)',sage:'var(--sage)',slate:'var(--slate)',plum:'var(--plum)'};
+  SEASONS = [{key:'Spring',dot:'#A9C6A0'},{key:'Summer',dot:'#E7C86A'},{key:'Fall',dot:'#D08A5B'},{key:'Winter',dot:'#9DB4C4'}];
+  LIGHTS = ['Sunrise','Golden hour','Candlelight','Starlight'];
+
+  state = { step:0, ans:{}, custom:{}, season:'Fall', light:'Golden hour', intimacy:90 };
+  get total(){ return this.QUESTIONS.length + 3; }
+
+  toggle=(qid,c)=>this.setState(s=>{ const cur=s.ans[qid]||[]; const nx=cur.includes(c)?cur.filter(x=>x!==c):[...cur,c]; return {ans:{...s.ans,[qid]:nx}}; });
+  setCustom=(qid,v)=>this.setState(s=>({custom:{...s.custom,[qid]:v}}));
+  next=()=>this.setState(s=>({step:Math.min(this.total-1,s.step+1)}));
+  back=()=>this.setState(s=>({step:Math.max(0,s.step-1)}));
+  intimacyWord(n){ return n<20?'Just us':n<60?'Intimate':n<120?'Gathered':n<210?'A big celebration':'Everyone we know'; }
+  firstOf(qid,fb){ const a=(this.state.ans[qid]||[]); return a.length?a[0]:(this.state.custom[qid]||fb); }
+  art(w){ return /^[aeiou]/i.test((w||'').trim())?'an':'a'; }
+  THEME = {feeling:['The feeling','gc'],meaning:['What it means','gg'],people:['Our people','gs'],roots:['Roots & rituals','gr'],food:['Hospitality','gg'],music:['Atmosphere','gb'],boundaries:['A boundary','gs'],budget:['Money with meaning','gc']};
+  buildDream(){
+    const clouds=[];
+    for(const Q of this.QUESTIONS){ const a=[...(this.state.ans[Q.id]||[])]; const c=(this.state.custom[Q.id]||'').trim(); if(c) a.push(c);
+      if(a.length){ const t=this.THEME[Q.id]||['A wish','gp']; clouds.push({id:Q.id,label:a[0],type:t[0],grad:t[1],reflection:a.join(', ')}); } }
+    const adj=this.firstOf('feeling','warm').toLowerCase();
+    const meaning=this.firstOf('meaning','a family gathering').toLowerCase();
+    const food=this.firstOf('food','one long table').toLowerCase();
+    const music=this.firstOf('music','music that moves everyone').toLowerCase();
+    const boundary=this.firstOf('boundaries','time together').toLowerCase();
+    const compass=this.art(adj)+' '+adj+', '+this.state.light.toLowerCase()+' celebration that feels like '+meaning+' — '+food+', '+music+', and above all, '+boundary+'.';
+    const compassShort=(meaning.charAt(0).toUpperCase()+meaning.slice(1))+', held in '+adj+'.';
+    return {season:this.state.season,light:this.state.light,intimacy:this.state.intimacy,clouds,compass,compassShort,ts:Date.now()};
+  }
+  persist(){ const d=this.buildDream();
+    if(window.WeddingState){ const SLOTS=[[0,-104],[156,-52],[-156,-52],[224,40],[-224,40],[104,120],[-104,120],[0,146]];
+      WeddingState.update(s=>{ s.wedding.season=d.season; s.wedding.light=d.light; s.wedding.intimacy=d.intimacy;
+        if(d.clouds.length){ s.dreams=d.clouds.slice(0,8).map((c,i)=>({id:c.id,label:c.label,type:c.type,grad:c.grad,reflection:c.reflection,phrase:(c.label||'').toLowerCase(),x:SLOTS[i][0],y:SLOTS[i][1],status:'dream'})); s.compass.sentence=d.compass; s.compass.short=d.compassShort; } }); }
+    try{ localStorage.setItem('tmp_dream', JSON.stringify(d)); }catch(e){} }
+  componentDidUpdate(){ this.persist(); }
+
+  renderVals(){
+    const step=this.state.step; const T=this.total;
+    const qIndex=step-2; const inQ=qIndex>=0 && qIndex<this.QUESTIONS.length;
+    const isFinish=step===T-1;
+    const progress=step/(T-1);
+
+    // current question view
+    let q=null;
+    if(inQ){ const Q=this.QUESTIONS[qIndex]; const sel=this.state.ans[Q.id]||[];
+      q={eyebrow:Q.eyebrow,question:Q.question,customVal:this.state.custom[Q.id]||'',onCustom:(e)=>this.setCustom(Q.id,e.target.value),
+        choices:Q.choices.map(c=>{ const on=sel.includes(c);
+          return {label:c,onPick:()=>this.toggle(Q.id,c),
+            dotStyle:'width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:all .2s;background:'+(on?this.HUE_DOT[Q.hue]:'var(--line)'),
+            style:'display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:10px 16px;border-radius:999px;cursor:pointer;transition:all .18s;'+(on?'background:var(--clay-bg);border:1px solid #D9C7B0;color:var(--clay-ink);box-shadow:0 4px 14px rgba(188,116,89,.14)':'background:rgba(252,249,243,.85);border:1px solid var(--line);color:var(--ink-soft)')}; })};
+    }
+
+    // gathered chips
+    const gathered=[];
+    this.QUESTIONS.forEach(Q=>{ const a=this.state.ans[Q.id]||[]; const c=this.state.custom[Q.id];
+      const first=a[0]||c; if(first) gathered.push({text:first,dotStyle:'width:7px;height:7px;border-radius:50%;background:'+this.HUE_DOT[Q.hue]}); });
+
+    // seasons/lights (shape)
+    const chip=(on,dot)=>'display:inline-flex;align-items:center;gap:7px;font-size:13px;padding:8px 15px;border-radius:999px;cursor:pointer;transition:all .18s;'+(on?'background:var(--clay-bg);border:1px solid #D9C7B0;color:var(--clay-ink)':'background:rgba(252,249,243,.85);border:1px solid var(--line);color:var(--ink-soft)');
+    const seasons=this.SEASONS.map(s=>({label:s.key,onPick:()=>this.setState({season:s.key}),style:chip(this.state.season===s.key),dotStyle:'width:8px;height:8px;border-radius:50%;background:'+s.dot}));
+    const lights=this.LIGHTS.map(l=>({label:l,onPick:()=>this.setState({light:l}),style:chip(this.state.light===l)}));
+
+    // compass sentence
+    const adj=this.firstOf('feeling','warm').toLowerCase();
+    const meaning=this.firstOf('meaning','a family gathering').toLowerCase();
+    const food=this.firstOf('food','one long table').toLowerCase();
+    const music=this.firstOf('music','music that moves everyone').toLowerCase();
+    const boundary=this.firstOf('boundaries','time together').toLowerCase();
+    const compassSentence=this.art(adj)+' '+adj+', '+this.state.light.toLowerCase()+' celebration that feels like '+meaning+' — '+food+', '+music+', and above all, '+boundary+'.';
+
+    const answered=this.QUESTIONS.filter(Q=>(this.state.ans[Q.id]||[]).length||this.state.custom[Q.id]).length;
+
+    const stepLabel = step===0?'Welcome': step===1?'The shape': isFinish?'Ready to reveal':('Question '+(qIndex+1)+' of '+this.QUESTIONS.length);
+    return {
+      twinkles:Array.from({length:10}).map((_,i)=>({style:'position:absolute;color:var(--gold);font-size:'+(7+i%4*3)+'px;left:'+((i*10+4)%94)+'%;top:'+((i*74+30)%600)+'px;animation:twinkle '+(3+i%4)+'s ease-in-out '+(i*0.3)+'s infinite;pointer-events:none;z-index:1'})),
+      isIntro:step===0, isShape:step===1, isQuestion:inQ, isFinish, notFinish:!isFinish,
+      showGathered: step>=1 && !isFinish,
+      q, gathered, noGathered:gathered.length===0,
+      seasons, lights, intimacy:this.state.intimacy, intimacyWord:this.intimacyWord(this.state.intimacy),
+      onIntimacy:(e)=>this.setState({intimacy:Number(e.target.value)}),
+      compassSentence, cloudCount:Math.max(answered, gathered.length), watchCount:Math.max(2,answered-1),
+      progressPct:Math.round(progress*100), moonMaskLeft:(-(progress*56)).toFixed(0)+'px',
+      stepLabel, nextLabel: step===0?'Begin the Dream Walk':(step===T-2?'Reveal my Dream ✦':'Continue'),
+      backStyle:'font-size:13px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:10px 18px;cursor:pointer;'+(step===0?'opacity:.35;pointer-events:none':''),
+      next:this.next, back:this.back,
+    };
+  }
+}
+</script>
+</body>
+</html>

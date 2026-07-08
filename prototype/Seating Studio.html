@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;
+  --line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;
+  --clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;--pink:#C98BA0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes seat-pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes whisper-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes soft-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes cursor-drift{0%{transform:translate(60px,120px)}25%{transform:translate(520px,90px)}50%{transform:translate(760px,340px)}75%{transform:translate(300px,470px)}100%{transform:translate(60px,120px)}}
+@keyframes petal-fall{0%{transform:translateY(-30px) rotate(0);opacity:0}12%{opacity:.9}100%{transform:translateY(460px) rotate(220deg);opacity:0}}
+@keyframes ribbon-in{from{opacity:0;transform:scale(.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+  .seat-body{flex-direction:column !important;overflow-y:auto}
+  .seat-body > aside{width:auto !important;flex-shrink:1 !important;max-height:44vh;border-right:none !important;border-left:none !important;border-bottom:1px solid var(--line)}
+  .seat-body > div{min-height:64vh}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+
+  <!-- top bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px">
+      <a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a>
+      <div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px">
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful
+      </div>
+      <div style="display:flex;align-items:center">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--slate);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">A<span class="av-tip">Aria · planner</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex:1;min-height:0">
+    <!-- nav rail -->
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="#" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+
+    <!-- studio -->
+    <main style="flex:1;display:flex;flex-direction:column;min-width:0">
+      <!-- studio header -->
+      <div style="padding:16px 22px 12px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="voice" style="font-size:26px;line-height:1">Seating Studio</div>
+              <span style="font-size:11px;color:var(--gold);background:var(--gold-bg);border-radius:999px;padding:3px 10px">✦ flagship</span>
+            </div>
+            <div style="font-size:12.5px;color:var(--ink-soft);margin-top:3px">Maya &amp; Julian · Sept 12, 2026 · The Hollow Oak Estate</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button onClick="{{ magicArrange }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:9px 16px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)" style-hover="background:var(--clay-ink)">✨ Magic arrange</button>
+            <button onClick="{{ addRound }}" style="font-size:13px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:9px 14px;cursor:pointer" style-hover="background:var(--clay-bg)">+ Round table</button>
+            <button onClick="{{ addLong }}" style="font-size:13px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:9px 14px;cursor:pointer" style-hover="background:var(--clay-bg)">+ Long table</button>
+            <button onClick="{{ resetChart }}" style="font-size:13px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer" style-hover="border-color:var(--ink-faint)">Reset</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;margin-top:14px;flex-wrap:wrap">
+          <!-- chart tabs -->
+          <div style="display:flex;gap:6px;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px">
+            <button onClick="{{ toReception }}" style=" {{ recTabStyle }}">Reception</button>
+            <button onClick="{{ toCeremony }}" style=" {{ cerTabStyle }}">Ceremony</button>
+          </div>
+          <!-- progress -->
+          <div style="display:flex;align-items:center;gap:10px;min-width:260px;flex:1;max-width:420px">
+            <div style="flex:1;height:8px;background:var(--cream);border:1px solid var(--line);border-radius:999px;overflow:hidden">
+              <div style="height:100%;background:linear-gradient(90deg,var(--sage),#A6B79A);border-radius:999px;transition:width .4s cubic-bezier(.22,1,.36,1);width: {{ seatedPct }}"></div>
+            </div>
+            <div style="font-size:12px;color:var(--ink-soft);white-space:nowrap">{{ seatedLabel }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- body: sidebar / canvas / whispers -->
+      <div class="seat-body" style="display:flex;flex:1;min-height:0">
+        <!-- guest pool sidebar -->
+        <aside data-zone="sidebar" style="width:262px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);display:flex;flex-direction:column">
+          <div style="padding:14px 14px 10px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <div style="font-size:12px;font-weight:600;color:var(--ink)">To be seated</div>
+              <div style="font-size:11px;color:var(--ink-faint)">{{ poolCount }} guests</div>
+            </div>
+            <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="Search guests…" style="width:100%;margin-top:9px;font-size:13px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--cream);color:var(--ink);outline:none"/>
+            <div style="display:flex;gap:5px;margin-top:9px;flex-wrap:wrap">
+              <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+                <button onClick="{{ f.onClick }}" style=" {{ f.style }}">{{ f.label }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:10.5px;color:var(--ink-faint);margin-top:10px;line-height:1.5">Drag a guest onto a chair · drag a <b style="color:var(--ink-soft)">household name</b> to seat them together.</div>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:2px 12px 16px">
+            <sc-for list="{{ pool }}" as="h" hint-placeholder-count="6">
+              <div style="margin-bottom:12px">
+                <div data-house="{{ h.id }}" onPointerDown="{{ onHouseDown }}" style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 8px;border-radius:8px;background:var(--cream);cursor:grab;user-select:none;touch-action:none" title="Drag to seat this household together">
+                  <span style="font-size:11.5px;font-weight:600;color:var(--ink-soft);letter-spacing:.2px">{{ h.name }}</span>
+                  <span style="font-size:10px;color:var(--ink-faint)">{{ h.countLabel }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
+                  <sc-for list="{{ h.members }}" as="m" hint-placeholder-count="2">
+                    <div data-guest="{{ m.id }}" data-house="{{ h.id }}" onPointerDown="{{ onGuestDown }}" style=" {{ m.chipStyle }}" title="{{ m.title }}">
+                      <span style=" {{ m.avatarStyle }}">{{ m.initials }}</span>
+                      <span style="flex:1;min-width:0">
+                        <span style="display:block;font-size:12.5px;color:var(--ink);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</span>
+                        <span style="display:block;font-size:10px;color:var(--ink-faint);line-height:1.3">{{ m.meta }}</span>
+                      </span>
+                      <sc-if value="{{ m.vip }}" hint-placeholder-val="{{ false }}"><span style="color:var(--gold);font-size:12px">★</span></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ poolEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:26px 10px;color:var(--sage)">
+                <div style="font-size:24px">✦</div>
+                <div class="voice" style="font-size:17px;margin-top:4px;color:#566049">Everyone has a seat</div>
+                <div style="font-size:11.5px;color:var(--ink-faint);margin-top:3px">The pool is empty — this chart is complete.</div>
+              </div>
+            </sc-if>
+          </div>
+        </aside>
+
+        <!-- canvas -->
+        <div style="flex:1;min-width:0;position:relative;overflow:auto;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.7),transparent 30%),linear-gradient(180deg,#fffaf2,#f3ecdf)">
+          <div data-room style="position:relative;margin:26px auto;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:26px 26px;border:1px solid var(--line);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,.6); width: {{ roomW }}; height: {{ roomH }}">
+
+            <!-- ceremony decor -->
+            <sc-if value="{{ isCeremony }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:50%;top:12px;transform:translateX(-50%);text-align:center">
+                <div style="width:150px;height:64px;border:1.5px solid #D8C7A6;border-bottom:none;border-radius:120px 120px 0 0;margin:0 auto"></div>
+                <div class="voice" style="font-size:15px;color:var(--gold);margin-top:4px">The Altar</div>
+              </div>
+              <div style="position:absolute;left:0;right:0;top:96px;bottom:20px;left:50%;transform:translateX(-50%);width:2px;background:repeating-linear-gradient(180deg,var(--gold) 0 8px,transparent 8px 18px);opacity:.5"></div>
+              <div style="position:absolute;left:24px;top:100px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint)">Bride's side</div>
+              <div style="position:absolute;right:24px;top:100px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint)">Groom's side</div>
+            </sc-if>
+
+            <!-- live collaborator cursor -->
+            <div style="position:absolute;left:0;top:0;pointer-events:none;z-index:60;animation:cursor-drift 22s ease-in-out infinite">
+              <svg width="18" height="18" viewBox="0 0 18 18" style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))"><path d="M2 2 L2 14 L6 10 L9 16 L11 15 L8 9 L14 9 Z" fill="var(--slate)" stroke="#fff" stroke-width="1"/></svg>
+              <span style="position:absolute;left:16px;top:12px;font-size:10px;background:var(--slate);color:#fff;padding:2px 7px;border-radius:6px;white-space:nowrap">Aria · planner</span>
+            </div>
+
+            <!-- tables -->
+            <sc-for list="{{ tables }}" as="t" hint-placeholder-count="7">
+              <div data-table="{{ t.id }}" onPointerDown="{{ onTableDown }}" style=" {{ t.wrapStyle }}">
+                <sc-if value="{{ t.hasBody }}" hint-placeholder-val="{{ true }}">
+                  <div data-body style=" {{ t.bodyStyle }}">
+                    <span style="font-size:11px;color:var(--ink-faint);font-weight:600;text-align:center;line-height:1.1;pointer-events:none">{{ t.center }}</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ t.isRow }}" hint-placeholder-val="{{ false }}">
+                  <span style="position:absolute;left:-2px;top:-16px;font-size:10px;color:var(--ink-faint);font-weight:600">{{ t.label }}</span>
+                </sc-if>
+                <sc-for list="{{ t.seats }}" as="s" hint-placeholder-count="8">
+                  <div data-seat="{{ s.key }}" onPointerDown="{{ onSeatDown }}" style=" {{ s.style }}" title="{{ s.title }}">
+                    <span style="pointer-events:none">{{ s.initials }}</span>
+                    <sc-if value="{{ s.vip }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;right:-4px;font-size:9px;color:var(--gold);text-shadow:0 0 2px #fff">★</span></sc-if>
+                    <sc-if value="{{ s.child }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;bottom:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--pink);border:1.5px solid #fff"></span></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+
+            <!-- celebration -->
+            <sc-if value="{{ everyoneSeated }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;pointer-events:none;z-index:55;overflow:hidden">
+                <sc-for list="{{ petals }}" as="p" hint-placeholder-count="10">
+                  <span style=" {{ p.style }}"></span>
+                </sc-for>
+                <div style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);text-align:center;background:var(--pearl);border:1px solid var(--gold);border-radius:16px;padding:18px 26px;box-shadow:0 18px 50px rgba(58,54,49,.18);animation:ribbon-in .5s cubic-bezier(.22,1,.36,1) both">
+                  <div style="font-size:22px;color:var(--gold)">✦</div>
+                  <div class="voice" style="font-size:24px;color:var(--ink);margin-top:2px">Everyone has a seat</div>
+                  <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Every household together · VIPs honored · dietary needs grouped.</div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <!-- whispers / detail panel -->
+        <aside style="width:306px;flex-shrink:0;border-left:1px solid var(--line);background:var(--pearl);display:flex;flex-direction:column;overflow-y:auto">
+          <!-- selected table detail -->
+          <sc-if value="{{ hasSelectedTable }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--line);background:var(--cream)">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <input value="{{ selName }}" onInput="{{ onRename }}" style="font-size:15px;font-weight:600;color:var(--ink);background:transparent;border:none;border-bottom:1px dashed var(--line);outline:none;max-width:150px"/>
+                <div style="display:flex;gap:5px;align-items:center">
+                  <button onClick="{{ capDown }}" style="width:24px;height:24px;border-radius:7px;border:1px solid var(--line);background:var(--pearl);color:var(--ink-soft);cursor:pointer;font-size:14px;line-height:1">–</button>
+                  <span style="font-size:12px;color:var(--ink-soft);min-width:56px;text-align:center">{{ selCapLabel }}</span>
+                  <button onClick="{{ capUp }}" style="width:24px;height:24px;border-radius:7px;border:1px solid var(--line);background:var(--pearl);color:var(--ink-soft);cursor:pointer;font-size:14px;line-height:1">+</button>
+                </div>
+              </div>
+              <div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap">
+                <sc-for list="{{ shapeOptions }}" as="so" hint-placeholder-count="4">
+                  <button onClick="{{ so.onClick }}" style=" {{ so.style }}">{{ so.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ selHasMeals }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:11px">
+                  <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px">On this table</div>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <sc-for list="{{ selRoster }}" as="r" hint-placeholder-count="4">
+                      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink)">
+                        <span style=" {{ r.dot }}"></span><span style="flex:1">{{ r.name }}</span><span style="font-size:10.5px;color:var(--ink-faint)">{{ r.meal }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+              <button onClick="{{ delTable }}" style="margin-top:12px;font-size:11.5px;color:var(--clay-ink);background:transparent;border:1px solid #E0CBC0;border-radius:8px;padding:6px 11px;cursor:pointer" style-hover="background:var(--clay-bg)">Remove table</button>
+            </div>
+          </sc-if>
+
+          <!-- whispers -->
+          <div style="padding:14px 16px 6px">
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="width:9px;height:9px;border-radius:50%;background:var(--gold);display:inline-block;animation:twinkle 3.2s ease-in-out infinite"></span>
+              <div style="font-size:12px;font-weight:600;color:var(--ink)">Peacekeeper whispers</div>
+            </div>
+            <div style="font-size:10.5px;color:var(--ink-faint);margin-top:2px">Your seats know RSVPs, households, meals &amp; VIPs.</div>
+          </div>
+          <div style="padding:6px 14px 16px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ whispers }}" as="w" hint-placeholder-count="4">
+              <div style=" {{ w.cardStyle }}">
+                <div style="display:flex;gap:9px;align-items:flex-start">
+                  <span style="font-size:15px;line-height:1;margin-top:1px">{{ w.icon }}</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:12.5px;color:var(--ink);line-height:1.4">{{ w.text }}</div>
+                    <sc-if value="{{ w.hasAction }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ w.onFix }}" style=" {{ w.btnStyle }}">{{ w.action }}</button>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- meal tally -->
+          <div style="margin-top:auto;border-top:1px solid var(--line);padding:13px 16px;background:var(--cream)">
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Meal count · seated</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ mealTally }}" as="mt" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style=" {{ mt.dot }}"></span>
+                  <span style="flex:1;font-size:12px;color:var(--ink-soft)">{{ mt.label }}</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--ink)">{{ mt.count }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- drag ghost -->
+  <div data-ghost style="position:fixed;left:0;top:0;z-index:100;pointer-events:none;display:none;background:var(--pearl);border:1px solid var(--gold);border-radius:10px;padding:6px 11px;box-shadow:0 12px 30px rgba(58,54,49,.2)"></div>
+
+  <!-- notice toast -->
+  <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:110;font-size:13px;color:#566049;background:var(--pearl);border:1px solid #D7E0CF;border-radius:999px;padding:10px 20px;box-shadow:0 10px 30px rgba(58,54,49,.16);animation:whisper-in .3s ease both">{{ notice }}</div>
+  </sc-if>
+
+  <!-- magic arrange modal -->
+  <sc-if value="{{ magicOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ magicCancel }}" style="position:fixed;inset:0;z-index:120;background:rgba(58,54,49,.34);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px">
+      <div onClick="{{ stop }}" style="width:460px;max-width:100%;background:var(--pearl);border:1px solid var(--line);border-radius:18px;box-shadow:0 26px 70px rgba(58,54,49,.3);overflow:hidden;animation:ribbon-in .4s cubic-bezier(.22,1,.36,1) both">
+        <div style="padding:20px 24px 12px;background:linear-gradient(180deg,var(--gold-bg),var(--pearl))">
+          <div style="font-size:20px;color:var(--gold)">✨</div>
+          <div class="voice" style="font-size:24px;color:var(--ink);margin-top:2px">A seating, arranged with love</div>
+          <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px">Here's how the Peacekeeper would seat everyone — and why.</div>
+        </div>
+        <div style="padding:8px 24px 4px;display:flex;flex-direction:column;gap:9px;max-height:300px;overflow-y:auto">
+          <sc-for list="{{ magicReasons }}" as="r" hint-placeholder-count="5">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink);line-height:1.45">
+              <span style="color:var(--sage);margin-top:1px">✓</span><span>{{ r }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:16px 24px 20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--line);margin-top:8px">
+          <button onClick="{{ magicCancel }}" style="font-size:13px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer">Not now</button>
+          <button onClick="{{ magicConfirm }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:9px 20px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)">Seat them ✦</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  MEAL = {
+    beef:{c:'#BC7459',label:'Beef'}, chicken:{c:'#B8924A',label:'Chicken'},
+    fish:{c:'#7C93A6',label:'Fish'}, veg:{c:'#8A9A80',label:'Vegetarian'}, kids:{c:'#C98BA0',label:'Kids'}
+  };
+  CONFLICTS = [['g1','g2'],['g4','g24']];
+  GUESTS = [
+    {id:'g1',first:'Elena',last:'Reyes',house:'h_elena',houseName:'Elena Reyes',rsvp:'accepted',meal:'veg',vip:true,role:'mother of the bride'},
+    {id:'g2',first:'Marco',last:'Reyes',house:'h_marco',houseName:'Marco Reyes',rsvp:'accepted',meal:'beef',vip:true,role:'father of the bride'},
+    {id:'g3',first:'Grace',last:'Okafor',house:'h_grace',houseName:'Grace Okafor',rsvp:'accepted',meal:'fish',vip:true,role:'mother of the groom'},
+    {id:'g4',first:'Daniel',last:'Okafor',house:'h_daniel',houseName:'Daniel Okafor',rsvp:'accepted',meal:'beef',vip:true,role:'father of the groom'},
+    {id:'g23',first:'Iris',last:'Reyes',house:'h_iris',houseName:'Iris Reyes',rsvp:'accepted',meal:'fish',vip:true,role:'grandmother',access:true},
+    {id:'g5',first:'Wei',last:'Chen',house:'h_chen',houseName:'The Chen Family',rsvp:'accepted',meal:'chicken'},
+    {id:'g6',first:'Lily',last:'Chen',house:'h_chen',houseName:'The Chen Family',rsvp:'accepted',meal:'fish'},
+    {id:'g7',first:'Sam',last:'Chen',house:'h_chen',houseName:'The Chen Family',rsvp:'accepted',meal:'kids',child:true},
+    {id:'g8',first:'Anaya',last:'Patel',house:'h_patel',houseName:'The Patels',rsvp:'accepted',meal:'veg',diet:'Vegan'},
+    {id:'g9',first:'Rohan',last:'Patel',house:'h_patel',houseName:'The Patels',rsvp:'accepted',meal:'veg',diet:'Vegan'},
+    {id:'g10',first:'Diya',last:'Patel',house:'h_patel',houseName:'The Patels',rsvp:'accepted',meal:'kids',child:true},
+    {id:'g11',first:'Rosa',last:'Alvarez',house:'h_alvarez',houseName:'The Alvarez Family',rsvp:'accepted',meal:'chicken',diet:'Gluten-free'},
+    {id:'g12',first:'Miguel',last:'Alvarez',house:'h_alvarez',houseName:'The Alvarez Family',rsvp:'accepted',meal:'beef'},
+    {id:'g13',first:'Jun',last:'Kim',house:'h_kim',houseName:'The Kims',rsvp:'accepted',meal:'fish'},
+    {id:'g14',first:'Soo',last:'Kim',house:'h_kim',houseName:'The Kims',rsvp:'accepted',meal:'fish'},
+    {id:'g15',first:'Petra',last:'Novak',house:'h_novak',houseName:'The Novaks',rsvp:'accepted',meal:'beef'},
+    {id:'g16',first:'Tomas',last:'Novak',house:'h_novak',houseName:'The Novaks',rsvp:'accepted',meal:'chicken'},
+    {id:'g17',first:'Zoe',last:'Hart',house:'h_brides',houseName:'Bridesmaids',rsvp:'accepted',meal:'chicken'},
+    {id:'g18',first:'Priya',last:'Shah',house:'h_brides',houseName:'Bridesmaids',rsvp:'accepted',meal:'veg',diet:'Nut allergy'},
+    {id:'g19',first:'Nina',last:'Torres',house:'h_brides',houseName:'Bridesmaids',rsvp:'accepted',meal:'fish'},
+    {id:'g20',first:'Theo',last:'Frost',house:'h_grooms',houseName:'Groomsmen',rsvp:'accepted',meal:'beef'},
+    {id:'g21',first:'Sam',last:'Diaz',house:'h_grooms',houseName:'Groomsmen',rsvp:'accepted',meal:'chicken'},
+    {id:'g22',first:'Leo',last:'Grant',house:'h_grooms',houseName:'Groomsmen',rsvp:'accepted',meal:'beef'},
+    {id:'g25',first:'Omar',last:'Haddad',house:'h_college',houseName:'College Friends',rsvp:'accepted',meal:'beef'},
+    {id:'g26',first:'Fatima',last:'Haddad',house:'h_college',houseName:'College Friends',rsvp:'accepted',meal:'veg'},
+    {id:'g30',first:'Noah',last:'Park',house:'h_college',houseName:'College Friends',rsvp:'accepted',meal:'chicken'},
+    {id:'g29',first:'Aria',last:'Wolfe',house:'h_college',houseName:'College Friends',rsvp:'accepted',meal:'fish'},
+    {id:'g24',first:'Sandra',last:'Bell',house:'h_work',houseName:'Work Friends',rsvp:'accepted',meal:'chicken'},
+    {id:'g27',first:'Grace',last:'Lin',house:'h_work',houseName:'Work Friends',rsvp:'accepted',meal:'chicken'},
+    {id:'g28',first:'Ben',last:'Cole',house:'h_work',houseName:'Work Friends',rsvp:'accepted',meal:'beef'},
+  ];
+
+  state = {
+    chart:'reception',
+    selectedGuest:null, selectedTable:null,
+    search:'', filter:'all', notice:null, magic:null,
+    data:{
+      reception:{
+        tables:[
+          {id:'head',label:'Head Table',shape:'head',cap:6,x:400,y:26,bw:300,bh:82},
+          {id:'t1',label:'Table 1',shape:'round',cap:8,x:96,y:250,bw:150,bh:150},
+          {id:'t2',label:'Table 2',shape:'round',cap:8,x:470,y:250,bw:150,bh:150},
+          {id:'t3',label:'Table 3',shape:'round',cap:8,x:844,y:250,bw:150,bh:150},
+          {id:'t4',label:'Table 4',shape:'round',cap:8,x:96,y:540,bw:150,bh:150},
+          {id:'t5',label:'Table 5',shape:'round',cap:8,x:470,y:540,bw:150,bh:150},
+          {id:'t6',label:'Table 6',shape:'round',cap:8,x:844,y:540,bw:150,bh:150},
+        ],
+        assign:[
+          {tid:'head',si:0,guest:'g1'},{tid:'head',si:1,guest:'g3'},
+          {tid:'t1',si:0,guest:'g2'},{tid:'t1',si:1,guest:'g5'},{tid:'t1',si:2,guest:'g7'},
+          {tid:'t2',si:0,guest:'g4'},{tid:'t2',si:1,guest:'g24'},{tid:'t2',si:2,guest:'g8'},
+        ],
+      },
+      ceremony:{
+        tables:[
+          {id:'L1',label:'Row 1',shape:'row',cap:6,x:70,y:150,bw:236,bh:42},
+          {id:'L2',label:'Row 2',shape:'row',cap:6,x:70,y:218,bw:236,bh:42},
+          {id:'L3',label:'Row 3',shape:'row',cap:6,x:70,y:286,bw:236,bh:42},
+          {id:'L4',label:'Row 4',shape:'row',cap:6,x:70,y:354,bw:236,bh:42},
+          {id:'R1',label:'Row 1',shape:'row',cap:6,x:620,y:150,bw:236,bh:42},
+          {id:'R2',label:'Row 2',shape:'row',cap:6,x:620,y:218,bw:236,bh:42},
+          {id:'R3',label:'Row 3',shape:'row',cap:6,x:620,y:286,bw:236,bh:42},
+          {id:'R4',label:'Row 4',shape:'row',cap:6,x:620,y:354,bw:236,bh:42},
+        ],
+        assign:[],
+      },
+    },
+  };
+
+  // ---- helpers ----
+  gmap(){ return Object.fromEntries(this.GUESTS.map(g=>[g.id,g])); }
+  chartData(){ return this.state.data[this.state.chart]; }
+  accepted(){ return this.GUESTS.filter(g=>g.rsvp==='accepted'); }
+  initials(g){ return (g.first[0]||'')+(g.last?g.last[0]:''); }
+  fullName(id){ const g=this.gmap()[id]; return g? g.first+' '+g.last : ''; }
+  isConflict(a,b){ return this.CONFLICTS.some(p=>(p[0]===a&&p[1]===b)||(p[0]===b&&p[1]===a)); }
+  seatOf(id){ return this.chartData().assign.find(a=>a.guest===id); }
+  occAt(tid,si){ const a=this.chartData().assign.find(x=>x.tid===tid&&x.si===si); return a?a.guest:null; }
+  tableById(id){ return this.chartData().tables.find(t=>t.id===id); }
+  flash(msg){ this.setState({notice:msg}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2600); }
+
+  seatLayout(shape,cap,bw,bh){
+    const s=[];
+    if(shape==='round'||shape==='square'){ const R=bw/2+24, cx=bw/2, cy=bh/2;
+      for(let i=0;i<cap;i++){ const a=(-90+i*360/cap)*Math.PI/180; s.push({x:cx+R*Math.cos(a),y:cy+R*Math.sin(a)}); } }
+    else if(shape==='head'){ const pad=32; for(let i=0;i<cap;i++){ const x=cap===1?bw/2:pad+i*(bw-2*pad)/(cap-1); s.push({x,y:-26}); } }
+    else if(shape==='rect'){ const top=Math.ceil(cap/2),bot=cap-top,pad=32;
+      for(let i=0;i<top;i++){ const x=top===1?bw/2:pad+i*(bw-2*pad)/(top-1); s.push({x,y:-26}); }
+      for(let i=0;i<bot;i++){ const x=bot===1?bw/2:pad+i*(bw-2*pad)/(bot-1); s.push({x,y:bh+26}); } }
+    else if(shape==='row'){ for(let i=0;i<cap;i++) s.push({x:19+i*39.6,y:bh/2}); }
+    return s;
+  }
+
+  // ---- assignment mutations ----
+  commit(a,msg){ const c=this.state.chart;
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],assign:a}}}), ()=>{ if(msg)this.flash(msg); }); }
+  firstOpen(a,tid){ const t=this.tableById(tid); for(let i=0;i<t.cap;i++){ if(!a.some(x=>x.tid===tid&&x.si===i)) return i; } return -1; }
+
+  assign(tid,si,guestId,fromT,fromS){
+    const t=this.tableById(tid); if(!t) return;
+    if(si>=t.cap){ this.flash('That seat is beyond the table'); return; }
+    let a=[...this.chartData().assign];
+    const occ=this.occAt(tid,si);
+    a=a.filter(x=>x.guest!==guestId);
+    let msg=this.gmap()[guestId].first+' seated at '+t.label;
+    if(occ && occ!==guestId){
+      a=a.filter(x=>!(x.tid===tid&&x.si===si));
+      if(fromT!=null && fromS!=null){ a.push({tid:fromT,si:fromS,guest:occ}); msg='Swapped seats ✦'; }
+      else { msg=this.gmap()[occ].first+' moved back to the pool'; }
+    }
+    a.push({tid,si,guest:guestId});
+    this.commit(a,msg);
+  }
+  assignFirstOpen(tid,guestId,fromT,fromS){
+    let a=this.chartData().assign.filter(x=>x.guest!==guestId);
+    const t=this.tableById(tid); let si=-1;
+    for(let i=0;i<t.cap;i++){ if(!a.some(x=>x.tid===tid&&x.si===i)){ si=i; break; } }
+    if(si<0){ this.flash(t.label+' is full'); return; }
+    this.assign(tid,si,guestId,fromT,fromS);
+  }
+  unseatAt(tid,si){ const g=this.occAt(tid,si); if(!g) return;
+    this.commit(this.chartData().assign.filter(x=>!(x.tid===tid&&x.si===si)), this.gmap()[g].first+' returned to the pool'); }
+  placeSelected(tid,si){ const g=this.state.selectedGuest;
+    if(!g){ this.flash('Pick a guest first, then a seat'); return; }
+    this.setState({selectedGuest:null}); this.assign(tid,si,g); }
+
+  seatHouseholdInto(hid,tid){
+    const members=this.accepted().filter(g=>g.house===hid && !this.seatOf(g.id));
+    if(!members.length){ this.flash('They already have seats'); return; }
+    let a=[...this.chartData().assign]; const t=this.tableById(tid); let placed=0;
+    for(const m of members){ let si=-1; for(let i=0;i<t.cap;i++){ if(!a.some(x=>x.tid===tid&&x.si===i)){ si=i; break; } }
+      if(si<0) break; a.push({tid,si,guest:m.id}); placed++; }
+    if(!placed){ this.flash(t.label+' has no open seats'); return; }
+    this.commit(a, placed===members.length? 'Seated them together at '+t.label : placed+' seated · '+t.label+' filled up');
+  }
+
+  // ---- pointer drag ----
+  ghost(){ return this._g || (this._g=document.querySelector('[data-ghost]')); }
+  showGhost(d){ const el=this.ghost(); let title,sub;
+    if(d.type==='house'){ const ms=this.accepted().filter(g=>g.house===d.house && !this.seatOf(g.id));
+      title=this.GUESTS.find(g=>g.house===d.house).houseName; sub=ms.length+' to seat'; }
+    else { const g=this.gmap()[d.guestId]; title=g.first+' '+g.last; sub=this.MEAL[g.meal].label+(g.diet?' · '+g.diet:''); }
+    el.innerHTML='<div style="font-weight:600;font-size:13px;color:#3A3631">'+title+'</div><div style="font-size:11px;color:#7A726A">'+sub+'</div>';
+    el.style.display='block'; }
+  moveGhost(e){ this.ghost().style.transform='translate('+(e.clientX+14)+'px,'+(e.clientY+14)+'px)'; }
+  hideGhost(){ if(this._g) this._g.style.display='none'; }
+
+  onGuestDown=(e)=>{ e.stopPropagation(); const id=e.currentTarget.dataset.guest;
+    this.drag={type:'guest',guestId:id,sx:e.clientX,sy:e.clientY,moved:false}; };
+  onHouseDown=(e)=>{ e.stopPropagation(); const h=e.currentTarget.dataset.house;
+    this.drag={type:'house',house:h,sx:e.clientX,sy:e.clientY,moved:false}; };
+  onTableDown=(e)=>{ if(e.target.closest('[data-seat]')) return;
+    const el=e.currentTarget, id=el.dataset.table, t=this.tableById(id); if(!t) return;
+    this.drag={type:'table',el,id,ox:t.x,oy:t.y,sx:e.clientX,sy:e.clientY,moved:false}; };
+  onSeatDown=(e)=>{ e.stopPropagation(); const [tid,si]=e.currentTarget.dataset.seat.split('::'); const occ=this.occAt(tid,+si);
+    if(occ) this.drag={type:'guest',guestId:occ,fromT:tid,fromS:+si,sx:e.clientX,sy:e.clientY,moved:false};
+    else this.drag={type:'emptyseat',tid,si:+si,sx:e.clientX,sy:e.clientY,moved:false}; };
+
+  onMove=(e)=>{ const d=this.drag; if(!d) return;
+    const dx=e.clientX-d.sx, dy=e.clientY-d.sy;
+    if(!d.moved){ if(Math.hypot(dx,dy)<6) return; d.moved=true;
+      if(d.type==='table'){ d.el.style.zIndex='40'; const b=d.el.querySelector('[data-body]'); if(b){ d._b=b; b.style.boxShadow='0 16px 34px rgba(58,54,49,.18)'; } }
+      else if(d.type==='guest'||d.type==='house'){ this.showGhost(d); } }
+    if(d.type==='table'){ d.el.style.left=(d.ox+dx)+'px'; d.el.style.top=(d.oy+dy)+'px'; }
+    else if(d.type==='guest'||d.type==='house'){ this.moveGhost(e); } };
+
+  onUp=(e)=>{ const d=this.drag; this.drag=null; if(!d) return;
+    if(d.type==='table'){ if(d.el){ d.el.style.zIndex=''; if(d._b) d._b.style.boxShadow=''; }
+      if(d.moved){ const dx=e.clientX-d.sx, dy=e.clientY-d.sy; const nx=Math.max(0,d.ox+dx), ny=Math.max(0,d.oy+dy);
+        this.setState(s=>{ const c=s.chart, tbl=s.data[c].tables.map(t=>t.id===d.id?{...t,x:nx,y:ny}:t); return {data:{...s.data,[c]:{...s.data[c],tables:tbl}},selectedTable:d.id}; }); }
+      else { this.setState({selectedTable:d.id}); } return; }
+    if(d.type==='emptyseat'){ if(!d.moved) this.placeSelected(d.tid,d.si); return; }
+    this.hideGhost();
+    if(!d.moved){ if(d.type==='guest'){ if(d.fromT) this.unseatAt(d.fromT,d.fromS); else this.setState(s=>({selectedGuest:s.selectedGuest===d.guestId?null:d.guestId})); } return; }
+    const tgt=document.elementFromPoint(e.clientX,e.clientY);
+    const seatEl=tgt&&tgt.closest('[data-seat]'), tableEl=tgt&&tgt.closest('[data-table]'), side=tgt&&tgt.closest('[data-zone="sidebar"]');
+    if(d.type==='guest'){
+      if(seatEl){ const [tid,si]=seatEl.dataset.seat.split('::'); this.assign(tid,+si,d.guestId,d.fromT,d.fromS); }
+      else if(tableEl){ this.assignFirstOpen(tableEl.dataset.table,d.guestId,d.fromT,d.fromS); }
+      else if(side&&d.fromT){ this.unseatAt(d.fromT,d.fromS); } }
+    else if(d.type==='house'){ const tid=(tableEl&&tableEl.dataset.table)||(seatEl&&seatEl.dataset.seat.split('::')[0]);
+      if(tid) this.seatHouseholdInto(d.house,tid); } };
+
+  componentDidMount(){ document.addEventListener('pointermove',this.onMove); document.addEventListener('pointerup',this.onUp); }
+  componentWillUnmount(){ document.removeEventListener('pointermove',this.onMove); document.removeEventListener('pointerup',this.onUp); }
+
+  // ---- table ops ----
+  addTable(shape){ const c=this.state.chart; const id='x'+Date.now().toString(36);
+    const cap=shape==='rect'?10:8, bw=shape==='rect'?230:150, bh=shape==='rect'?74:150;
+    const n=this.chartData().tables.length;
+    const t={id,label:'Table '+(n+1),shape,cap,x:260+(n%3)*180,y:360+Math.floor(n/3)*40,bw,bh};
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],tables:[...s.data[c].tables,t]}},selectedTable:id}));
+    this.flash('Added a '+(shape==='rect'?'long':'round')+' table'); }
+  addRound=()=>this.addTable('round');
+  addLong=()=>this.addTable('rect');
+  setShape=(shape)=>{ const id=this.state.selectedTable; if(!id) return; const c=this.state.chart;
+    const bw=shape==='rect'||shape==='head'?(shape==='head'?300:230):150, bh=shape==='rect'||shape==='head'?(shape==='head'?82:74):150;
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],tables:s.data[c].tables.map(t=>t.id===id?{...t,shape,bw,bh}:t)}}})); };
+  changeCap=(delta)=>{ const id=this.state.selectedTable; if(!id) return; const c=this.state.chart; const t=this.tableById(id);
+    const nc=Math.max(1,Math.min(20,t.cap+delta));
+    let a=this.chartData().assign; if(nc<t.cap) a=a.filter(x=>!(x.tid===id&&x.si>=nc));
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],tables:s.data[c].tables.map(tt=>tt.id===id?{...tt,cap:nc}:tt),assign:a}}})); };
+  capUp=()=>this.changeCap(1); capDown=()=>this.changeCap(-1);
+  onRename=(e)=>{ const id=this.state.selectedTable, v=e.target.value, c=this.state.chart;
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],tables:s.data[c].tables.map(t=>t.id===id?{...t,label:v}:t)}}})); };
+  delTable=()=>{ const id=this.state.selectedTable; if(!id) return; const c=this.state.chart;
+    this.setState(s=>({data:{...s.data,[c]:{...s.data[c],tables:s.data[c].tables.filter(t=>t.id!==id),assign:s.data[c].assign.filter(x=>x.tid!==id)}},selectedTable:null}));
+    this.flash('Table removed'); };
+  resetChart=()=>{ if(!confirm('Clear all seats on this chart?')) return; this.commit([],'Chart cleared'); };
+  toReception=()=>this.setState({chart:'reception',selectedTable:null,selectedGuest:null});
+  toCeremony=()=>this.setState({chart:'ceremony',selectedTable:null,selectedGuest:null});
+  onSearch=(e)=>this.setState({search:e.target.value});
+  setFilter=(f)=>this.setState({filter:f});
+  stop=(e)=>e.stopPropagation();
+
+  // ---- whisper fixes ----
+  gatherHousehold=(hid)=>{ const members=this.accepted().filter(g=>g.house===hid); const ids=members.map(m=>m.id);
+    let a=[...this.chartData().assign]; let best=null,bestScore=-1;
+    for(const t of this.chartData().tables){ const there=a.filter(x=>x.tid===t.id&&ids.includes(x.guest)).length;
+      const others=a.filter(x=>x.tid===t.id&&!ids.includes(x.guest)).length; const free=t.cap-others;
+      if(free>=ids.length){ const score=there*100+free; if(score>bestScore){ bestScore=score; best=t; } } }
+    if(!best){ this.flash('No single table has room for them yet — free a seat or add a table'); return; }
+    a=a.filter(x=>!ids.includes(x.guest)); const taken=new Set(a.filter(x=>x.tid===best.id).map(x=>x.si));
+    let si=0; for(const m of members){ while(taken.has(si)) si++; a.push({tid:best.id,si,guest:m.id}); taken.add(si); }
+    this.commit(a,'Brought them together at '+best.label); };
+  separateConflict=(pair)=>{ const s=this.seatOf(pair[0]), s2=this.seatOf(pair[1]); if(!s||!s2||s.tid!==s2.tid){ this.flash('They are already apart ✦'); return; }
+    const g=this.gmap()[pair[0]].vip? pair[1]: pair[0]; let a=[...this.chartData().assign];
+    for(const t of this.chartData().tables){ if(t.id===s.tid) continue;
+      const others=a.filter(x=>x.tid===t.id).map(x=>x.guest); if(others.length>=t.cap) continue;
+      if(others.some(o=>this.isConflict(o,g))) continue;
+      let si=this.firstOpen(a,t.id); a=a.filter(x=>x.guest!==g); a.push({tid:t.id,si,guest:g});
+      this.commit(a,'Moved '+this.gmap()[g].first+' to '+t.label+' — gently apart'); return; }
+    this.flash('No conflict-free table has room — add a table'); };
+  gatherVeg=()=>{ const veg=this.accepted().filter(g=>g.meal==='veg'||g.diet==='Vegan').map(g=>g.id);
+    let a=[...this.chartData().assign]; let best=null,bestFree=-1;
+    for(const t of this.chartData().tables){ const others=a.filter(x=>x.tid===t.id&&!veg.includes(x.guest)).length; const free=t.cap-others; if(free>bestFree){ bestFree=free; best=t; } }
+    if(!best){ this.flash('Add a table first'); return; }
+    a=a.filter(x=>!veg.includes(x.guest)); const taken=new Set(a.filter(x=>x.tid===best.id).map(x=>x.si)); let si=0,placed=0;
+    for(const id of veg){ if(placed>=best.cap-(a.filter(x=>x.tid===best.id).length)) break; while(taken.has(si)) si++; if(si>=best.cap) break; a.push({tid:best.id,si,guest:id}); taken.add(si); placed++; }
+    this.commit(a,'Gathered the plant-based guests at '+best.label); };
+  seatAtHead=(gid)=>{ const head=this.chartData().tables.find(t=>t.shape==='head'); if(!head){ this.flash('No head table on this chart'); return; }
+    let a=this.chartData().assign.filter(x=>x.guest!==gid); let si=this.firstOpen(a,head.id);
+    if(si<0){ this.flash('The head table is full'); return; } a.push({tid:head.id,si,guest:gid}); this.commit(a,this.gmap()[gid].first+' honored at the head table'); };
+
+  // ---- magic arrange ----
+  computeMagic(){
+    const tables=this.chartData().tables; const occ={}; const gm=this.gmap();
+    const seatInto=(tid,gid)=>{ (occ[tid]=occ[tid]||[]).push(gid); };
+    const openAt=(tid)=>this.tableById(tid).cap-((occ[tid]||[]).length);
+    const conflictAt=(tid,ids)=>ids.some(m=>(occ[tid]||[]).some(o=>this.isConflict(o,m)));
+    // households
+    const hmap={}; for(const g of this.accepted()){ (hmap[g.house]=hmap[g.house]||{id:g.house,name:g.houseName,members:[]}).members.push(g); }
+    let houses=Object.values(hmap);
+    houses.sort((a,b)=>{ const av=a.members.some(m=>m.vip)?0:1, bv=b.members.some(m=>m.vip)?0:1; if(av!==bv) return av-bv; return b.members.length-a.members.length; });
+    const head=tables.find(t=>t.shape==='head');
+    for(const h of houses){ const ids=h.members.map(m=>m.id); let target=null;
+      if(h.members.some(m=>m.vip)&&head&&openAt(head.id)>=ids.length&&!conflictAt(head.id,ids)) target=head;
+      if(h.members.some(m=>m.access)){ const t1=tables.find(t=>t.id==='t1'); if(t1&&openAt(t1.id)>=ids.length&&!conflictAt(t1.id,ids)) target=t1; }
+      if(!target) target=tables.find(t=>t.shape!=='head'&&openAt(t.id)>=ids.length&&!conflictAt(t.id,ids));
+      if(target){ ids.forEach(id=>seatInto(target.id,id)); }
+      else { for(const id of ids){ const t=tables.find(t=>openAt(t.id)>=1&&!conflictAt(t.id,[id])); if(t) seatInto(t.id,id); } } }
+    // build assign
+    const assign=[]; for(const tid in occ){ occ[tid].forEach((gid,i)=>assign.push({tid,si:i,guest:gid})); }
+    // reasons
+    const tableOf={}; assign.forEach(x=>tableOf[x.guest]=x.tid); const R=[];
+    if(head){ const hn=(occ[head.id]||[]).map(id=>gm[id].first); if(hn.length) R.push('Honored '+this.joinNames(hn)+' at the head table.'); }
+    const kept=houses.filter(h=>h.members.length>=2 && new Set(h.members.map(m=>tableOf[m.id])).size===1 && h.members.every(m=>tableOf[m.id])).map(h=>h.name);
+    if(kept.length) R.push('Kept '+this.joinNames(kept)+' together at their own table'+(kept.length>1?'s':'')+'.');
+    for(const p of this.CONFLICTS){ if(tableOf[p[0]]!==tableOf[p[1]]) R.push('Kept '+gm[p[0]].first+' and '+gm[p[1]].first+' apart, gently.'); }
+    if((occ['t1']||[]).some(id=>gm[id].access)) R.push('Sat '+gm[this.accepted().find(g=>g.access).id].first+' near the entrance for step-free access.');
+    R.push('Grouped the vegetarian & vegan guests so the kitchen has it easy.');
+    const un=this.accepted().filter(g=>!tableOf[g.id]).length; if(un) R.push(un+' guest'+(un>1?'s':'')+' still need a seat — free space or add a table.');
+    return {assign,reasons:R.slice(0,6)};
+  }
+  joinNames(a){ if(a.length===1) return a[0]; if(a.length===2) return a[0]+' and '+a[1]; return a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+  magicArrange=()=>{ const m=this.computeMagic(); this.setState({magic:m}); };
+  magicConfirm=()=>{ const m=this.state.magic; this.setState({magic:null}); if(m) this.commit(m.assign,'✦ Everyone arranged with love'); };
+  magicCancel=()=>this.setState({magic:null});
+
+  // ---- whispers compute ----
+  computeWhispers(){
+    if(this.state.chart==='ceremony') return [];
+    const gm=this.gmap(), W=[], A=this.chartData().assign;
+    const tableOf={}; A.forEach(x=>tableOf[x.guest]=x.tid);
+    // households split
+    const hmap={}; for(const g of this.accepted()){ (hmap[g.house]=hmap[g.house]||{id:g.house,name:g.houseName,members:[]}).members.push(g); }
+    for(const h of Object.values(hmap)){ if(h.members.length<2) continue;
+      const seated=h.members.filter(m=>tableOf[m.id]); if(!seated.length) continue;
+      const tset=new Set(seated.map(m=>tableOf[m.id])); const unse=h.members.length-seated.length;
+      if(tset.size>1 || unse>0){ W.push({tone:'clay',icon:'🏡',text: tset.size>1? h.name+' are split across '+tset.size+' tables.' : h.name+' are seated, but '+unse+(unse===1?' of them is':' of them are')+' still in the pool.', action:'Bring them together', hasAction:true, onFix:()=>this.gatherHousehold(h.id)}); } }
+    // conflicts
+    for(const p of this.CONFLICTS){ if(tableOf[p[0]]&&tableOf[p[0]]===tableOf[p[1]]){ const t=this.tableById(tableOf[p[0]]);
+      W.push({tone:'clay',icon:'🕊️',text:gm[p[0]].first+' and '+gm[p[1]].first+' are together at '+t.label+' — they asked to sit apart.', action:'Move them apart', hasAction:true, onFix:()=>this.separateConflict(p)}); } }
+    // veg scatter
+    const veg=this.accepted().filter(g=>(g.meal==='veg'||g.diet==='Vegan')&&tableOf[g.id]); const vt=new Set(veg.map(g=>tableOf[g.id]));
+    if(vt.size>1) W.push({tone:'gold',icon:'🌿',text:'Your plant-based guests are spread across '+vt.size+' tables — one shared table keeps catering calm.', action:'Gather them', hasAction:true, onFix:this.gatherVeg});
+    // VIP not at head
+    const head=this.chartData().tables.find(t=>t.shape==='head');
+    if(head){ const vipAway=this.accepted().filter(g=>g.vip&&tableOf[g.id]&&tableOf[g.id]!==head.id&&!g.access);
+      if(vipAway.length){ const g=vipAway[0]; const canHead=this.firstOpen(A,head.id)>=0;
+        W.push({tone:'gold',icon:'★',text:this.fullName(g.id)+' ('+g.role+') isn\u2019t at the head table.', action:canHead?'Seat at head':'', hasAction:canHead, onFix:()=>this.seatAtHead(g.id)}); } }
+    // accessible
+    const acc=this.accepted().find(g=>g.access&&tableOf[g.id]);
+    if(acc){ const t=this.tableById(tableOf[acc.id]); if(t.id!=='t1'&&t.id!=='head') W.push({tone:'gold',icon:'♿',text:'Keep '+acc.first+' near the entrance (Table 1) for step-free access.', action:'', hasAction:false}); }
+    // unseated
+    const un=this.accepted().filter(g=>!tableOf[g.id]).length;
+    if(un) W.push({tone:'gold',icon:'✨',text:un+' guest'+(un>1?'s':'')+' still need a seat. Want the Peacekeeper to arrange them?', action:'Magic arrange', hasAction:true, onFix:this.magicArrange});
+    if(!W.length && this.accepted().some(g=>tableOf[g.id])) W.push({tone:'sage',icon:'✦',text:'Every household is together, VIPs are honored, and dietary needs are grouped. This chart is at peace.', action:'', hasAction:false});
+    const rank={clay:0,gold:1,sage:2}; W.sort((a,b)=>rank[a.tone]-rank[b.tone]);
+    return W.slice(0,5);
+  }
+
+  renderVals(){
+    const gm=this.gmap(), c=this.state.chart, cd=this.chartData(), A=cd.assign;
+    const seatedIds=new Set(A.map(x=>x.guest));
+    const acc=this.accepted(), accIds=new Set(acc.map(g=>g.id));
+    const seatedAcc=A.filter(x=>accIds.has(x.guest)).length;
+    const pct = acc.length? Math.round(seatedAcc/acc.length*100):0;
+    const everyoneSeated = c==='reception' && acc.length>0 && seatedAcc>=acc.length;
+
+    // pool grouped by household, filtered
+    const q=this.state.search.trim().toLowerCase(), fil=this.state.filter;
+    const passFilter=(g)=> fil==='all' || (fil==='vip'&&g.vip) || (fil==='kids'&&g.child) || (fil==='diet'&&(g.diet||g.meal==='veg'));
+    const poolG=acc.filter(g=>!seatedIds.has(g.id) && passFilter(g) && (!q || (g.first+' '+g.last+' '+g.houseName).toLowerCase().includes(q)));
+    const houseMap={};
+    for(const g of poolG){ (houseMap[g.house]=houseMap[g.house]||{id:g.house,name:g.houseName,members:[]}).members.push(g); }
+    const pool=Object.values(houseMap).sort((a,b)=>a.name.localeCompare(b.name)).map(h=>({
+      id:h.id,name:h.name,countLabel:h.members.length+(h.members.length===1?' guest':' guests'),
+      members:h.members.map(g=>{
+        const sel=this.state.selectedGuest===g.id;
+        const meta=[this.MEAL[g.meal].label, g.diet, g.child?'child':null, g.role].filter(Boolean).join(' · ');
+        return {id:g.id,name:g.first+' '+g.last,initials:this.initials(g),vip:!!g.vip,meta,
+          title:g.first+' '+g.last+' · '+this.MEAL[g.meal].label+(g.diet?' · '+g.diet:''),
+          chipStyle:'display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:10px;cursor:grab;user-select:none;touch-action:none;border:1px solid '+(sel?'var(--gold)':'transparent')+';background:'+(sel?'var(--gold-bg)':'var(--cream)'),
+          avatarStyle:'flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;background:'+this.MEAL[g.meal].c};
+      }),
+    }));
+
+    // filters chips
+    const mkFilter=(id,label)=>({label,onClick:()=>this.setFilter(id),
+      style:'font-size:11px;padding:4px 10px;border-radius:999px;cursor:pointer;border:1px solid '+(fil===id?'var(--gold)':'var(--line)')+';background:'+(fil===id?'var(--gold-bg)':'var(--pearl)')+';color:'+(fil===id?'var(--gold)':'var(--ink-soft)')});
+    const filters=[mkFilter('all','All'),mkFilter('vip','VIPs'),mkFilter('kids','Kids'),mkFilter('diet','Dietary')];
+
+    // tables + seats
+    const selT=this.state.selectedTable;
+    const tables=cd.tables.map(t=>{
+      const lay=this.seatLayout(t.shape,t.cap,t.bw,t.bh);
+      const seats=lay.map((p,i)=>{ const occ=this.occAt(t.id,i); const g=occ?gm[occ]:null;
+        const base='position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;cursor:'+(g?'grab':'pointer')+';touch-action:none;left:'+(p.x-15)+'px;top:'+(p.y-15)+'px;';
+        const look=g? 'background:'+this.MEAL[g.meal].c+';color:#fff;border:2px solid #fff;box-shadow:0 2px 7px rgba(58,54,49,.2);animation:seat-pop .32s cubic-bezier(.22,1,.36,1);' : 'background:rgba(255,255,255,.55);border:1.5px dashed var(--ink-faint);color:transparent;';
+        return {key:t.id+'::'+i, style:base+look, initials:g?this.initials(g):'', vip:!!(g&&g.vip), child:!!(g&&g.child),
+          title:g? g.first+' '+g.last+' · '+this.MEAL[g.meal].label+(g.diet?' · '+g.diet:'') : 'Empty seat'}; });
+      const sel=selT===t.id;
+      const round=t.shape==='round', sq=t.shape==='square';
+      const bodyStyle='position:relative;width:'+t.bw+'px;height:'+t.bh+'px;border-radius:'+(round?'50%':'16px')+';background:#FFFDF8;border:1px solid '+(sel?'var(--gold)':'var(--line)')+';box-shadow:'+(sel?'0 0 0 3px var(--gold-bg)':'0 2px 10px rgba(58,54,49,.05)')+';display:flex;align-items:center;justify-content:center;transition:box-shadow .2s';
+      return {id:t.id,label:t.label,hasBody:t.shape!=='row',isRow:t.shape==='row',
+        wrapStyle:'position:absolute;left:'+t.x+'px;top:'+t.y+'px;width:'+t.bw+'px;height:'+t.bh+'px;cursor:grab;touch-action:none;',
+        bodyStyle, center: t.shape==='head'?'Head Table':(round||sq?t.label.replace('Table ','T'):t.label), seats};
+    });
+
+    // selected detail
+    const selTable=selT?this.tableById(selT):null;
+    let selRoster=[], selHasMeals=false;
+    if(selTable){ selRoster=A.filter(x=>x.tid===selT).sort((a,b)=>a.si-b.si).map(x=>{ const g=gm[x.guest];
+      return {name:g.first+' '+g.last,meal:this.MEAL[g.meal].label,dot:'flex-shrink:0;width:9px;height:9px;border-radius:50%;background:'+this.MEAL[g.meal].c}; });
+      selHasMeals=selRoster.length>0; }
+    const mkShape=(id,label)=>({label,onClick:()=>this.setShape(id),
+      style:'font-size:11px;padding:4px 9px;border-radius:8px;cursor:pointer;border:1px solid '+(selTable&&selTable.shape===id?'var(--gold)':'var(--line)')+';background:'+(selTable&&selTable.shape===id?'var(--gold-bg)':'var(--pearl)')+';color:var(--ink-soft)'});
+    const shapeOptions=[mkShape('round','Round'),mkShape('rect','Long'),mkShape('square','Square'),mkShape('head','Head')];
+
+    // whispers
+    const whispers=this.computeWhispers().map(w=>{
+      const bg=w.tone==='clay'?'var(--clay-bg)':w.tone==='sage'?'var(--sage-bg)':'var(--gold-bg)';
+      const bd=w.tone==='clay'?'#E6CBBE':w.tone==='sage'?'#D7E0CF':'#E8D9B8';
+      return {...w, cardStyle:'background:'+bg+';border:1px solid '+bd+';border-radius:12px;padding:11px 12px;animation:whisper-in .35s ease both',
+        btnStyle:'margin-top:8px;font-size:11.5px;font-weight:500;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:5px 12px;cursor:pointer'};
+    });
+
+    // meal tally (seated, current chart)
+    const counts={beef:0,chicken:0,fish:0,veg:0,kids:0};
+    A.forEach(x=>{ const g=gm[x.guest]; if(g) counts[g.meal]=(counts[g.meal]||0)+1; });
+    const mealTally=['beef','chicken','fish','veg','kids'].map(k=>({label:this.MEAL[k].label,count:counts[k],
+      dot:'flex-shrink:0;width:11px;height:11px;border-radius:50%;background:'+this.MEAL[k].c}));
+
+    // petals for celebration
+    const petals=everyoneSeated? Array.from({length:12}).map((_,i)=>({style:'position:absolute;top:0;left:'+(6+i*8)+'%;width:9px;height:9px;border-radius:60% 40% 60% 40%;background:var(--blush);opacity:.8;animation:petal-fall '+(4+i%4)+'s ease-in '+(i*0.35)+'s infinite'})):[];
+
+    const tabBase='font-size:13px;padding:6px 16px;border-radius:999px;cursor:pointer;border:none;';
+    const on='background:var(--pearl);color:var(--clay-ink);box-shadow:0 1px 4px rgba(58,54,49,.1);font-weight:500;';
+    const off='background:transparent;color:var(--ink-soft);';
+
+    return {
+      search:this.state.search, filters, pool, poolCount:poolG.length, poolEmpty:pool.length===0,
+      seatedPct:pct+'%', seatedLabel:seatedAcc+' of '+acc.length+' seated',
+      tables, roomW:(c==='reception'?1120:920)+'px', roomH:(c==='reception'?770:440)+'px', isCeremony:c==='ceremony',
+      recTabStyle:tabBase+(c==='reception'?on:off), cerTabStyle:tabBase+(c==='ceremony'?on:off),
+      whispers, mealTally, everyoneSeated, petals,
+      hasSelectedTable:!!selTable, selName:selTable?selTable.label:'', selCapLabel:selTable?(selRoster.length+' / '+selTable.cap+' seats'):'', selRoster, selHasMeals, shapeOptions,
+      notice:this.state.notice, magicOpen:!!this.state.magic, magicReasons:this.state.magic?this.state.magic.reasons:[],
+      onSearch:this.onSearch, onGuestDown:this.onGuestDown, onHouseDown:this.onHouseDown, onTableDown:this.onTableDown, onSeatDown:this.onSeatDown,
+      magicArrange:this.magicArrange, magicConfirm:this.magicConfirm, magicCancel:this.magicCancel, stop:this.stop,
+      addRound:this.addRound, addLong:this.addLong, resetChart:this.resetChart, toReception:this.toReception, toCeremony:this.toCeremony,
+      onRename:this.onRename, capUp:this.capUp, capDown:this.capDown, delTable:this.delTable,
+    };
+  }
+}
+</script>
+</body>
+</html>

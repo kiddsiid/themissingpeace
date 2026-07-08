@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--pearl);border:1px solid var(--line);border-radius:14px;transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-3px) rotate(-.5deg);box-shadow:0 14px 30px rgba(58,54,49,.09)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.card:hover{transform:none}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;min-width:0;overflow-y:auto;padding:22px 30px 60px">
+      <div style="text-align:center;max-width:640px;margin:0 auto 20px">
+        <div style="font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--ink-faint)">Paper, from your plan</div>
+        <div class="voice" style="font-size:34px;line-height:1.05;margin-top:4px">Printables</div>
+        <div style="font-size:13px;color:var(--ink-soft);margin-top:6px">Every card is drawn live from your guests, RSVPs, meals &amp; seating. Change the plan — <span class="voice" style="font-style:italic;font-size:15px">reprint the paper</span>.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:22px;max-width:1000px;margin:0 auto">
+        <!-- chooser -->
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="7">
+            <button onClick="{{ it.onPick }}" style=" {{ it.rowStyle }}">
+              <span style=" {{ it.iconStyle }}">{{ it.icon }}</span>
+              <span style="flex:1;min-width:0;text-align:left"><span style="display:block;font-size:13.5px;font-weight:500;color:var(--ink)">{{ it.title }}</span><span style="display:block;font-size:11px;color:var(--ink-faint);margin-top:1px">{{ it.desc }}</span></span>
+            </button>
+          </sc-for>
+        </div>
+
+        <!-- paper preview -->
+        <div style="position:sticky;top:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint)">Live preview · {{ activeTitle }}</div>
+            <button style="font-size:12px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:7px 15px;cursor:pointer">Print / Save PDF ↗</button>
+          </div>
+          <div style="display:flex;justify-content:center;padding:26px;background:repeating-linear-gradient(135deg,#EFEADF,#EFEADF 12px,#EDE8DC 12px,#EDE8DC 24px);border:1px solid var(--line);border-radius:16px">
+            <div style="width:360px;min-height:440px;background:var(--pearl);border:1px solid #EADFCB;border-radius:6px;box-shadow:0 18px 40px rgba(58,54,49,.14);padding:34px 30px;animation:fade .35s ease">
+
+              <sc-if value="{{ isEscort }}" hint-placeholder-val="{{ true }}">
+                <div style="text-align:center">
+                  <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint)">Please find your seat</div>
+                  <div class="voice" style="font-size:26px;margin:6px 0 18px">Escort Cards</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:11px">
+                  <sc-for list="{{ escort }}" as="g" hint-placeholder-count="6">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px dotted #DFD3BE"><span class="voice" style="font-size:17px;color:var(--ink)">{{ g.name }}</span><span style="font-size:12px;color:var(--gold);letter-spacing:.5px">Table {{ g.table }}</span></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isMenu }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:center">
+                  <div class="voice" style="font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)">Maya &amp; Julian</div>
+                  <div style="width:40px;height:1px;background:var(--line);margin:12px auto 4px"></div>
+                  <div class="voice" style="font-size:28px;margin-bottom:20px">Dinner</div>
+                </div>
+                <sc-for list="{{ menu }}" as="c" hint-placeholder-count="3">
+                  <div style="text-align:center;margin-bottom:18px"><div style="font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">{{ c.course }}</div><div class="voice" style="font-size:19px;color:var(--ink);margin-top:3px">{{ c.dish }}</div><div style="font-size:11px;color:var(--ink-soft);margin-top:2px">{{ c.note }}</div></div>
+                </sc-for>
+              </sc-if>
+
+              <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+                <div style="height:372px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px solid #EADFCB;border-radius:4px">
+                  <div style="font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--ink-faint)">Table</div>
+                  <div class="voice" style="font-size:130px;line-height:.9;color:var(--gold)">7</div>
+                  <div style="color:var(--gold);font-size:16px">✦</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isSTD }}" hint-placeholder-val="{{ false }}">
+                <div style="height:372px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+                  <div style="font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold)">Save the Date</div>
+                  <div class="voice" style="font-size:40px;line-height:1.05;margin:14px 0">Maya <span style="font-size:26px;color:var(--gold)">&amp;</span> Julian</div>
+                  <div style="width:44px;height:1px;background:var(--line);margin:4px 0 14px"></div>
+                  <div style="font-size:13px;letter-spacing:2px;color:var(--ink)">10 · 03 · 2026</div>
+                  <div style="font-size:11px;color:var(--ink-soft);margin-top:6px">Willowbrook Estate</div>
+                  <div style="font-size:11px;font-style:italic;color:var(--ink-faint);margin-top:18px;max-width:230px" class="voice">warmth over production · one long table · dancing past midnight</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ isSign }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:center;margin-bottom:14px"><div class="voice" style="font-size:24px">Find Your Seat</div><div style="width:40px;height:1px;background:var(--line);margin:8px auto 0"></div></div>
+                <div style="columns:2;column-gap:20px;font-size:11px;line-height:1.7">
+                  <sc-for list="{{ tables }}" as="t" hint-placeholder-count="6">
+                    <div style="break-inside:avoid;margin-bottom:10px"><div style="color:var(--gold);font-size:11px;letter-spacing:.5px">Table {{ t.n }}</div><div style="color:var(--ink-soft)">{{ t.names }}</div></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  ITEMS = [
+    {kind:'escort',icon:'✦',title:'Escort cards',desc:'Each guest → their table, A–Z'},
+    {kind:'menu',icon:'☾',title:'Menu cards',desc:'Assembled from meal choices'},
+    {kind:'table',icon:'●',title:'Table numbers',desc:'Large numbered cards, every table'},
+    {kind:'std',icon:'❦',title:'Save the date',desc:'Names, date & your mood line'},
+    {kind:'sign',icon:'❖',title:'Seating chart sign',desc:'One elegant find-your-seat board'},
+  ];
+  ESCORT = [
+    {name:'Amara Okafor',table:4},{name:'Benjamin Cole',table:2},{name:'Clara Whitfield',table:7},
+    {name:'David Okafor',table:4},{name:'Eleanor Voss',table:1},{name:'Grandmother Iris',table:1},
+  ];
+  MENU = [
+    {course:'To Start',dish:'Burrata & heirloom tomato',note:'basil, aged balsamic'},
+    {course:'The Table',dish:'Family-style roast & seasonal harvest',note:'passed, served warm'},
+    {course:'To Finish',dish:'Olive oil cake',note:'mascarpone, citrus'},
+  ];
+  TABLES = [
+    {n:1,names:'Eleanor Voss, Grandmother Iris, the Bells'},
+    {n:2,names:'Benjamin Cole, the Kims, Ray & Susan'},
+    {n:4,names:'Amara & David Okafor, the Patels'},
+    {n:7,names:'Clara Whitfield, the Morales family'},
+  ];
+  state = { active:'escort' };
+  renderVals(){
+    const a=this.state.active;
+    const items=this.ITEMS.map(it=>{
+      const on=it.kind===a;
+      return {title:it.title,desc:it.desc,icon:it.icon,onPick:()=>this.setState({active:it.kind}),
+        rowStyle:'display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:12px;cursor:pointer;transition:all .18s;background:'+(on?'linear-gradient(120deg,var(--clay-bg),var(--pearl) 80%)':'var(--pearl)')+';border:1px solid '+(on?'#D9C7B0':'var(--line)'),
+        iconStyle:'flex-shrink:0;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;color:'+(on?'var(--clay-ink)':'var(--gold)')+';background:'+(on?'var(--pearl)':'var(--cream)')+';border:1px solid '+(on?'#D9C7B0':'var(--line)')};
+    });
+    const active=this.ITEMS.find(i=>i.kind===a);
+    return {items,activeTitle:active.title,
+      isEscort:a==='escort',isMenu:a==='menu',isTable:a==='table',isSTD:a==='std',isSign:a==='sign',
+      escort:this.ESCORT,menu:this.MENU,tables:this.TABLES};
+  }
+}
+</script>
+</body>
+</html>

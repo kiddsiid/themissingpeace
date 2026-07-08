@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,monospace}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+.bcard{position:relative;break-inside:avoid;margin-bottom:14px;background:var(--pearl);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.bcard:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(58,54,49,.10)}
+.bloom{opacity:0;transform:translateY(4px);transition:opacity .2s ease,transform .2s ease}
+.bcard:hover .bloom{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.bcard:hover{transform:none}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--slate);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">A<span class="av-tip">Aria · planner</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;min-width:0;overflow-y:auto">
+      <!-- toolbar -->
+      <div style="position:sticky;top:0;z-index:6;padding:18px 30px 14px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div>
+          <div class="voice" style="font-size:30px;line-height:1">The Muse</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Where dreams become real, in real time. Pin what you love — then shape it into food, palette and attire you can actually decide on.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:4px;background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:4px;flex-wrap:wrap">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" style=" {{ t.style }}">{{ t.label }}</button></sc-for>
+          </div>
+          <button onClick="{{ toggleFav }}" title="Favorites only" style=" {{ favBtnStyle }}">{{ favIcon }}</button>
+          <button onClick="{{ addNote }}" style="font-size:13px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:8px 14px;cursor:pointer" style-hover="background:var(--clay-bg)">+ Add a note</button>
+        </div>
+      </div>
+
+      <!-- GALLERY -->
+      <sc-if value="{{ showGallery }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:2px 30px 60px;column-width:236px;column-gap:14px">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="9">
+            <div class="bcard" style="animation:rise .35s ease both">
+              <sc-if value="{{ it.isImage }}" hint-placeholder-val="{{ true }}">
+                <div style=" {{ it.thumbStyle }}">
+                  <span class="mono" style="font-size:10px;letter-spacing:.5px;color:rgba(58,54,49,.42)">{{ it.placeholder }}</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ it.isNote }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:18px 16px 6px"><div class="voice" style="font-size:19px;line-height:1.35;color:var(--ink)">"{{ it.note }}"</div></div>
+              </sc-if>
+              <div style="padding:11px 13px 13px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <div style="min-width:0"><div style="font-size:12.5px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.title }}</div>
+                  <div style="font-size:10.5px;color:var(--ink-faint);margin-top:1px">{{ it.source }}</div></div>
+                  <button onClick="{{ it.onFav }}" style=" {{ it.heartStyle }}">{{ it.heart }}</button>
+                </div>
+                <sc-if value="{{ it.poofed }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:10px;display:flex;align-items:center;gap:6px"><span style="font-size:10.5px;color:#9A7B33;background:var(--gold-bg);border:1px solid #E4D3AC;border-radius:999px;padding:3px 9px;animation:pop .3s ease both">✦ became a {{ it.becameLabel }}</span></div>
+                </sc-if>
+                <sc-if value="{{ it.notPoofed }}" hint-placeholder-val="{{ true }}">
+                  <div class="bloom" style="margin-top:10px"><button onClick="{{ it.onPoof }}" style="font-size:12px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:5px 13px;cursor:pointer" style-hover="background:var(--clay-bg)">✦ Poof this</button></div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- MASTER VISION -->
+      <sc-if value="{{ showVision }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:2px 30px 60px">
+          <div style="background:linear-gradient(120deg,var(--gold-bg),var(--pearl) 55%,var(--sage-bg));border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-bottom:22px">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)">The mood so far</div>
+            <div class="voice" style="font-size:25px;line-height:1.35;color:var(--ink);margin-top:8px;max-width:720px">{{ moodLine }}</div>
+            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:12px">Assembled from {{ visionCount }} approved fragments across your boards — nothing to maintain by hand.</div>
+          </div>
+          <div style="margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="voice" style="font-size:20px">Our palette</div><div style="flex:1;height:1px;background:var(--line)"></div><div style="font-size:11px;color:var(--ink-faint)">{{ paletteName }}</div></div>
+            <div style="display:flex;height:56px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><sc-for list="{{ vPalette }}" as="c" hint-placeholder-count="5"><span style=" {{ c }}"></span></sc-for></div>
+          </div>
+          <sc-if value="{{ hasVLooks }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-bottom:24px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="voice" style="font-size:20px">Approved looks</div><div style="flex:1;height:1px;background:var(--line)"></div></div>
+              <div style="display:flex;gap:14px;flex-wrap:wrap">
+                <sc-for list="{{ vLooks }}" as="l" hint-placeholder-count="2">
+                  <div style="width:150px;border:1px solid var(--line);border-radius:12px;overflow:hidden">
+                    <div style="height:96px;display:flex;align-items:center;justify-content:center; {{ l.wrapStyle }}"><div style=" {{ l.figureStyle }}"></div></div>
+                    <div style="padding:9px 11px"><div style="font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--gold)">{{ l.party }}</div><div class="voice" style="font-size:15px">{{ l.title }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <div style="margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="voice" style="font-size:20px">The menu</div><div style="flex:1;height:1px;background:var(--line)"></div><div style="font-size:11px;color:var(--ink-faint)">{{ styleLabel }}</div></div>
+            <div style="display:flex;gap:14px;flex-wrap:wrap">
+              <sc-for list="{{ vMenu }}" as="m" hint-placeholder-count="3"><div style="flex:1;min-width:160px;background:var(--pearl);border:1px solid var(--line);border-radius:12px;padding:13px 15px"><div style="font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)">{{ m.name }}</div><div class="voice" style="font-size:15px;color:var(--ink);margin-top:3px;line-height:1.4">{{ m.dishes }}</div></div></sc-for>
+            </div>
+          </div>
+          <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="4">
+            <div style="margin-bottom:24px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="voice" style="font-size:20px">{{ sec.name }}</div><div style="flex:1;height:1px;background:var(--line)"></div><div style="font-size:11px;color:var(--ink-faint)">{{ sec.countLabel }}</div></div>
+              <div style="display:flex;gap:14px;flex-wrap:wrap">
+                <sc-for list="{{ sec.items }}" as="it" hint-placeholder-count="3">
+                  <div style="width:190px;background:var(--pearl);border:1px solid var(--line);border-radius:12px;overflow:hidden">
+                    <sc-if value="{{ it.isImage }}" hint-placeholder-val="{{ true }}"><div style=" {{ it.thumbStyleSm }}"><span class="mono" style="font-size:9px;color:rgba(58,54,49,.4)">{{ it.placeholder }}</span></div></sc-if>
+                    <sc-if value="{{ it.isNote }}" hint-placeholder-val="{{ false }}"><div style="padding:14px 13px 4px"><div class="voice" style="font-size:16px;line-height:1.3">"{{ it.note }}"</div></div></sc-if>
+                    <div style="padding:9px 11px 11px"><div style="font-size:12px;color:var(--ink)">{{ it.title }}</div><div style="font-size:10px;color:#9A7B33;margin-top:3px">✦ {{ it.becameLabel }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ visionEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;padding:50px 20px;color:var(--ink-faint)"><div style="font-size:26px;color:var(--gold)">✦</div><div class="voice" style="font-size:20px;color:var(--ink-soft);margin-top:6px">Your Master Vision is waiting</div><div style="font-size:12.5px;margin-top:4px">Poof a few fragments in the Gallery and they'll assemble here on their own.</div></div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- FOOD STUDIO -->
+      <sc-if value="{{ showFood }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:2px 30px 60px;max-width:1000px">
+          <div style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;max-width:640px">Design the meal itself — how you’ll eat, what’s in season, and the courses at your table.</div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">Eating style</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+            <sc-for list="{{ foodStyles }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onPick }}" style=" {{ s.cardStyle }}"><div class="voice" style="font-size:18px;color:var(--ink)">{{ s.label }}</div><div style="font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.4">{{ s.desc }}</div></button></sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px">
+            <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint)">In season</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ foodSeasons }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onPick }}" style=" {{ s.style }}"><span style=" {{ s.dot }}"></span>{{ s.label }}</button></sc-for></div>
+            <div class="voice" style="flex:1;min-width:200px;font-size:14px;color:var(--ink-soft);font-style:italic">{{ seasonNote }}</div>
+          </div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">In-season ideas — tap to add</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px"><sc-for list="{{ seasonSuggest }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.onAdd }}" style="font-size:12px;color:var(--clay-ink);background:var(--pearl);border:1px dashed #D0B48A;border-radius:999px;padding:6px 12px;cursor:pointer">+ {{ s.name }}</button></sc-for></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+            <sc-for list="{{ courses }}" as="c" hint-placeholder-count="3">
+              <div class="bcard" style="margin:0;padding:15px 16px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><div class="voice" style="font-size:18px">{{ c.name }}</div><button onClick="{{ c.onRemove }}" title="Remove course" style="font-size:15px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <sc-for list="{{ c.dishes }}" as="d" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:7px 10px"><span style="flex:1;font-size:12.5px;color:var(--ink)">{{ d.name }}</span><sc-if value="{{ d.hasTag }}" hint-placeholder-val="{{ false }}"><span style="font-size:9.5px;color:#566049;background:var(--sage-bg);border-radius:999px;padding:2px 7px">{{ d.tag }}</span></sc-if><button onClick="{{ d.onRemove }}" style="font-size:14px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
+                  </sc-for>
+                </div>
+                <input value="{{ c.draft }}" onInput="{{ c.onDraft }}" onKeyDown="{{ c.onKey }}" placeholder="+ add a dish, then Enter" style="width:100%;margin-top:9px;font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:9px;padding:8px 10px;outline:none"/>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap">
+            <input value="{{ newCourse }}" onInput="{{ onNewCourse }}" placeholder="New course name…" style="font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:9px 12px;outline:none;width:180px"/>
+            <button onClick="{{ addCourse }}" style="font-size:12.5px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:9px;padding:9px 14px;cursor:pointer">Add course</button>
+            <div style="flex:1"></div>
+            <button onClick="{{ sendFood }}" style="font-size:12.5px;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:9px 16px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)">Send to Website &amp; Vendors ✦</button>
+          </div>
+          <div style="margin-top:22px;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">The bar</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px"><sc-for list="{{ barOpts }}" as="b" hint-placeholder-count="5"><button onClick="{{ b.onPick }}" style=" {{ b.style }}">{{ b.label }}</button></sc-for></div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Service moments</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px"><sc-for list="{{ moments }}" as="m" hint-placeholder-count="3"><button onClick="{{ m.onToggle }}" style=" {{ m.style }}">{{ m.label }}</button></sc-for></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px"><div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint)">Signature cocktails</div><button onClick="{{ addCocktail }}" style="font-size:11.5px;color:var(--clay-ink);background:none;border:none;cursor:pointer">+ Add</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px">
+            <sc-for list="{{ cocktails }}" as="k" hint-placeholder-count="2">
+              <div class="bcard" style="margin:0;padding:12px 14px">
+                <div style="display:flex;align-items:center;gap:8px"><input value="{{ k.name }}" onInput="{{ k.onName }}" class="voice" style="flex:1;font-size:16px;color:var(--ink);background:transparent;border:none;outline:none"/><button onClick="{{ k.onRemove }}" style="font-size:15px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
+                <input value="{{ k.recipe }}" onInput="{{ k.onRecipe }}" placeholder="ingredients…" style="width:100%;margin-top:5px;font-size:12px;color:var(--ink-soft);background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:6px 9px;outline:none"/>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Your menu, as guests will read it</div>
+          <div class="bcard" style="margin:0 0 22px;padding:26px 30px;background:linear-gradient(180deg,#fffdf8,var(--pearl));text-align:center;max-width:460px">
+            <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">{{ styleLabel }} · {{ dietary }}</div>
+            <div class="voice" style="font-size:24px;margin-top:6px">Dinner</div>
+            <div style="width:40px;height:1px;background:var(--line);margin:12px auto"></div>
+            <sc-for list="{{ menuPreview }}" as="m" hint-placeholder-count="3"><div style="margin-bottom:12px"><div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold)">{{ m.name }}</div><div class="voice" style="font-size:15px;color:var(--ink);margin-top:2px;line-height:1.4">{{ m.dishes }}</div></div></sc-for>
+          </div>
+          <div style="margin-top:16px"><div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">Catering notes</div>
+            <textarea value="{{ foodNotes }}" onInput="{{ onFoodNotes }}" placeholder="Bar package, dietary must-haves, signature cocktail…" style="width:100%;min-height:64px;font-family:inherit;font-size:13px;line-height:1.5;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:11px;padding:11px 13px;outline:none;resize:vertical"></textarea></div>
+        </div>
+      </sc-if>
+
+      <!-- PALETTE STUDIO -->
+      <sc-if value="{{ showPalette }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:2px 30px 60px;max-width:900px">
+          <div style="font-size:13px;color:var(--ink-soft);margin-bottom:16px;max-width:640px">Shape your colors and let them ripple through everything. Tap a swatch, then a color, to make it yours.</div>
+          <div class="bcard" style="margin:0 0 18px;padding:18px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+              <input value="{{ paletteName }}" onInput="{{ onPaletteName }}" class="voice" style="font-size:22px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);outline:none;padding:2px 0;max-width:280px"/>
+              <button onClick="{{ setPalette }}" style="font-size:12.5px;color:#fff;background:var(--sage);border:none;border-radius:999px;padding:9px 16px;cursor:pointer">Set as our palette ✦</button>
+            </div>
+            <div style="display:flex;gap:10px;height:96px"><sc-for list="{{ swatches }}" as="s" hint-placeholder-count="5"><button onClick="{{ s.onSelect }}" style=" {{ s.style }}"><span style=" {{ s.tick }}">{{ s.hex }}</span></button></sc-for></div>
+          </div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Swap swatch {{ selSwatchNum }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px"><sc-for list="{{ colorChoices }}" as="c" hint-placeholder-count="12"><button onClick="{{ c.onPick }}" title="{{ c.hex }}" style=" {{ c.style }}"></button></sc-for></div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">Your palette, in the room</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+            <div style="border-radius:14px;overflow:hidden;border:1px solid var(--line);padding:24px;text-align:center; {{ mood.cardBg }}">
+              <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase; {{ mood.cardAccent }}">Together with their families</div>
+              <div class="voice" style="font-size:28px;margin-top:6px; {{ mood.cardInk }}">Maya &amp; Julian</div>
+              <div style="font-size:10px;letter-spacing:1px;margin-top:6px; {{ mood.cardAccent }}">OCTOBER 3, 2026</div>
+            </div>
+            <div style="border-radius:14px;overflow:hidden;border:1px solid var(--line);position:relative;height:150px; {{ mood.tableBg }};display:flex;align-items:center;justify-content:center">
+              <div style="position:absolute;left:0;right:0;top:50%;height:34px;transform:translateY(-50%); {{ mood.runner }}"></div>
+              <div style="position:relative;display:flex;gap:14px;align-items:center">
+                <div style="width:36px;height:36px;border-radius:50%; {{ mood.plate }}"></div>
+                <div style="width:14px;height:28px;border-radius:3px; {{ mood.napkin }}"></div>
+                <div style="width:14px;height:14px;border-radius:50%; {{ mood.bloom }}"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:22px"><sc-for list="{{ mood.chips }}" as="c" hint-placeholder-count="5"><span style="flex:1;text-align:center;font-size:10px;font-family:ui-monospace,monospace;padding:7px 0;border-radius:7px; {{ c }}">Aa</span></sc-for></div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">Drawn from your board</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+            <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+              <button onClick="{{ p.onPick }}" style="display:flex;align-items:center;gap:12px;background:var(--pearl);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left" style-hover="border-color:#D9C7B0"><span style="display:flex;border-radius:8px;overflow:hidden;flex-shrink:0;width:96px;height:34px"><sc-for list="{{ p.colors }}" as="cc" hint-placeholder-count="5"><span style=" {{ cc }}"></span></sc-for></span><span style="min-width:0"><span style="display:block;font-size:13px;color:var(--ink)">{{ p.name }}</span><span style="display:block;font-size:11px;color:var(--ink-faint)">{{ p.from }}</span></span></button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ATTIRE STUDIO -->
+      <sc-if value="{{ showAttire }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:2px 30px 60px;max-width:1000px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+            <div style="font-size:13px;color:var(--ink-soft);max-width:520px">Design each look and decide together — the bride, groom and your parties. Tap a face to give your blessing.</div>
+            <div style="display:flex;gap:7px;align-items:center">
+              <select value="{{ newLookParty }}" onChange="{{ onNewLookParty }}" style="font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:8px 10px;outline:none"><sc-for list="{{ partyOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <button onClick="{{ addLook }}" style="font-size:12.5px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:9px;padding:8px 13px;cursor:pointer">+ New look</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+            <sc-for list="{{ looks }}" as="l" hint-placeholder-count="3">
+              <div class="bcard" style="margin:0;overflow:hidden">
+                <div style=" {{ l.visualStyle }}"><div style=" {{ l.figureStyle }}"></div><span style=" {{ l.statusStyle }}">{{ l.statusLabel }}</span></div>
+                <div style="padding:13px 15px">
+                  <div style="font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">{{ l.party }}</div>
+                  <input value="{{ l.title }}" onInput="{{ l.onTitle }}" class="voice" style="font-size:18px;color:var(--ink);background:transparent;border:none;outline:none;width:100%;padding:1px 0"/>
+                  <div style="display:flex;gap:6px;margin-top:9px;align-items:center"><span style="font-size:10px;color:var(--ink-faint);width:44px">Cloth</span><sc-for list="{{ l.colorOpts }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onPick }}" style=" {{ c.style }}"></button></sc-for></div>
+                  <div style="display:flex;gap:6px;margin-top:6px;align-items:center"><span style="font-size:10px;color:var(--ink-faint);width:44px">Accent</span><sc-for list="{{ l.accentOpts }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.onPick }}" style=" {{ c.style }}"></button></sc-for></div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px"><sc-for list="{{ l.detailChips }}" as="d" hint-placeholder-count="4"><button onClick="{{ d.onClick }}" style="font-size:10.5px;color:var(--ink-soft);background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px 9px;cursor:pointer"><span style="color:var(--ink-faint)">{{ d.key }}:</span> {{ d.value }}</button></sc-for></div>
+                  <input value="{{ l.notes }}" onInput="{{ l.onNotes }}" placeholder="notes — fabric, fit, shoes…" style="width:100%;margin-top:10px;font-family:inherit;font-size:12px;color:var(--ink);background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:8px 10px;outline:none"/>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)"><span style="font-size:10.5px;color:var(--ink-faint)">Blessed by</span><div style="display:flex;gap:5px"><sc-for list="{{ l.approvers }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.onToggle }}" title="{{ a.name }}" style=" {{ a.style }}">{{ a.initial }}</button></sc-for></div><div style="flex:1"></div><button onClick="{{ l.onRemove }}" title="Remove" style="font-size:12px;color:var(--ink-faint);background:none;border:none;cursor:pointer">Remove</button></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+
+  <!-- poof modal -->
+  <sc-if value="{{ poofOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePoof }}" style="position:fixed;inset:0;z-index:120;background:rgba(58,54,49,.34);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px">
+      <div onClick="{{ stop }}" style="width:440px;max-width:100%;background:var(--pearl);border:1px solid var(--line);border-radius:18px;box-shadow:0 26px 70px rgba(58,54,49,.3);overflow:hidden;animation:pop .3s ease both">
+        <div style="padding:20px 24px 12px;background:linear-gradient(180deg,var(--clay-bg),var(--pearl))">
+          <div style="font-size:20px;color:var(--clay)">✦</div>
+          <div class="voice" style="font-size:23px;color:var(--ink);margin-top:2px">Poof this into something real</div>
+          <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px">"{{ poofTitle }}" stays on your board — this creates a linked, living object.</div>
+        </div>
+        <div style="padding:16px 24px 4px">
+          <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px">Becomes a…</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <sc-for list="{{ targets }}" as="t" hint-placeholder-count="6">
+              <button onClick="{{ t.onClick }}" style=" {{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <div style="margin-top:16px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">Name it</div>
+          <input value="{{ poofName }}" onInput="{{ onPoofName }}" style="width:100%;font-size:13.5px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--cream);color:var(--ink);outline:none"/>
+        </div>
+        <div style="padding:16px 24px 20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--line);margin-top:16px">
+          <button onClick="{{ closePoof }}" style="font-size:13px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:pointer">Cancel</button>
+          <button onClick="{{ confirmPoof }}" style="font-size:13px;font-weight:500;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:9px 20px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)">Poof ✦</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:130;font-size:13px;color:#566049;background:var(--pearl);border:1px solid #D7E0CF;border-radius:999px;padding:10px 20px;box-shadow:0 10px 30px rgba(58,54,49,.16);animation:rise .3s ease both">{{ notice }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  HUE={venue:'#EDF0E9',food:'#F4ECDA',florals:'#EDF0E9',lighting:'#F4ECDA',attire:'#F6E7E0',paper:'#F3E2DB',signage:'#E7EDF1',music:'#E7EDF1'};
+  SECTION={venue:'Venue & space',food:'Table & food',florals:'Florals & light',lighting:'Florals & light',attire:'Attire',paper:'Paper & details',signage:'Paper & details',music:'Music & moments'};
+  TARGETS=['Vendor','Decision','Money Map item','Task','Timeline moment','Peace Note'];
+  ITEMS=[
+    {id:'i1',title:'Courtyard at dusk',source:'Pinterest · courtyard-weddings',cat:'venue',kind:'image',placeholder:'venue photo',h:170,became:'Decision'},
+    {id:'i2',title:'One long farm table',source:'Instagram · @thefeastco',cat:'food',kind:'image',placeholder:'reception photo',h:130,became:'Vendor'},
+    {id:'i3',title:'Candlelit greenery runner',source:'Pinterest · tablescapes',cat:'florals',kind:'image',placeholder:'florals photo',h:150,became:null},
+    {id:'i4',title:'Ivory slip dress',source:'saved link · net-a-porter',cat:'attire',kind:'image',placeholder:'attire photo',h:200,became:null},
+    {id:'i5',title:'String lights over the floor',source:'Pinterest · lighting',cat:'lighting',kind:'image',placeholder:'lighting photo',h:120,became:null},
+    {id:'i6',title:'Handwritten menu cards',source:'a note from Maya',cat:'paper',kind:'note',note:'Little handwritten menus at each seat — warm, not printed.',h:0,became:null},
+    {id:'i7',title:'Citrus & olive centerpiece',source:'Instagram · @wildstems',cat:'florals',kind:'image',placeholder:'florals photo',h:160,became:null},
+    {id:'i8',title:'"At Last" — Etta James',source:'a note from Julian',cat:'music',kind:'note',note:'This is the first dance. Non-negotiable.',h:0,became:'Decision'},
+    {id:'i9',title:'Calligraphy welcome sign',source:'Pinterest · signage',cat:'signage',kind:'image',placeholder:'signage photo',h:140,became:null},
+  ];
+  state={ view:'gallery', favOnly:false, fav:{i2:true,i8:true}, poofed:{i1:'Decision',i2:'Vendor',i8:'Decision'}, poofId:null, poofTarget:'Vendor', poofName:'', notice:null, wed:null, courseDrafts:{}, newCourse:'', selSwatch:0, newLookParty:'Bride' };
+  FOODSTYLES=[{k:'family',label:'Family-style',desc:'Big platters, passed and shared'},{k:'plated',label:'Plated',desc:'A served course to each seat'},{k:'stations',label:'Stations',desc:'Roaming chef stations & bites'},{k:'grazing',label:'Grazing',desc:'Abundant tables to wander'}];
+  SEASONS=[{k:'Spring',dot:'#A9C6A0'},{k:'Summer',dot:'#E7C86A'},{k:'Fall',dot:'#D08A5B'},{k:'Winter',dot:'#9DB4C4'}];
+  SEASONNOTE={Spring:'Peas, asparagus, herbs, rhubarb, citrus blossom.',Summer:'Stone fruit, tomatoes, corn, basil, berries.',Fall:'Squash, figs, mushrooms, apple, sage.',Winter:'Roots, citrus, pomegranate, chestnut, braises.'};
+  PAL=['#8A9A80','#6E7257','#B8924A','#E7D2A6','#BC7459','#8A4A33','#E7D2C8','#C98BA0','#7C93A6','#3A3631','#F1EBDD','#D9B3B0'];
+  PRESETS=[{name:'Courtyard at dusk',from:'from your venue pins',colors:['#6E7257','#B8924A','#E7D2C8','#F1EBDD','#3A3631']},{name:'Candlelight & clay',from:'from your table pins',colors:['#BC7459','#E7D2A6','#8A9A80','#F1EBDD','#8A4A33']},{name:'Wild greenery',from:'from your floral pins',colors:['#4E6B4C','#8A9A80','#C7B79A','#F2F0E6','#2E3A2C']},{name:'Blush & slate',from:'from your attire pins',colors:['#E7D2C8','#C98BA0','#7C93A6','#F1EBDD','#3A3631']}];
+  APPROVERS=[{k:'Maya',c:'var(--clay)'},{k:'Julian',c:'var(--gold)'},{k:'Aria',c:'var(--slate)'}];
+  PARTIES=['Bride','Groom','Bridesmaids','Groomsmen','Parents','Flower kids'];
+  componentDidMount(){ this._initWS(); }
+  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
+  componentWillUnmount(){ if(this._off) this._off(); }
+  up(fn){ if(window.WeddingState) WeddingState.update(fn); }
+  _light(hex){ try{ const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16); return (0.299*r+0.587*g+0.114*b)>150; }catch(e){ return true; } }
+  setFoodStyle=(k)=>this.up(s=>{ s.board.food.style=k; });
+  setFoodSeason=(k)=>this.up(s=>{ s.wedding.season=k; s.board.food.season=k; });
+  SEASON_DISHES={Spring:['Pea & mint risotto','Asparagus tart','Rhubarb galette','Spring lamb'],Summer:['Heirloom tomato salad','Grilled corn','Peach & burrata','Stone-fruit pavlova'],Fall:['Butternut squash soup','Fig & prosciutto','Mushroom orzo','Apple crostata'],Winter:['Braised short rib','Citrus & fennel','Pomegranate glaze','Chestnut soup']};
+  addSuggestedDish=(name)=>this.up(s=>{ const cs=s.board.food.courses; const t=cs.find(c=>/main/i.test(c.name))||cs[0]; if(t) t.dishes.push({id:'d'+Date.now(),name:name,tag:''}); });
+  onCourseDraft=(id,v)=>this.setState(s=>({courseDrafts:{...s.courseDrafts,[id]:v}}));
+  addDish=(id)=>{ const v=(this.state.courseDrafts[id]||'').trim(); if(!v) return; this.up(s=>{ const c=s.board.food.courses.find(c=>c.id===id); if(c) c.dishes.push({id:'d'+Date.now(),name:v,tag:''}); }); this.setState(s=>({courseDrafts:{...s.courseDrafts,[id]:''}})); };
+  removeDish=(cid,did)=>this.up(s=>{ const c=s.board.food.courses.find(c=>c.id===cid); if(c) c.dishes=c.dishes.filter(d=>d.id!==did); });
+  onNewCourse=(e)=>this.setState({newCourse:e.target.value});
+  addCourse=()=>{ const v=(this.state.newCourse||'').trim(); if(!v) return; this.up(s=>{ s.board.food.courses.push({id:'c'+Date.now(),name:v,dishes:[]}); }); this.setState({newCourse:''}); };
+  removeCourse=(id)=>this.up(s=>{ s.board.food.courses=s.board.food.courses.filter(c=>c.id!==id); });
+  onFoodNotes=(e)=>{ const v=e.target.value; this.up(s=>{ s.board.food.notes=v; }); };
+  sendFood=()=>this.flash('✦ Menu sent to your Website & flagged for Vendors');
+  selectSwatch=(i)=>this.setState({selSwatch:i});
+  pickColor=(hex)=>this.up(s=>{ const i=this.state.selSwatch; if(s.board.palette.colors[i]!==undefined) s.board.palette.colors[i]=hex; });
+  onPaletteName=(e)=>{ const v=e.target.value; this.up(s=>{ s.board.palette.name=v; }); };
+  applyPreset=(p)=>this.up(s=>{ s.board.palette={name:p.name,colors:p.colors.slice()}; });
+  setPalette=()=>{ this.up(s=>{ s.wedding.palette=s.board.palette.name; }); this.flash('✦ Palette set — it now colors your Dream & Website'); };
+  onNewLookParty=(e)=>this.setState({newLookParty:e.target.value});
+  addLook=()=>this.up(s=>{ s.board.attire.looks.push({id:'l'+Date.now(),party:this.state.newLookParty,title:'New look',color:'#E7D2C8',accent:'#B8924A',notes:'',approvals:{Maya:false,Julian:false,Aria:false}}); });
+  removeLook=(id)=>this.up(s=>{ s.board.attire.looks=s.board.attire.looks.filter(l=>l.id!==id); });
+  setLook=(id,k,v)=>this.up(s=>{ const l=s.board.attire.looks.find(l=>l.id===id); if(l) l[k]=v; });
+  toggleApprove=(id,person)=>this.up(s=>{ const l=s.board.attire.looks.find(l=>l.id===id); if(l){ l.approvals=l.approvals||{}; l.approvals[person]=!l.approvals[person]; } });
+  setBar=(v)=>this.up(s=>{ s.board.food.bar=v; });
+  toggleMoment=(k)=>this.up(s=>{ s.board.food.moments=s.board.food.moments||{}; s.board.food.moments[k]=!s.board.food.moments[k]; });
+  addCocktail=()=>this.up(s=>{ s.board.food.cocktails=s.board.food.cocktails||[]; s.board.food.cocktails.push({id:'k'+Date.now(),name:'New cocktail',recipe:''}); });
+  setCocktail=(id,k,v)=>this.up(s=>{ const c=(s.board.food.cocktails||[]).find(c=>c.id===id); if(c) c[k]=v; });
+  removeCocktail=(id)=>this.up(s=>{ s.board.food.cocktails=(s.board.food.cocktails||[]).filter(c=>c.id!==id); });
+  setDetail=(id,k,v)=>this.up(s=>{ const l=s.board.attire.looks.find(l=>l.id===id); if(l){ l.details=l.details||{}; l.details[k]=v; } });
+  DRESS_DETAILS={Silhouette:['Slip','A-line','Ballgown','Column','Mixed'],Neckline:['Cowl','V','Square','Sweetheart','Varied'],Length:['Mini','Midi','Floor','Midi–floor'],Fabric:['Silk charmeuse','Chiffon','Crepe','Lace','Tulle']};
+  SUIT_DETAILS={Lapel:['Notch','Peak','Shawl'],Fit:['Tailored','Relaxed','Slim'],Pieces:['Two-piece','Three-piece','Tux'],Shoes:['Brown suede','Black oxford','Loafers','White sneakers']};
+
+  flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2400); }
+  toGallery=()=>this.setState({view:'gallery'});
+  toVision=()=>this.setState({view:'vision'});
+  toggleFav=()=>this.setState(s=>({favOnly:!s.favOnly}));
+  favItem=(id)=>this.setState(s=>({fav:{...s.fav,[id]:!s.fav[id]}}));
+  addNote=()=>this.flash('✦ Drop a note, link, or image — it lands on the board');
+  openPoof=(id)=>{ const it=this.ITEMS.find(i=>i.id===id); this.setState({poofId:id,poofTarget:'Vendor',poofName:it.title}); };
+  closePoof=()=>this.setState({poofId:null});
+  setTarget=(t)=>this.setState({poofTarget:t});
+  onPoofName=(e)=>this.setState({poofName:e.target.value});
+  confirmPoof=()=>{ const id=this.state.poofId, t=this.state.poofTarget;
+    this.setState(s=>({poofed:{...s.poofed,[id]:t},poofId:null}));
+    this.flash('✦ Created a '+t+' — linked to its inspiration'); };
+  stop=(e)=>e.stopPropagation();
+
+  thumb(it,sm){ const hue=this.HUE[it.cat];
+    return 'height:'+(sm?92:it.h)+'px;display:flex;align-items:center;justify-content:center;background-color:'+hue+';background-image:repeating-linear-gradient(135deg,rgba(58,54,49,.05) 0 10px,transparent 10px 20px)'; }
+
+  renderVals(){
+    const view=this.state.view;
+    const list=this.ITEMS.filter(it=>!this.state.favOnly || this.state.fav[it.id]);
+    const items=list.map(it=>{ const fav=!!this.state.fav[it.id]; const became=this.state.poofed[it.id];
+      return {...it, isImage:it.kind==='image', isNote:it.kind==='note',
+        thumbStyle:this.thumb(it,false), thumbStyleSm:this.thumb(it,true),
+        heart:fav?'♥':'♡', heartStyle:'flex-shrink:0;font-size:15px;line-height:1;background:transparent;border:none;cursor:pointer;color:'+(fav?'var(--clay)':'var(--ink-faint)'),
+        onFav:()=>this.favItem(it.id), onPoof:()=>this.openPoof(it.id),
+        poofed:!!became, notPoofed:!became, becameLabel:became?became.replace(' item',''):''};
+    });
+    // master vision
+    const poofedItems=this.ITEMS.filter(it=>this.state.poofed[it.id]);
+    const secMap={};
+    for(const it of poofedItems){ const s=this.SECTION[it.cat]; (secMap[s]=secMap[s]||[]).push({...it,isImage:it.kind==='image',isNote:it.kind==='note',thumbStyleSm:this.thumb(it,true),becameLabel:this.state.poofed[it.id].replace(' item','')}); }
+    const order=['Venue & space','Table & food','Florals & light','Attire','Paper & details','Music & moments'];
+    const sections=order.filter(n=>secMap[n]).map(n=>({name:n,items:secMap[n],countLabel:secMap[n].length+(secMap[n].length===1?' piece':' pieces')}));
+    const tabBase='font-size:13px;padding:6px 15px;border-radius:999px;cursor:pointer;border:none;';
+    const on='background:var(--pearl);color:var(--clay-ink);box-shadow:0 1px 4px rgba(58,54,49,.1);font-weight:500;';
+    const off='background:transparent;color:var(--ink-soft);';
+    const targets=this.TARGETS.map(t=>({label:t,onClick:()=>this.setTarget(t),
+      style:'font-size:12px;padding:7px 13px;border-radius:10px;cursor:pointer;border:1px solid '+(this.state.poofTarget===t?'var(--clay)':'var(--line)')+';background:'+(this.state.poofTarget===t?'var(--clay-bg)':'var(--cream)')+';color:'+(this.state.poofTarget===t?'var(--clay-ink)':'var(--ink-soft)')}));
+    const pit=this.state.poofId?this.ITEMS.find(i=>i.id===this.state.poofId):null;
+    const wed=this.state.wed||{}; const b=(wed.board)||{food:{courses:[]},palette:{colors:[]},attire:{looks:[]}};
+    const tabs=[['gallery','Inspirations'],['palette','Palette'],['attire','Attire'],['food','Food'],['vision','✦ Vision']].map((td)=>{ const v=td[0]; return {label:td[1],onClick:()=>this.setState({view:v}),
+      style:'font-size:12.5px;padding:6px 13px;border-radius:999px;cursor:pointer;border:none;'+(view===v?'background:var(--pearl);color:var(--clay-ink);box-shadow:0 1px 4px rgba(58,54,49,.1);font-weight:500;':'background:transparent;color:var(--ink-soft);')}; });
+    const food=b.food||{courses:[]};
+    const foodSeason=(wed.wedding&&wed.wedding.season)||food.season||'Fall';
+    const foodLight=(wed.wedding&&wed.wedding.light)||'Golden hour';
+    const foodStyles=this.FOODSTYLES.map(s=>({label:s.label,desc:s.desc,onPick:()=>this.setFoodStyle(s.k),
+      cardStyle:'text-align:left;cursor:pointer;border-radius:12px;padding:13px 14px;transition:all .18s;background:'+(food.style===s.k?'var(--gold-bg)':'var(--pearl)')+';border:1px solid '+(food.style===s.k?'#E4D3AC':'var(--line)')}));
+    const foodSeasons=this.SEASONS.map(s=>({label:s.k,onPick:()=>this.setFoodSeason(s.k),dot:'width:8px;height:8px;border-radius:50%;background:'+s.dot,
+      style:'display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 11px;border-radius:999px;cursor:pointer;border:1px solid '+(foodSeason===s.k?'var(--gold)':'var(--line)')+';background:'+(foodSeason===s.k?'var(--gold-bg)':'var(--pearl)')+';color:'+(foodSeason===s.k?'#9A7B33':'var(--ink-soft)')}));
+    const seasonNote=(this.SEASONNOTE[foodSeason]||'')+'  \u00b7  Lit by '+foodLight.toLowerCase();
+    const seasonSuggest=(this.SEASON_DISHES[foodSeason]||[]).map(n=>({name:n,onAdd:()=>this.addSuggestedDish(n)}));
+    const courses=(food.courses||[]).map(c=>({name:c.name,onRemove:()=>this.removeCourse(c.id),draft:this.state.courseDrafts[c.id]||'',
+      onDraft:(e)=>this.onCourseDraft(c.id,e.target.value),onKey:(e)=>{ if(e.key==='Enter') this.addDish(c.id); },
+      dishes:(c.dishes||[]).map(d=>({name:d.name,tag:d.tag==='v'?'veg':d.tag,hasTag:!!d.tag,onRemove:()=>this.removeDish(c.id,d.id)}))}));
+    const pal=b.palette||{colors:[],name:''}; const selI=this.state.selSwatch;
+    const swatches=(pal.colors||[]).map((hex,i)=>({hex:hex,onSelect:()=>this.selectSwatch(i),
+      style:'flex:1;border-radius:10px;cursor:pointer;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:6px;background:'+hex+';border:2px solid '+(selI===i?'var(--ink)':'transparent'),
+      tick:'font-size:8.5px;font-family:ui-monospace,monospace;color:'+(this._light(hex)?'rgba(58,54,49,.7)':'rgba(255,255,255,.85)')}));
+    const colorChoices=this.PAL.map(hex=>({hex:hex,onPick:()=>this.pickColor(hex),style:'width:34px;height:34px;border-radius:9px;cursor:pointer;background:'+hex+';border:1px solid rgba(58,54,49,.15)'}));
+    const presets=this.PRESETS.map(p=>({name:p.name,from:p.from,onPick:()=>this.applyPreset(p),colors:p.colors.map(c=>'flex:1;background:'+c)}));
+    const at=b.attire||{looks:[]}; const dressParty=(pty)=>/bride|maid|flower/i.test(pty||'');
+    const looks=(at.looks||[]).map(l=>{ const appr=l.approvals||{}; const cnt=this.APPROVERS.filter(a=>appr[a.k]).length;
+      const status=cnt>=3?'approved':cnt>=1?'proposed':'idea';
+      const stc=status==='approved'?['#566049','var(--sage-bg)','#D7E0CF']:status==='proposed'?['#9A7B33','var(--gold-bg)','#E4D3AC']:['var(--ink-soft)','var(--cream)','var(--line)'];
+      const fig=dressParty(l.party)?'width:52px;height:80px;background:'+l.color+';border:2px solid '+l.accent+';clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)':'width:60px;height:80px;background:'+l.color+';border:2px solid '+l.accent+';clip-path:polygon(0 14%,40% 14%,50% 0,60% 14%,100% 14%,100% 100%,0 100%)';
+      return {party:l.party,title:l.title,notes:l.notes,statusLabel:status,
+        visualStyle:'position:relative;height:118px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(255,255,255,.5),'+l.color+')',
+        figureStyle:fig,
+        statusStyle:'position:absolute;top:9px;right:9px;font-size:9.5px;letter-spacing:.4px;text-transform:uppercase;color:'+stc[0]+';background:'+stc[1]+';border:1px solid '+stc[2]+';border-radius:999px;padding:3px 8px',
+        onTitle:(e)=>this.setLook(l.id,'title',e.target.value),onNotes:(e)=>this.setLook(l.id,'notes',e.target.value),onRemove:()=>this.removeLook(l.id),
+        detailChips:(function(self){ const dset=dressParty(l.party)?self.DRESS_DETAILS:self.SUIT_DETAILS; return Object.keys(dset).map(k=>{ const cur=(l.details||{})[k]||dset[k][0]; return {key:k,value:cur,onClick:()=>{ const opts=dset[k]; const i=(opts.indexOf(cur)+1)%opts.length; self.setDetail(l.id,k,opts[i]); }}; }); })(this),
+        colorOpts:this.PAL.slice(0,7).map(hex=>({onPick:()=>this.setLook(l.id,'color',hex),style:'width:20px;height:20px;border-radius:6px;cursor:pointer;background:'+hex+';border:2px solid '+(l.color===hex?'var(--ink)':'transparent')})),
+        accentOpts:this.PAL.slice(2,9).map(hex=>({onPick:()=>this.setLook(l.id,'accent',hex),style:'width:20px;height:20px;border-radius:6px;cursor:pointer;background:'+hex+';border:2px solid '+(l.accent===hex?'var(--ink)':'transparent')})),
+        approvers:this.APPROVERS.map(a=>({name:a.k,initial:a.k[0],onToggle:()=>this.toggleApprove(l.id,a.k),
+          style:'width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:10px;font-weight:600;color:'+(appr[a.k]?'#fff':a.c)+';background:'+(appr[a.k]?a.c:'var(--pearl)')+';border:1px solid '+a.c}))};
+    });
+    const BARS=['Beer & wine','Beer, wine & 2 signatures','Full open bar','Signature cocktails only','Dry / zero-proof'];
+    const barOpts=BARS.map(bb=>({label:bb,onPick:()=>this.setBar(bb),style:'font-size:12px;padding:7px 12px;border-radius:999px;cursor:pointer;border:1px solid '+((food.bar||'')===bb?'var(--clay)':'var(--line)')+';background:'+((food.bar||'')===bb?'var(--clay-bg)':'var(--pearl)')+';color:'+((food.bar||'')===bb?'var(--clay-ink)':'var(--ink-soft)')}));
+    const moments=[['welcome','Welcome drinks'],['cocktail','Cocktail hour'],['latenight','Late-night snack']].map(m=>{ const onm=(food.moments||{})[m[0]]; return {label:m[1],onToggle:()=>this.toggleMoment(m[0]),style:'font-size:12px;padding:7px 13px;border-radius:999px;cursor:pointer;border:1px solid '+(onm?'var(--sage)':'var(--line)')+';background:'+(onm?'var(--sage-bg)':'var(--pearl)')+';color:'+(onm?'#566049':'var(--ink-soft)')}; });
+    const cocktails=(food.cocktails||[]).map(c=>({name:c.name,recipe:c.recipe,onName:(e)=>this.setCocktail(c.id,'name',e.target.value),onRecipe:(e)=>this.setCocktail(c.id,'recipe',e.target.value),onRemove:()=>this.removeCocktail(c.id)}));
+    const allDishes=[]; (food.courses||[]).forEach(c=>(c.dishes||[]).forEach(d=>allDishes.push(d)));
+    const vegN=allDishes.filter(d=>d.tag==='v').length; const dietary=vegN+' veg of '+allDishes.length+' dishes';
+    const menuPreview=(food.courses||[]).map(c=>({name:c.name,dishes:(c.dishes||[]).map(d=>d.name).join(' · ')}));
+    const styleLabel=(this.FOODSTYLES.find(s=>s.k===food.style)||{}).label||'';
+    const cols=(pal.colors&&pal.colors.length?pal.colors:['#8A9A80','#BC7459','#E7D2C8','#F1EBDD','#3A3631']);
+    const c0=cols[0],c1=cols[1]||cols[0],c2=cols[2]||cols[0],c3=cols[3]||'#F1EBDD',c4=cols[4]||'#3A3631';
+    const mood={ cardBg:'background:linear-gradient(160deg,'+c3+','+c2+')', cardInk:'color:'+c4, cardAccent:'color:'+c1,
+      tableBg:'background:'+c3, runner:'background:'+c0, plate:'background:'+c3+';border:2px solid '+c0, napkin:'background:'+c1, bloom:'background:'+c0,
+      chips:cols.map(h=>'background:'+h+(this._light(h)?';color:#3A3631':';color:#fff')) };
+    const vPalette=cols.map(h=>'flex:1;background:'+h);
+    const vLooks=(at.looks||[]).filter(l=>this.APPROVERS.filter(a=>(l.approvals||{})[a.k]).length>=3).map(l=>{ const dr=/bride|maid|flower/i.test(l.party||'');
+      return {party:l.party,title:l.title, wrapStyle:'background:linear-gradient(160deg,rgba(255,255,255,.5),'+l.color+')',
+        figureStyle:(dr?'width:44px;height:66px;clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)':'width:50px;height:66px;clip-path:polygon(0 14%,40% 14%,50% 0,60% 14%,100% 14%,100% 100%,0 100%)')+';background:'+l.color+';border:2px solid '+l.accent}; });
+    const vMenu=menuPreview;
+    return {
+      items, showGallery:view==='gallery', showVision:view==='vision', showFood:view==='food', showPalette:view==='palette', showAttire:view==='attire', tabs,
+      favIcon:this.state.favOnly?'♥':'♡',
+      favBtnStyle:'width:36px;height:36px;border-radius:999px;cursor:pointer;font-size:15px;border:1px solid '+(this.state.favOnly?'var(--clay)':'var(--line)')+';background:'+(this.state.favOnly?'var(--clay-bg)':'var(--pearl)')+';color:'+(this.state.favOnly?'var(--clay)':'var(--ink-faint)'),
+      sections, visionCount:poofedItems.length, visionEmpty:sections.length===0,
+      moodLine:'Candlelit and green, generous and unhurried — a courtyard dinner that feels like the best night at family\u2019s table.',
+      poofOpen:!!pit, poofTitle:pit?pit.title:'', poofName:this.state.poofName, targets,
+      notice:this.state.notice,
+      toGallery:this.toGallery, toVision:this.toVision, toggleFav:this.toggleFav, addNote:this.addNote,
+      closePoof:this.closePoof, confirmPoof:this.confirmPoof, onPoofName:this.onPoofName, stop:this.stop,
+      foodStyles, foodSeasons, seasonNote, courses, newCourse:this.state.newCourse, onNewCourse:this.onNewCourse, addCourse:this.addCourse, sendFood:this.sendFood, foodNotes:food.notes||'', onFoodNotes:this.onFoodNotes,
+      swatches, colorChoices, presets, paletteName:pal.name||'', onPaletteName:this.onPaletteName, setPalette:this.setPalette, selSwatchNum:(selI+1),
+      looks, partyOptions:this.PARTIES, newLookParty:this.state.newLookParty, onNewLookParty:this.onNewLookParty, addLook:this.addLook,
+      barOpts, moments, cocktails, addCocktail:this.addCocktail, dietary, menuPreview, styleLabel, mood, seasonSuggest,
+      vPalette, vLooks, hasVLooks:vLooks.length>0, vMenu,
+    };
+  }
+}
+</script>
+</body>
+</html>

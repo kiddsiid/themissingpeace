@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-bg:#E7EDF1;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;border:2px solid var(--cream)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes lightup{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+.card{background:var(--pearl);border:1px solid var(--line);border-radius:14px;transition:transform .2s ease,box-shadow .2s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(58,54,49,.07)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.card:hover{transform:none}}
+.av-chip{position:relative}.av-chip .av-tip{position:absolute;top:calc(100% + 9px);right:0;transform:translateY(-4px);background:var(--ink);color:var(--pearl);font-size:10.5px;letter-spacing:.3px;padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;font-family:'Inter',sans-serif;box-shadow:0 6px 18px rgba(58,54,49,.22);z-index:60}.av-chip:hover{z-index:60}.av-chip:hover .av-tip{opacity:1;transform:translateY(0)}.av-tip::before{content:'';position:absolute;bottom:100%;right:12px;border:5px solid transparent;border-bottom-color:var(--ink)}
+
+/* ---- mobile ---- */
+.nav-toggle{position:absolute;width:0;height:0;opacity:0;pointer-events:none}
+.burger{display:none}
+.nav-scrim{display:none}
+@media(max-width:860px){
+  html:has(.nav-toggle:checked){overflow:hidden}
+  .app-shell{min-width:0 !important}
+  .app-shell>div:first-of-type{flex-wrap:wrap !important;row-gap:10px;padding:10px 14px !important}
+  /* animated hamburger → X */
+  .burger{display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;border-radius:12px;border:1px solid var(--line);background:var(--pearl);cursor:pointer;padding:0;position:relative;font-size:0;-webkit-tap-highlight-color:transparent;transition:background .2s ease,transform .12s ease}
+  .burger:active{transform:scale(.88);background:var(--cream)}
+  .burger::before,.burger::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:var(--ink);transition:transform .34s cubic-bezier(.6,.05,.15,1),top .26s cubic-bezier(.6,.05,.15,1)}
+  .burger::before{top:16px}
+  .burger::after{top:25px}
+  .app-shell:has(.nav-toggle:checked) .burger::before{top:20px;transform:rotate(45deg)}
+  .app-shell:has(.nav-toggle:checked) .burger::after{top:20px;transform:rotate(-45deg)}
+  .burger + *{margin-right:auto}
+  .nav-rail{position:fixed !important;top:0;left:0;bottom:0;width:240px;max-width:82vw;z-index:400;transform:translateX(-104%);transition:transform .44s cubic-bezier(.22,1,.36,1);box-shadow:0 24px 70px rgba(58,54,49,.32);padding-top:18px !important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;will-change:transform}
+  .app-shell:has(.nav-toggle:checked) .nav-rail{transform:translateX(0)}
+  /* staggered link entrance + tap feedback */
+  .nav-rail>a{transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),background .15s ease;opacity:0;transform:translateX(-14px)}
+  .nav-rail>a:active{transform:scale(.97);background:var(--cream)}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a{opacity:1;transform:none}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(1){transition-delay:0.060s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(2){transition-delay:0.092s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(3){transition-delay:0.124s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(4){transition-delay:0.156s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(5){transition-delay:0.188s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(6){transition-delay:0.220s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(7){transition-delay:0.252s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(8){transition-delay:0.284s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(9){transition-delay:0.316s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(10){transition-delay:0.348s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(11){transition-delay:0.380s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(12){transition-delay:0.412s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(13){transition-delay:0.444s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(14){transition-delay:0.476s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(15){transition-delay:0.508s}
+  .app-shell:has(.nav-toggle:checked) .nav-rail>a:nth-child(16){transition-delay:0.540s}
+  /* fading blurred scrim */
+  .nav-scrim{display:block;position:fixed;inset:0;z-index:390;background:rgba(58,54,49,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border:none;opacity:0;pointer-events:none;transition:opacity .44s ease}
+  .app-shell:has(.nav-toggle:checked) .nav-scrim{opacity:1;pointer-events:auto}
+  main{padding-left:16px !important;padding-right:16px !important;-webkit-overflow-scrolling:touch}
+  [style*="grid-template-columns"]{grid-template-columns:1fr !important}
+}
+
+</style>
+<script src="./wedding-state.js"></script>
+<script src="./mobile.js"></script>
+</helmet>
+<div class="app-shell" style="display:flex;flex-direction:column;height:100vh;min-width:900px;background:var(--cream)">
+  <input type="checkbox" id="tmp-nav" class="nav-toggle" aria-hidden="true"><label class="nav-scrim" for="tmp-nav" aria-hidden="true"></label>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--pearl);flex-shrink:0">
+    <label class="burger" for="tmp-nav" aria-label="Open menu" title="Menu">☰</label>
+    <div style="display:flex;align-items:baseline;gap:14px"><a href="Homepage.html" class="voice" style="font-size:21px;color:var(--ink);text-decoration:none" title="Back to homepage">The Missing Peace</a><div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF;border-radius:999px;padding:5px 13px"><span style="width:7px;height:7px;border-radius:50%;background:var(--sage);display:inline-block"></span>Peace Score · Peaceful</div>
+      <div style="display:flex;align-items:center"><div style="width:28px;height:28px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl)" class="av-chip">M<span class="av-tip">Maya · the dreamer</span></div><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--pearl);margin-left:-8px" class="av-chip">J<span class="av-tip">Julian · her person</span></div></div>
+    </div>
+  </div>
+  <div style="display:flex;flex:1;min-height:0">
+    <nav class="nav-rail" style="width:198px;flex-shrink:0;border-right:1px solid var(--line);background:var(--pearl);padding:12px 10px;overflow-y:auto">
+      <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
+      <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
+      <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
+      <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
+      <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Vendors</a>
+      <a href="Guests.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Guests</a>
+      <a href="Seating%20Studio.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Seating</a>
+      <a href="Website.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Website</a>
+      <a href="Printables.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Printables</a>
+      <a href="Documents.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Documents</a>
+      <a href="Playlist.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Playlist</a>
+      <a href="Honeymoon.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Honeymoon</a>
+      <a href="Peace%20Notes.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:#A1748F">Peace Notes</a>
+    </nav>
+    <main style="flex:1;min-width:0;overflow-y:auto;padding:22px 30px 60px;position:relative">
+      <span style="position:absolute;left:22%;top:12px;color:var(--gold);font-size:11px;animation:twinkle 3.4s ease-in-out infinite;pointer-events:none">✦</span>
+      <span style="position:absolute;right:18%;top:46px;color:var(--gold);font-size:13px;animation:twinkle 4s ease-in-out .7s infinite;pointer-events:none">✦</span>
+
+      <div style="text-align:center;max-width:640px;margin:0 auto 18px">
+        <div style="font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--ink-faint)">The hands that make it real</div>
+        <div class="voice" style="font-size:34px;line-height:1.05;margin-top:4px">Vendors</div>
+        <div style="font-size:13px;color:var(--ink-soft);margin-top:6px">Your five guiding lights, and everyone helping. Each one you book <span class="voice" style="font-style:italic;font-size:15px">lights the sky</span> a little more.</div>
+      </div>
+
+      <!-- core five constellation -->
+      <div class="card" style="max-width:900px;margin:0 auto 18px;padding:20px 24px;background:linear-gradient(180deg,#fffaf2,var(--pearl))">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-faint)">Your guiding five</div><div style="font-size:11.5px;color:var(--sage)">{{ coreBooked }} of 5 secured</div></div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px">
+          <sc-for list="{{ core }}" as="c" hint-placeholder-count="5">
+            <div style="text-align:center">
+              <div style=" {{ c.starStyle }}">{{ c.icon }}</div>
+              <div style="font-size:12px;font-weight:500;color:var(--ink);margin-top:8px">{{ c.label }}</div>
+              <div style="font-size:10.5px;color: {{ c.statusColor }};margin-top:1px">{{ c.statusLabel }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- pipeline ribbon -->
+      <div style="max-width:900px;margin:0 auto 18px;display:flex;gap:10px">
+        <sc-for list="{{ stages }}" as="s" hint-placeholder-count="5">
+          <div style="flex:1;text-align:center;padding:12px 8px;border-radius:12px;background: {{ s.bg }};border:1px solid {{ s.border }}">
+            <div class="voice" style="font-size:24px;color: {{ s.numColor }}">{{ s.count }}</div>
+            <div style="font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-soft);margin-top:2px">{{ s.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- vendor cards -->
+      <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <sc-for list="{{ vendors }}" as="v" hint-placeholder-count="6">
+          <div class="card" style="padding:15px 17px;animation:rise .3s ease both">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+              <div style="min-width:0">
+                <div style="display:flex;align-items:center;gap:7px"><span style=" {{ v.dotStyle }}"></span><span style="font-size:14px;font-weight:500;color:var(--ink)">{{ v.name }}</span></div>
+                <div style="font-size:11px;color:var(--ink-faint);margin-top:2px">{{ v.category }}{{ v.quoteText }}</div>
+              </div>
+              <span style=" {{ v.badgeStyle }}">{{ v.statusLabel }}</span>
+            </div>
+            <div style="margin-top:11px;height:5px;background:var(--cream);border:1px solid var(--line);border-radius:999px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,var(--gold),#D9B877);border-radius:999px;transition:width .4s;width: {{ v.pct }}"></div></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:11px">
+              <div style="font-size:11px;color:var(--ink-soft)">{{ v.contact }}</div>
+              <button onClick="{{ v.onAdvance }}" style=" {{ v.btnStyle }}">{{ v.btnLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </main>
+  </div>
+  <sc-if value="{{ notice }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:110;font-size:13px;color:#566049;background:var(--pearl);border:1px solid #D7E0CF;border-radius:999px;padding:10px 20px;box-shadow:0 10px 30px rgba(58,54,49,.16);animation:rise .3s ease both">{{ notice }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  FLOW = ['idea','shortlisted','inquired','quote_received','booked'];
+  FLOW_LABEL = {idea:'Idea',shortlisted:'Shortlisted',inquired:'Inquired',quote_received:'Quote in',booked:'Booked'};
+  CORE = [
+    {cat:'venue',label:'Venue',icon:'⌂'},
+    {cat:'caterer',label:'Caterer',icon:'✦'},
+    {cat:'photographer',label:'Photographer',icon:'◎'},
+    {cat:'officiant',label:'Officiant',icon:'❦'},
+    {cat:'florist',label:'Florist',icon:'✿'},
+  ];
+  VENDORS = [
+    {id:'v1',name:'Willowbrook Estate',cat:'venue',status:'booked',quote:13500,contact:'Del · booked, deposit paid'},
+    {id:'v2',name:'Saffron & Sage Catering',cat:'caterer',status:'booked',quote:11800,contact:'Nina · menu tasting done'},
+    {id:'v3',name:'Priya Anand Photography',cat:'photographer',status:'quote_received',quote:5000,contact:'Priya · quote in, comparing'},
+    {id:'v4',name:'Rev. Thomas Ellery',cat:'officiant',status:'inquired',quote:null,contact:'emailed, awaiting reply'},
+    {id:'v5',name:'Fern & Flora',cat:'florist',status:'shortlisted',quote:3800,contact:'candlelight & greenery fit'},
+    {id:'v6',name:'The Night Owls (band)',cat:'band',status:'idea',quote:3000,contact:'from a friend’s wedding'},
+  ];
+  CATMAP={venue:'venue',caterer:'catering',photographer:'photo',officiant:'ceremony',florist:'florals',band:'music'};
+  state = { vendors:this.VENDORS.map(v=>({...v})), notice:null };
+  componentDidMount(){ this._initWS(); }
+  _initWS=(t=0)=>{ if(window.WeddingState){ const st=WeddingState.get(); const byId={}; (st.vendors||[]).forEach(v=>byId[v.id]=v);
+      this.setState(s=>({vendors:s.vendors.map(v=>{ const rec=byId[v.id]; return (rec&&rec.src==='vendors')? {...v,status:rec.status}:v; })}), ()=>this.syncStore()); }
+    else if(t<40){ setTimeout(()=>this._initWS(t+1),50); } };
+  syncStore(){ if(!window.WeddingState) return; WeddingState.update(st=>{ const prev={}; (st.vendors||[]).forEach(x=>prev[x.id]=x); st.vendors=this.state.vendors.map(v=>({id:v.id,name:v.name,category:v.cat,categoryId:this.CATMAP[v.cat]||v.cat,status:v.status,cost:v.quote||(prev[v.id]&&prev[v.id].cost)||0,paid:(prev[v.id]&&prev[v.id].paid)||0,src:'vendors'})); }); }
+  flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2600); }
+  money(n){ return n==null?'':' · '+new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n); }
+  advance=(id)=>{ this.setState(s=>({vendors:s.vendors.map(v=>{
+    if(v.id!==id) return v; const i=this.FLOW.indexOf(v.status); if(i>=this.FLOW.length-1) return v;
+    return {...v,status:this.FLOW[i+1]};
+  })}), ()=>this.syncStore()); const v=this.state.vendors.find(x=>x.id===id); const i=this.FLOW.indexOf(v.status);
+    if(i===this.FLOW.length-2) this.flash('✦ '+v.name+' booked — a guiding light is lit'); };
+
+  renderVals(){
+    const V=this.state.vendors;
+    const ready=new Set(['booked']);
+    const core=this.CORE.map(c=>{
+      const v=V.find(x=>x.cat===c.cat); const booked=v && ready.has(v.status);
+      const pending=v && !booked;
+      const col= booked?'var(--gold)': pending?'var(--clay)':'var(--ink-faint)';
+      const bg= booked?'radial-gradient(circle at 50% 38%,#FFFDF8,var(--gold-bg))': pending?'var(--clay-bg)':'var(--cream)';
+      return {label:c.label,icon:c.icon,
+        starStyle:'margin:0 auto;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:'+col+';background:'+bg+';border:1.5px solid '+col+';'+(booked?'box-shadow:0 0 22px rgba(184,146,74,.28);animation:lightup .5s ease both':'opacity:'+(pending?'.9':'.55')),
+        statusColor: col, statusLabel: booked?'secured ✦': pending?this.FLOW_LABEL[v.status]:'still to find'};
+    });
+    const coreBooked=this.CORE.filter(c=>{const v=V.find(x=>x.cat===c.cat);return v&&ready.has(v.status);}).length;
+    const stages=this.FLOW.map(f=>{
+      const count=V.filter(v=>v.status===f).length; const isBooked=f==='booked';
+      return {label:this.FLOW_LABEL[f],count,
+        bg:isBooked?'linear-gradient(180deg,var(--gold-bg),var(--pearl))':'var(--pearl)',
+        border:isBooked?'#E4D3AC':'var(--line)', numColor:isBooked?'var(--gold)':'var(--ink)'};
+    });
+    const statusMeta={idea:['var(--ink-faint)','var(--cream)','var(--ink-soft)'],shortlisted:['var(--slate)','var(--slate-bg)','var(--slate)'],inquired:['var(--clay)','var(--clay-bg)','var(--clay-ink)'],quote_received:['var(--gold)','var(--gold-bg)','var(--gold)'],booked:['var(--sage)','var(--sage-bg)','#566049']};
+    const vendors=V.map(v=>{
+      const i=this.FLOW.indexOf(v.status); const m=statusMeta[v.status]; const done=v.status==='booked';
+      return {id:v.id,name:v.name,category:v.cat.replace(/_/g,' '),quoteText:this.money(v.quote),contact:v.contact,
+        statusLabel:this.FLOW_LABEL[v.status],pct:Math.round((i+1)/this.FLOW.length*100)+'%',
+        dotStyle:'width:8px;height:8px;border-radius:50%;background:'+m[0]+';flex-shrink:0',
+        badgeStyle:'flex-shrink:0;font-size:10.5px;color:'+m[2]+';background:'+m[1]+';border-radius:999px;padding:3px 10px',
+        onAdvance:()=>this.advance(v.id), btnLabel: done?'✓ booked':'Advance →',
+        btnStyle:'font-size:11.5px;border-radius:999px;padding:6px 13px;cursor:'+(done?'default':'pointer')+';'+(done?'color:#566049;background:var(--sage-bg);border:1px solid #D7E0CF':'color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0')};
+    });
+    return {core,coreBooked,stages,vendors,notice:this.state.notice};
+  }
+}
+</script>
+</body>
+</html>
