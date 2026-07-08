@@ -84,6 +84,7 @@
           notes:'Local & seasonal. Nut-free kitchen.',
         },
         palette: { name:'Sage & Clay', colors:['#8A9A80','#BC7459','#E7D2C8','#F1EBDD','#3A3631'] },
+        inspirations: [],
         attire: {
           looks:[
             { id:'l1', party:'Bride',       title:'Ivory silk slip',        color:'#EFE7D6', accent:'#E7D2C8', notes:'Low back, no train.',    details:{Silhouette:'Slip',Neckline:'Cowl',Length:'Floor',Fabric:'Silk charmeuse'}, approvals:{Maya:true,Julian:false,Aria:true} },
@@ -192,6 +193,7 @@
     // heal missing branches (older stored states gain new collections)
     for (var k in base) if (!(k in s)) s[k] = base[k];
     if (s.budget) { for (var bk in base.budget) if (!(bk in s.budget)) s.budget[bk] = base.budget[bk]; }
+    if (s.board && !s.board.inspirations) s.board.inspirations = [];
     cache = s;
     return s;
   }

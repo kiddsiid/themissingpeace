@@ -93,7 +93,7 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
       <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
       <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
       <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
-      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">The Muse</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--clay-ink);background:var(--clay-bg);font-weight:500">Design Studio</a>
       <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
       <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
       <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
@@ -110,21 +110,51 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
       <!-- toolbar -->
       <div style="position:sticky;top:0;z-index:6;padding:18px 30px 14px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
         <div>
-          <div class="voice" style="font-size:30px;line-height:1">The Muse</div>
-          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Where dreams become real, in real time. Pin what you love — then shape it into food, palette and attire you can actually decide on.</div>
+          <div class="voice" style="font-size:30px;line-height:1">Design Studio</div>
+          <div style="font-size:13px;color:var(--ink-soft);margin-top:4px">Your imagination, made real. Dream in colors, dress your people, set the table — and watch it all come together.</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <div style="display:flex;gap:4px;background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:4px;flex-wrap:wrap">
             <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.onClick }}" style=" {{ t.style }}">{{ t.label }}</button></sc-for>
           </div>
           <button onClick="{{ toggleFav }}" title="Favorites only" style=" {{ favBtnStyle }}">{{ favIcon }}</button>
-          <button onClick="{{ addNote }}" style="font-size:13px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:8px 14px;cursor:pointer" style-hover="background:var(--clay-bg)">+ Add a note</button>
+          <button onClick="{{ addNote }}" style="font-size:13px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:8px 14px;cursor:pointer" style-hover="background:var(--clay-bg)">+ Add inspiration</button>
         </div>
+      </div>
+
+      <!-- dream completeness meter -->
+      <div style="padding:11px 30px;border-bottom:1px solid var(--line);background:var(--pearl);display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background: {{ dreamRing }}">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--pearl);display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:var(--ink)">{{ dreamPct }}</div>
+          </div>
+          <div><div style="font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap">Your dream is {{ dreamPct }} designed</div><div style="font-size:11px;color:var(--ink-soft);white-space:nowrap">{{ dreamHint }}</div></div>
+        </div>
+        <div style="flex:1;min-width:12px"></div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap"><sc-for list="{{ pillars }}" as="p" hint-placeholder-count="4"><button onClick="{{ p.onClick }}" style=" {{ p.style }}"><span style=" {{ p.dot }}"></span>{{ p.label }}</button></sc-for></div>
       </div>
 
       <!-- GALLERY -->
       <sc-if value="{{ showGallery }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:2px 30px 60px;column-width:236px;column-gap:14px">
+        <div style="padding:14px 30px 0;display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+          <sc-for list="{{ inspoChips }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style=" {{ c.style }}">{{ c.label }}</button></sc-for>
+        </div>
+        <sc-if value="{{ composerOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:14px 30px 0;padding:16px 18px;border:1px solid #E4D3AC;background:linear-gradient(160deg,var(--gold-bg),var(--pearl) 70%);border-radius:14px;max-width:560px;animation:rise .3s ease both">
+            <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#9A7B33;margin-bottom:9px">Add an inspiration</div>
+            <input value="{{ draftTitle }}" onInput="{{ onDraftTitle }}" placeholder="Name this spark…" style="width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;margin-bottom:9px"/>
+            <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:9px">
+              <select value="{{ draftCat }}" onChange="{{ onDraftCat }}" style="font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:9px;padding:9px 10px;outline:none"><sc-for list="{{ catOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.v }}">{{ o.label }}</option></sc-for></select>
+              <span style="font-size:11px;color:var(--ink-faint)">choose where it belongs</span>
+            </div>
+            <textarea value="{{ draftNote }}" onInput="{{ onDraftNote }}" placeholder="Or write a note — a feeling, a lyric, a must-have…" style="width:100%;min-height:56px;font-family:inherit;font-size:13px;line-height:1.5;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;resize:vertical"></textarea>
+            <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:11px">
+              <button onClick="{{ toggleComposer }}" style="font-size:12.5px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer">Cancel</button>
+              <button onClick="{{ addInspiration }}" style="font-size:12.5px;color:#fff;background:var(--clay);border:none;border-radius:999px;padding:8px 18px;cursor:pointer;box-shadow:0 3px 12px rgba(188,116,89,.28)">Add to board ✦</button>
+            </div>
+          </div>
+        </sc-if>
+        <div style="padding:14px 30px 60px;column-width:236px;column-gap:14px">
           <sc-for list="{{ items }}" as="it" hint-placeholder-count="9">
             <div class="bcard" style="animation:rise .35s ease both">
               <sc-if value="{{ it.isImage }}" hint-placeholder-val="{{ true }}">
@@ -146,6 +176,9 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
                 </sc-if>
                 <sc-if value="{{ it.notPoofed }}" hint-placeholder-val="{{ true }}">
                   <div class="bloom" style="margin-top:10px"><button onClick="{{ it.onPoof }}" style="font-size:12px;color:var(--clay-ink);background:var(--pearl);border:1px solid #D9C7B0;border-radius:999px;padding:5px 13px;cursor:pointer" style-hover="background:var(--clay-bg)">✦ Poof this</button></div>
+                </sc-if>
+                <sc-if value="{{ it.isUser }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:8px"><button onClick="{{ it.onRemoveInspo }}" style="font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;padding:0">remove</button></div>
                 </sc-if>
               </div>
             </div>
@@ -225,7 +258,7 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><div class="voice" style="font-size:18px">{{ c.name }}</div><button onClick="{{ c.onRemove }}" title="Remove course" style="font-size:15px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
                 <div style="display:flex;flex-direction:column;gap:7px">
                   <sc-for list="{{ c.dishes }}" as="d" hint-placeholder-count="2">
-                    <div style="display:flex;align-items:center;gap:8px;background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:7px 10px"><span style="flex:1;font-size:12.5px;color:var(--ink)">{{ d.name }}</span><sc-if value="{{ d.hasTag }}" hint-placeholder-val="{{ false }}"><span style="font-size:9.5px;color:#566049;background:var(--sage-bg);border-radius:999px;padding:2px 7px">{{ d.tag }}</span></sc-if><button onClick="{{ d.onRemove }}" style="font-size:14px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
+                    <div style="display:flex;align-items:center;gap:8px;background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:7px 10px"><span style="flex:1;font-size:12.5px;color:var(--ink)">{{ d.name }}</span><button onClick="{{ d.onTag }}" style=" {{ d.tagStyle }}">{{ d.tag }}</button><button onClick="{{ d.onRemove }}" style="font-size:14px;color:var(--ink-faint);background:none;border:none;cursor:pointer;line-height:1">×</button></div>
                   </sc-for>
                 </div>
                 <input value="{{ c.draft }}" onInput="{{ c.onDraft }}" onKeyDown="{{ c.onKey }}" placeholder="+ add a dish, then Enter" style="width:100%;margin-top:9px;font-family:inherit;font-size:12.5px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:9px;padding:8px 10px;outline:none"/>
@@ -293,6 +326,23 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
             </div>
           </div>
           <div style="display:flex;gap:6px;margin-bottom:22px"><sc-for list="{{ mood.chips }}" as="c" hint-placeholder-count="5"><span style="flex:1;text-align:center;font-size:10px;font-family:ui-monospace,monospace;padding:7px 0;border-radius:7px; {{ c }}">Aa</span></sc-for></div>
+          <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">✦ Conjure from swatch {{ selSwatchNum }}</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+            <sc-for list="{{ conjured }}" as="p" hint-placeholder-count="3">
+              <button onClick="{{ p.onPick }}" style="display:flex;flex-direction:column;gap:8px;background:var(--pearl);border:1px solid var(--line);border-radius:12px;padding:11px;cursor:pointer;text-align:left" style-hover="border-color:#D9C7B0">
+                <span style="display:flex;height:30px;border-radius:7px;overflow:hidden"><sc-for list="{{ p.colors }}" as="cc" hint-placeholder-count="5"><span style=" {{ cc }}"></span></sc-for></span>
+                <span style="font-size:12px;color:var(--ink)">{{ p.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasSeasonal }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">In season</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px">
+              <sc-for list="{{ seasonalPals }}" as="p" hint-placeholder-count="1">
+                <button onClick="{{ p.onPick }}" style="display:flex;align-items:center;gap:12px;background:var(--pearl);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left" style-hover="border-color:#D9C7B0"><span style="display:flex;border-radius:8px;overflow:hidden;flex-shrink:0;width:96px;height:34px"><sc-for list="{{ p.colors }}" as="cc" hint-placeholder-count="5"><span style=" {{ cc }}"></span></sc-for></span><span style="min-width:0"><span style="display:block;font-size:13px;color:var(--ink)">{{ p.name }}</span><span style="display:block;font-size:11px;color:var(--ink-faint)">{{ p.from }}</span></span></button>
+              </sc-for>
+            </div>
+          </sc-if>
           <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px">Drawn from your board</div>
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
             <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
@@ -315,7 +365,7 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
             <sc-for list="{{ looks }}" as="l" hint-placeholder-count="3">
               <div class="bcard" style="margin:0;overflow:hidden">
-                <div style=" {{ l.visualStyle }}"><div style=" {{ l.figureStyle }}"></div><span style=" {{ l.statusStyle }}">{{ l.statusLabel }}</span></div>
+                <div style=" {{ l.visualStyle }}"><div style=" {{ l.figureStyle }}"><span style=" {{ l.sashStyle }}"></span></div><span style=" {{ l.statusStyle }}">{{ l.statusLabel }}</span></div>
                 <div style="padding:13px 15px">
                   <div style="font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--gold)">{{ l.party }}</div>
                   <input value="{{ l.title }}" onInput="{{ l.onTitle }}" class="voice" style="font-size:18px;color:var(--ink);background:transparent;border:none;outline:none;width:100%;padding:1px 0"/>
@@ -381,7 +431,7 @@ class Component extends DCLogic {
     {id:'i8',title:'"At Last" — Etta James',source:'a note from Julian',cat:'music',kind:'note',note:'This is the first dance. Non-negotiable.',h:0,became:'Decision'},
     {id:'i9',title:'Calligraphy welcome sign',source:'Pinterest · signage',cat:'signage',kind:'image',placeholder:'signage photo',h:140,became:null},
   ];
-  state={ view:'gallery', favOnly:false, fav:{i2:true,i8:true}, poofed:{i1:'Decision',i2:'Vendor',i8:'Decision'}, poofId:null, poofTarget:'Vendor', poofName:'', notice:null, wed:null, courseDrafts:{}, newCourse:'', selSwatch:0, newLookParty:'Bride' };
+  state={ view:'gallery', favOnly:false, fav:{i2:true,i8:true}, poofed:{i1:'Decision',i2:'Vendor',i8:'Decision'}, poofId:null, poofTarget:'Vendor', poofName:'', notice:null, wed:null, courseDrafts:{}, newCourse:'', selSwatch:0, newLookParty:'Bride', composerOpen:false, draftInspo:{title:'',cat:'venue',note:''}, inspoFilter:'all' };
   FOODSTYLES=[{k:'family',label:'Family-style',desc:'Big platters, passed and shared'},{k:'plated',label:'Plated',desc:'A served course to each seat'},{k:'stations',label:'Stations',desc:'Roaming chef stations & bites'},{k:'grazing',label:'Grazing',desc:'Abundant tables to wander'}];
   SEASONS=[{k:'Spring',dot:'#A9C6A0'},{k:'Summer',dot:'#E7C86A'},{k:'Fall',dot:'#D08A5B'},{k:'Winter',dot:'#9DB4C4'}];
   SEASONNOTE={Spring:'Peas, asparagus, herbs, rhubarb, citrus blossom.',Summer:'Stone fruit, tomatoes, corn, basil, berries.',Fall:'Squash, figs, mushrooms, apple, sage.',Winter:'Roots, citrus, pomegranate, chestnut, braises.'};
@@ -392,7 +442,7 @@ class Component extends DCLogic {
   componentDidMount(){ this._initWS(); }
   _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
   componentWillUnmount(){ if(this._off) this._off(); }
-  up(fn){ if(window.WeddingState) WeddingState.update(fn); }
+  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.setState({wed:WeddingState.get()}); } }
   _light(hex){ try{ const h=hex.replace('#',''); const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16); return (0.299*r+0.587*g+0.114*b)>150; }catch(e){ return true; } }
   setFoodStyle=(k)=>this.up(s=>{ s.board.food.style=k; });
   setFoodSeason=(k)=>this.up(s=>{ s.wedding.season=k; s.board.food.season=k; });
@@ -424,13 +474,35 @@ class Component extends DCLogic {
   setDetail=(id,k,v)=>this.up(s=>{ const l=s.board.attire.looks.find(l=>l.id===id); if(l){ l.details=l.details||{}; l.details[k]=v; } });
   DRESS_DETAILS={Silhouette:['Slip','A-line','Ballgown','Column','Mixed'],Neckline:['Cowl','V','Square','Sweetheart','Varied'],Length:['Mini','Midi','Floor','Midi–floor'],Fabric:['Silk charmeuse','Chiffon','Crepe','Lace','Tulle']};
   SUIT_DETAILS={Lapel:['Notch','Peak','Shawl'],Fit:['Tailored','Relaxed','Slim'],Pieces:['Two-piece','Three-piece','Tux'],Shoes:['Brown suede','Black oxford','Loafers','White sneakers']};
+  CATLABELS={venue:'Venue',food:'Food',florals:'Florals',lighting:'Lighting',attire:'Attire',paper:'Paper',signage:'Signage',music:'Music'};
+  SEASON_PAL={Spring:[{name:'Orchard morning',colors:['#A9C6A0','#E7D2C8','#C8DCC0','#F4F0E4','#4E5B44']}],Summer:[{name:'Sun & linen',colors:['#E7C86A','#C98BA0','#8AA6A0','#F6EFDD','#3A3631']}],Fall:[{name:'Harvest dusk',colors:['#B8924A','#8A4A33','#8A9A80','#F1EBDD','#3A3631']}],Winter:[{name:'Frost & pine',colors:['#4E6B4C','#9DB4C4','#C7B79A','#F2F0E6','#2E3A2C']}]};
+  // ---- color math for the Conjure generator ----
+  _h2h(hex){ let h=(hex||'#888').replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); const r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255; const mx=Math.max(r,g,b),mn=Math.min(r,g,b); let hh=0,s=0,l=(mx+mn)/2; if(mx!==mn){ const dd=mx-mn; s=l>.5?dd/(2-mx-mn):dd/(mx+mn); if(mx===r)hh=(g-b)/dd+(g<b?6:0); else if(mx===g)hh=(b-r)/dd+2; else hh=(r-g)/dd+4; hh*=60; } return [hh,s,l]; }
+  _hh2h(h,s,l){ h=((h%360)+360)%360; s=Math.max(0,Math.min(1,s)); l=Math.max(0,Math.min(1,l)); const c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2; let r,g,b; if(h<60){r=c;g=x;b=0;}else if(h<120){r=x;g=c;b=0;}else if(h<180){r=0;g=c;b=x;}else if(h<240){r=0;g=x;b=c;}else if(h<300){r=x;g=0;b=c;}else{r=c;g=0;b=x;} const t=v=>('0'+Math.round((v+m)*255).toString(16)).slice(-2); return '#'+t(r)+t(g)+t(b); }
+  _tint(hex){ const a=this._h2h(hex); return this._hh2h(a[0],Math.max(.12,a[1]*.7),Math.min(.93,a[2]+.3)); }
+  conjureSets(baseHex){ const a=this._h2h(baseHex),h=a[0],s=a[1],l=a[2],H=(hh,ss,ll)=>this._hh2h(hh,ss,ll);
+    return [
+      {name:'Analogous bloom',colors:[H(h,Math.min(.5,Math.max(.28,s)),Math.min(.55,Math.max(.4,l))),H(h-24,.32,.52),H(h+24,.3,.62),H(h,.25,.9),H(h,.22,.22)]},
+      {name:'Complementary',colors:[H(h,.34,.5),H(h+180,.3,.5),H(h,.14,.92),H(h+180,.16,.76),H(h,.16,.22)]},
+      {name:'Candlelit & muted',colors:[H(h,.18,.45),H(h-20,.16,.6),H(h+30,.2,.7),H(40,.4,.86),H(h,.12,.24)]},
+    ]; }
+  _tagLabel(t){ return t==='v'?'veg':t==='gf'?'GF':t==='vg'?'vegan':'+ diet'; }
+  // ---- inspirations ----
+  toggleComposer=()=>this.setState(s=>({view:'gallery',composerOpen:!s.composerOpen}));
+  onDraftInspo=(k,v)=>this.setState(s=>({draftInspo:{...s.draftInspo,[k]:v}}));
+  addInspiration=()=>{ const d=this.state.draftInspo; if(!(d.title||'').trim() && !(d.note||'').trim()) return; const id='u'+Date.now(); const hasNote=!!(d.note||'').trim();
+    this.up(s=>{ s.board.inspirations=s.board.inspirations||[]; s.board.inspirations.unshift({id:id,title:(d.title||'').trim()||'A new spark',source:'added by you',cat:d.cat||'venue',kind:hasNote?'note':'image',note:(d.note||'').trim(),placeholder:(this.CATLABELS[d.cat]||'idea').toLowerCase()+' idea',h:150}); });
+    this.setState({composerOpen:false,draftInspo:{title:'',cat:'venue',note:''}}); this.flash('✦ Added to your board'); };
+  removeInspiration=(id)=>this.up(s=>{ s.board.inspirations=(s.board.inspirations||[]).filter(x=>x.id!==id); });
+  setInspoFilter=(c)=>this.setState({inspoFilter:c});
+  setDishTag=(cid,did)=>this.up(s=>{ const c=s.board.food.courses.find(c=>c.id===cid); if(!c) return; const d=c.dishes.find(d=>d.id===did); if(!d) return; const order=['','v','gf','vg']; d.tag=order[(order.indexOf(d.tag||'')+1)%order.length]; });
 
   flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2400); }
   toGallery=()=>this.setState({view:'gallery'});
   toVision=()=>this.setState({view:'vision'});
   toggleFav=()=>this.setState(s=>({favOnly:!s.favOnly}));
   favItem=(id)=>this.setState(s=>({fav:{...s.fav,[id]:!s.fav[id]}}));
-  addNote=()=>this.flash('✦ Drop a note, link, or image — it lands on the board');
+  addNote=()=>this.setState(s=>({view:'gallery',composerOpen:!s.composerOpen}));
   openPoof=(id)=>{ const it=this.ITEMS.find(i=>i.id===id); this.setState({poofId:id,poofTarget:'Vendor',poofName:it.title}); };
   closePoof=()=>this.setState({poofId:null});
   setTarget=(t)=>this.setState({poofTarget:t});
@@ -440,17 +512,24 @@ class Component extends DCLogic {
     this.flash('✦ Created a '+t+' — linked to its inspiration'); };
   stop=(e)=>e.stopPropagation();
 
-  thumb(it,sm){ const hue=this.HUE[it.cat];
+  thumb(it,sm){ const hue=this.HUE[it.cat]||'#EEE6D6';
     return 'height:'+(sm?92:it.h)+'px;display:flex;align-items:center;justify-content:center;background-color:'+hue+';background-image:repeating-linear-gradient(135deg,rgba(58,54,49,.05) 0 10px,transparent 10px 20px)'; }
 
   renderVals(){
     const view=this.state.view;
-    const list=this.ITEMS.filter(it=>!this.state.favOnly || this.state.fav[it.id]);
+    const _b0=(this.state.wed&&this.state.wed.board)||{};
+    const _userInspo=(_b0.inspirations||[]).map(x=>({...x,user:true}));
+    const ALLITEMS=[..._userInspo,...this.ITEMS];
+    const fCat=this.state.inspoFilter||'all';
+    const presentCats=[]; ALLITEMS.forEach(it=>{ if(presentCats.indexOf(it.cat)<0) presentCats.push(it.cat); });
+    const inspoChips=[{key:'all',label:'All'}].concat(presentCats.map(c=>({key:c,label:this.CATLABELS[c]||c}))).map(c=>({label:c.label,onClick:()=>this.setInspoFilter(c.key),
+      style:'font-size:12px;padding:6px 12px;border-radius:999px;cursor:pointer;border:1px solid '+(fCat===c.key?'var(--clay)':'var(--line)')+';background:'+(fCat===c.key?'var(--clay-bg)':'var(--pearl)')+';color:'+(fCat===c.key?'var(--clay-ink)':'var(--ink-soft)')}));
+    const list=ALLITEMS.filter(it=>(fCat==='all'||it.cat===fCat) && (!this.state.favOnly || this.state.fav[it.id]));
     const items=list.map(it=>{ const fav=!!this.state.fav[it.id]; const became=this.state.poofed[it.id];
       return {...it, isImage:it.kind==='image', isNote:it.kind==='note',
         thumbStyle:this.thumb(it,false), thumbStyleSm:this.thumb(it,true),
         heart:fav?'♥':'♡', heartStyle:'flex-shrink:0;font-size:15px;line-height:1;background:transparent;border:none;cursor:pointer;color:'+(fav?'var(--clay)':'var(--ink-faint)'),
-        onFav:()=>this.favItem(it.id), onPoof:()=>this.openPoof(it.id),
+        onFav:()=>this.favItem(it.id), onPoof:()=>this.openPoof(it.id), isUser:!!it.user, onRemoveInspo:()=>this.removeInspiration(it.id),
         poofed:!!became, notPoofed:!became, becameLabel:became?became.replace(' item',''):''};
     });
     // master vision
@@ -479,7 +558,7 @@ class Component extends DCLogic {
     const seasonSuggest=(this.SEASON_DISHES[foodSeason]||[]).map(n=>({name:n,onAdd:()=>this.addSuggestedDish(n)}));
     const courses=(food.courses||[]).map(c=>({name:c.name,onRemove:()=>this.removeCourse(c.id),draft:this.state.courseDrafts[c.id]||'',
       onDraft:(e)=>this.onCourseDraft(c.id,e.target.value),onKey:(e)=>{ if(e.key==='Enter') this.addDish(c.id); },
-      dishes:(c.dishes||[]).map(d=>({name:d.name,tag:d.tag==='v'?'veg':d.tag,hasTag:!!d.tag,onRemove:()=>this.removeDish(c.id,d.id)}))}));
+      dishes:(c.dishes||[]).map(d=>({name:d.name,tag:this._tagLabel(d.tag),onTag:()=>this.setDishTag(c.id,d.id),tagStyle:'font-size:9.5px;border-radius:999px;padding:3px 8px;cursor:pointer;line-height:1;border:1px solid '+(d.tag?'#D7E0CF':'var(--line)')+';background:'+(d.tag?'var(--sage-bg)':'transparent')+';color:'+(d.tag?'#566049':'var(--ink-faint)'),onRemove:()=>this.removeDish(c.id,d.id)}))}));
     const pal=b.palette||{colors:[],name:''}; const selI=this.state.selSwatch;
     const swatches=(pal.colors||[]).map((hex,i)=>({hex:hex,onSelect:()=>this.selectSwatch(i),
       style:'flex:1;border-radius:10px;cursor:pointer;position:relative;display:flex;align-items:flex-end;justify-content:center;padding:6px;background:'+hex+';border:2px solid '+(selI===i?'var(--ink)':'transparent'),
@@ -490,10 +569,19 @@ class Component extends DCLogic {
     const looks=(at.looks||[]).map(l=>{ const appr=l.approvals||{}; const cnt=this.APPROVERS.filter(a=>appr[a.k]).length;
       const status=cnt>=3?'approved':cnt>=1?'proposed':'idea';
       const stc=status==='approved'?['#566049','var(--sage-bg)','#D7E0CF']:status==='proposed'?['#9A7B33','var(--gold-bg)','#E4D3AC']:['var(--ink-soft)','var(--cream)','var(--line)'];
-      const fig=dressParty(l.party)?'width:52px;height:80px;background:'+l.color+';border:2px solid '+l.accent+';clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)':'width:60px;height:80px;background:'+l.color+';border:2px solid '+l.accent+';clip-path:polygon(0 14%,40% 14%,50% 0,60% 14%,100% 14%,100% 100%,0 100%)';
+      const dr0=dressParty(l.party); const det=l.details||{};
+      let shape,w;
+      if(dr0){ const sil=det.Silhouette||'Slip';
+        if(sil==='A-line'){shape='polygon(42% 0,58% 0,100% 100%,0 100%)';w=64;}
+        else if(sil==='Ballgown'){shape='polygon(44% 0,56% 0,70% 42%,100% 100%,0 100%,30% 42%)';w=72;}
+        else if(sil==='Column'){shape='polygon(40% 0,60% 0,58% 100%,42% 100%)';w=44;}
+        else if(sil==='Mixed'){shape='polygon(42% 0,58% 0,96% 100%,4% 100%)';w=60;}
+        else {shape='polygon(41% 0,59% 0,56% 100%,44% 100%)';w=42;} }
+      else { const fit=det.Fit||'Tailored'; w=fit==='Relaxed'?66:fit==='Slim'?50:58; shape='polygon(0 14%,40% 14%,50% 0,60% 14%,100% 14%,100% 100%,0 100%)'; }
       return {party:l.party,title:l.title,notes:l.notes,statusLabel:status,
-        visualStyle:'position:relative;height:118px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,rgba(255,255,255,.5),'+l.color+')',
-        figureStyle:fig,
+        visualStyle:'position:relative;height:150px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;background:radial-gradient(120% 92% at 50% 18%,rgba(255,255,255,.65),'+this._tint(l.color)+')',
+        figureStyle:'position:relative;width:'+w+'px;height:118px;background:linear-gradient(160deg,'+this._tint(l.color)+' 4%,'+l.color+' 92%);border:2px solid '+l.accent+';clip-path:'+shape,
+        sashStyle: dr0? 'position:absolute;left:0;right:0;top:54%;height:7px;background:'+l.accent+';opacity:.85' : 'position:absolute;left:50%;top:16%;transform:translateX(-50%);width:7px;height:44px;background:'+l.accent+';opacity:.92',
         statusStyle:'position:absolute;top:9px;right:9px;font-size:9.5px;letter-spacing:.4px;text-transform:uppercase;color:'+stc[0]+';background:'+stc[1]+';border:1px solid '+stc[2]+';border-radius:999px;padding:3px 8px',
         onTitle:(e)=>this.setLook(l.id,'title',e.target.value),onNotes:(e)=>this.setLook(l.id,'notes',e.target.value),onRemove:()=>this.removeLook(l.id),
         detailChips:(function(self){ const dset=dressParty(l.party)?self.DRESS_DETAILS:self.SUIT_DETAILS; return Object.keys(dset).map(k=>{ const cur=(l.details||{})[k]||dset[k][0]; return {key:k,value:cur,onClick:()=>{ const opts=dset[k]; const i=(opts.indexOf(cur)+1)%opts.length; self.setDetail(l.id,k,opts[i]); }}; }); })(this),
@@ -507,7 +595,7 @@ class Component extends DCLogic {
     const moments=[['welcome','Welcome drinks'],['cocktail','Cocktail hour'],['latenight','Late-night snack']].map(m=>{ const onm=(food.moments||{})[m[0]]; return {label:m[1],onToggle:()=>this.toggleMoment(m[0]),style:'font-size:12px;padding:7px 13px;border-radius:999px;cursor:pointer;border:1px solid '+(onm?'var(--sage)':'var(--line)')+';background:'+(onm?'var(--sage-bg)':'var(--pearl)')+';color:'+(onm?'#566049':'var(--ink-soft)')}; });
     const cocktails=(food.cocktails||[]).map(c=>({name:c.name,recipe:c.recipe,onName:(e)=>this.setCocktail(c.id,'name',e.target.value),onRecipe:(e)=>this.setCocktail(c.id,'recipe',e.target.value),onRemove:()=>this.removeCocktail(c.id)}));
     const allDishes=[]; (food.courses||[]).forEach(c=>(c.dishes||[]).forEach(d=>allDishes.push(d)));
-    const vegN=allDishes.filter(d=>d.tag==='v').length; const dietary=vegN+' veg of '+allDishes.length+' dishes';
+    const vegN=allDishes.filter(d=>d.tag==='v'||d.tag==='vg').length; const dietary=vegN+' plant-based of '+allDishes.length+' dishes';
     const menuPreview=(food.courses||[]).map(c=>({name:c.name,dishes:(c.dishes||[]).map(d=>d.name).join(' · ')}));
     const styleLabel=(this.FOODSTYLES.find(s=>s.k===food.style)||{}).label||'';
     const cols=(pal.colors&&pal.colors.length?pal.colors:['#8A9A80','#BC7459','#E7D2C8','#F1EBDD','#3A3631']);
@@ -520,6 +608,26 @@ class Component extends DCLogic {
       return {party:l.party,title:l.title, wrapStyle:'background:linear-gradient(160deg,rgba(255,255,255,.5),'+l.color+')',
         figureStyle:(dr?'width:44px;height:66px;clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)':'width:50px;height:66px;clip-path:polygon(0 14%,40% 14%,50% 0,60% 14%,100% 14%,100% 100%,0 100%)')+';background:'+l.color+';border:2px solid '+l.accent}; });
     const vMenu=menuPreview;
+    // ---- Conjure & seasonal palettes ----
+    const baseHex=(cols[selI]||cols[0]||'#8A9A80');
+    const conjured=this.conjureSets(baseHex).map(p=>({name:p.name,from:'from swatch '+(selI+1),onPick:()=>this.applyPreset(p),colors:p.colors.map(c=>'flex:1;background:'+c)}));
+    const seasonalPals=(this.SEASON_PAL[foodSeason]||[]).map(p=>({name:p.name,from:'in your '+foodSeason.toLowerCase()+' season',onPick:()=>this.applyPreset(p),colors:p.colors.map(c=>'flex:1;background:'+c)}));
+    const catOptions=Object.keys(this.CATLABELS).map(k=>({v:k,label:this.CATLABELS[k]}));
+    // ---- dream completeness meter ----
+    const paletteDone=!!(wed.wedding && wed.wedding.palette && pal.name && wed.wedding.palette===pal.name);
+    const looksApprovedN=(at.looks||[]).filter(l=>this.APPROVERS.filter(a=>(l.approvals||{})[a.k]).length>=3).length;
+    const looksDone=looksApprovedN>=1;
+    const menuCoursesN=(food.courses||[]).filter(c=>(c.dishes||[]).length>0).length;
+    const menuDone=menuCoursesN>=2;
+    const inspoDone=Object.keys(this.state.poofed).length>=1 || (_b0.inspirations||[]).length>=1;
+    const pillarDefs=[{key:'palette',label:'Palette',done:paletteDone},{key:'attire',label:'Looks',done:looksDone},{key:'food',label:'Menu',done:menuDone},{key:'gallery',label:'Inspirations',done:inspoDone}];
+    const doneN=pillarDefs.filter(p=>p.done).length; const dreamPctN=Math.round(doneN/pillarDefs.length*100);
+    const pillars=pillarDefs.map(p=>({label:p.label,onClick:()=>this.setState({view:p.key}),
+      dot:'width:7px;height:7px;border-radius:50%;flex-shrink:0;background:'+(p.done?'var(--sage)':'var(--ink-faint)'),
+      style:'display:inline-flex;align-items:center;gap:7px;font-size:12px;padding:6px 12px;border-radius:999px;cursor:pointer;border:1px solid '+(p.done?'#D7E0CF':'var(--line)')+';background:'+(p.done?'var(--sage-bg)':'var(--pearl)')+';color:'+(p.done?'#566049':'var(--ink-soft)')}));
+    const nudges=[]; if(!inspoDone)nudges.push('add or poof an inspiration'); if(!paletteDone)nudges.push('set your palette'); if(!looksDone)nudges.push('get a look blessed by all three'); if(!menuDone)nudges.push('build at least two courses');
+    const dreamHint=nudges.length?('Next: '+nudges[0]):'Your vision is complete — it’s beautiful ✦';
+    const dreamRing='conic-gradient(var(--gold) 0 '+dreamPctN+'%, var(--line) '+dreamPctN+'% 100%)';
     return {
       items, showGallery:view==='gallery', showVision:view==='vision', showFood:view==='food', showPalette:view==='palette', showAttire:view==='attire', tabs,
       favIcon:this.state.favOnly?'♥':'♡',
@@ -535,6 +643,12 @@ class Component extends DCLogic {
       looks, partyOptions:this.PARTIES, newLookParty:this.state.newLookParty, onNewLookParty:this.onNewLookParty, addLook:this.addLook,
       barOpts, moments, cocktails, addCocktail:this.addCocktail, dietary, menuPreview, styleLabel, mood, seasonSuggest,
       vPalette, vLooks, hasVLooks:vLooks.length>0, vMenu,
+      inspoChips, composerOpen:this.state.composerOpen, catOptions,
+      draftTitle:this.state.draftInspo.title, draftCat:this.state.draftInspo.cat, draftNote:this.state.draftInspo.note,
+      onDraftTitle:(e)=>this.onDraftInspo('title',e.target.value), onDraftCat:(e)=>this.onDraftInspo('cat',e.target.value), onDraftNote:(e)=>this.onDraftInspo('note',e.target.value),
+      addInspiration:this.addInspiration, toggleComposer:this.toggleComposer,
+      conjured, seasonalPals, hasSeasonal:seasonalPals.length>0,
+      dreamPct:dreamPctN+'%', dreamRing, dreamHint, pillars,
     };
   }
 }

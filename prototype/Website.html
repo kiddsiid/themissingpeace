@@ -90,7 +90,7 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
       <a href="Dream.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Dream</a>
       <a href="Peace%20Center.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Peace Center</a>
       <a href="Timeline.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Timeline</a>
-      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">The Muse</a>
+      <a href="Board.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Design Studio</a>
       <a href="Decisions.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Decisions</a>
       <a href="Money%20Map.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Money Map</a>
       <a href="Vendors.html" style="display:block;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--ink-soft)">Vendors</a>
@@ -255,7 +255,7 @@ class Component extends DCLogic {
   componentDidMount(){ this._initWS(); }
   _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
   componentWillUnmount(){ if(this._off) this._off(); }
-  up(fn){ if(window.WeddingState) WeddingState.update(fn); }
+  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.setState({wed:WeddingState.get()}); } }
   flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2400); }
   togglePublish=()=>{ const was=this.state.published; this.setState({published:!was}); this.flash(was?'Unpublished — guests see nothing until you publish':'✦ Live now — share it with your circle'); };
   toggle=(k)=>this.setState(s=>({[k]:!s[k]}));
