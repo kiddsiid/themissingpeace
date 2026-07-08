@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDir = path.join(root, 'prototype');
-const outputDir = path.join(root, '.pages-prototype');
+const cwd = process.cwd();
+const outputDir = path.basename(cwd) === 'cloudflare-prototype'
+  ? path.join(cwd, '.pages-prototype')
+  : path.join(root, '.pages-prototype');
 const pagesDir = path.join(outputDir, '_pages');
 const componentsDir = path.join(outputDir, '_components');
 
