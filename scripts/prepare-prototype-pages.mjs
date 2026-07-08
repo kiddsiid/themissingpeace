@@ -198,6 +198,10 @@ export default {
     }
 
     const path = normalizePath(url.pathname);
+    if (path.includes('.dc')) {
+      return new Response('Not found', { status: 404 });
+    }
+
     const redirectTo = REDIRECTS[path];
 
     if (redirectTo) {
