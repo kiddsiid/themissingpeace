@@ -124,7 +124,7 @@ Cloudflare Git integration settings for the current live prototype:
 Production branch: master
 Root directory: cloudflare-prototype
 Build command: node ../scripts/prepare-prototype-pages.mjs
-Build output directory: .pages-prototype
+Build output directory: dist
 ```
 
 The Next.js product deploy is still available as `pnpm run deploy:product` when the product is ready to replace the prototype.

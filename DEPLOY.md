@@ -64,7 +64,7 @@ Repository: kiddsiid/themissingpeace
 Production branch: master
 Root directory: cloudflare-prototype
 Build command: node ../scripts/prepare-prototype-pages.mjs
-Build output directory: .pages-prototype
+Build output directory: dist
 ```
 
 With those settings, every push to `master` builds and deploys the current prototype automatically.

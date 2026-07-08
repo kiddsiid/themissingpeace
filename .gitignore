@@ -12,6 +12,7 @@ build/
 .vercel
 .open-next/
 .pages-prototype/
+cloudflare-prototype/dist/
 .wrangler/
 cloudflare-env.d.ts
 next-env.d.ts
