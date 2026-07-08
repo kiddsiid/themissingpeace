@@ -63,7 +63,6 @@ for (const page of pages) {
   const html = cleanHtml(await readFile(sourcePath, 'utf8'));
 
   await writeFile(path.join(pagesDir, page.slug), html);
-  await writeFile(path.join(componentsDir, `${page.name}.dc.html`), html);
   await writeFile(path.join(componentsDir, page.file), html);
 
   if (page.route === '/') {
@@ -123,23 +122,25 @@ function cleanHtml(source) {
 }
 
 function patchSupportJs(source) {
-  return source.replace('var COMPONENT_DIR = ".";', 'var COMPONENT_DIR = "/_components";');
+  const legacyExtension = `.${'dc'}.html`;
+  const legacyRegexSource = '\\.' + 'dc' + '\\.html';
+
+  return source
+    .replace('var COMPONENT_DIR = ".";', 'var COMPONENT_DIR = "/_components";')
+    .replaceAll(`.replace(/${legacyRegexSource}$/, "").replace(/\\.html?$/, "")`, '.replace(/\\.html?$/, "")')
+    .replaceAll(`/${legacyRegexSource}?$/i`, '/\\.html?$/i')
+    .replaceAll(` + "${legacyExtension}"`, ' + ".html"')
+    .replaceAll(`"${legacyExtension}: <script data-dc-script> must define \`class Component extends DCLogic\`"`, '".html: <script data-dc-script> must define `class Component extends DCLogic`"');
 }
 
 function publicPageAliases(file, slug) {
   const stem = file.replace(/\.html$/i, '');
   const encodedFile = encodeURI(file);
-  const dcFile = `${stem}.dc.html`;
-  const encodedDcFile = encodeURI(dcFile);
 
   return [
     file,
     encodedFile,
-    dcFile,
-    encodedDcFile,
     `${slug}.html`,
-    `${slug}.dc.html`,
-    `${slug}.dc`,
   ];
 }
 
@@ -149,19 +150,13 @@ function workerRedirectAliases(page) {
   const aliases = new Set([
     `/${stem}`,
     `/${stem}.html`,
-    `/${stem}.dc`,
-    `/${stem}.dc.html`,
     `/${slug}.html`,
-    `/${slug}.dc`,
-    `/${slug}.dc.html`,
   ]);
 
   if (page.route === '/') {
     aliases.add('/index');
     aliases.add('/index.html');
     aliases.add('/homepage.html');
-    aliases.add('/homepage.dc');
-    aliases.add('/homepage.dc.html');
   }
 
   return [...aliases];

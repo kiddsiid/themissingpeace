@@ -39,7 +39,7 @@ Public routes include:
 /peacenotes
 ```
 
-Old `.html` and `.dc.html` paths redirect to the clean versions.
+Old spaced `.html` paths redirect to the clean versions.
 
 Deploy the current prototype directly with:
 

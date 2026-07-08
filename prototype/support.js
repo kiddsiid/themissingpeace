@@ -79,7 +79,7 @@
     } catch {
     }
     const base = p.split("/").pop() || "Root";
-    return base.replace(/\.dc\.html$/, "").replace(/\.html?$/, "") || "Root";
+    return base.replace(/\.html?$/, "") || "Root";
   }
 
   // src/boot.ts
@@ -132,7 +132,7 @@
   var FULL_PAGE_CSS = "html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}";
   function rootNameForDocument(doc, loc) {
     let bootPath = loc.pathname || "";
-    if (!/\.dc\.html?$/i.test(safeDecode(bootPath))) {
+    if (!/\.html?$/i.test(safeDecode(bootPath))) {
       try {
         bootPath = new URL(doc.baseURI || "/").pathname;
       } catch {
@@ -1423,7 +1423,7 @@
       const r = registry.get(name);
       if (r.fetched) return;
       r.fetched = true;
-      const url = COMPONENT_DIR + "/" + encodeURIComponent(name) + ".dc.html";
+      const url = COMPONENT_DIR + "/" + encodeURIComponent(name) + ".html";
       fetch(url).then((res) => {
         if (!res.ok) {
           console.error(
@@ -1481,7 +1481,7 @@
         const Cls = evalDcLogic(src);
         if (r.jsSeq !== seq) return;
         if (typeof Cls !== "function") {
-          r.logicError = name + ".dc.html: <script data-dc-script> must define `class Component extends DCLogic`";
+          r.logicError = name + ".html: <script data-dc-script> must define `class Component extends DCLogic`";
         } else {
           r.logicError = null;
           r.Logic = Cls;
