@@ -189,9 +189,9 @@ class Component extends DCLogic {
   KINDS=['Poem','Letter','Vow','Memory','Gratitude'];
   state = { wed:null, open:{}, filter:'All', composerOpen:false, draft:{kind:'Letter',title:'',body:'',seal:''} };
   componentDidMount(){ this._initWS(); }
-  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
+  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>{ this.state.wed=w; this.forceUpdate(); }); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
   componentWillUnmount(){ if(this._off) this._off(); }
-  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.setState({wed:WeddingState.get()}); } }
+  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.state.wed=WeddingState.get(); this.forceUpdate(); } }
 
   toggleOpen=(id)=>this.setState(s=>({open:{...s.open,[id]:!s.open[id]}}));
   unseal=(id)=>this.up(s=>{ const n=s.notes.find(x=>x.id===id); if(n){ n.sealed=false; n.sealUntil=''; } });
