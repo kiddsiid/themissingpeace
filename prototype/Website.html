@@ -253,9 +253,9 @@ a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
 class Component extends DCLogic {
   state = { published:true, rsvp:true, photos:true, mood:true, registry:true, menu:true, attire:true, notice:null, wed:null };
   componentDidMount(){ this._initWS(); }
-  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
+  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>{ this.state.wed=w; this.forceUpdate(); }); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
   componentWillUnmount(){ if(this._off) this._off(); }
-  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.setState({wed:WeddingState.get()}); } }
+  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.state.wed=WeddingState.get(); this.forceUpdate(); } }
   flash(m){ this.setState({notice:m}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({notice:null}),2400); }
   togglePublish=()=>{ const was=this.state.published; this.setState({published:!was}); this.flash(was?'Unpublished — guests see nothing until you publish':'✦ Live now — share it with your circle'); };
   toggle=(k)=>this.setState(s=>({[k]:!s[k]}));

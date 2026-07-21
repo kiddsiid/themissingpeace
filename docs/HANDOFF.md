@@ -442,7 +442,7 @@ Detect truncation with an **esbuild parse sweep**, not brace counting:
 
 ## Current Status
 
-The app lives in **`C:\Users\siddi\Documents\TMP`**.
+The canonical app lives in **`C:\Users\siddi\Documents\The Missing Peace`**.
 
 The local dev server was restarted cleanly after a stale `.next` asset problem and is running at:
 
@@ -452,7 +452,7 @@ The in-app browser currently renders Clerk sign-in correctly at:
 
 `http://localhost:3000/sign-in`
 
-If the browser shows raw/unstyled HTML again, stop the process on port 3000, delete only `C:\Users\siddi\Documents\TMP\.next`, then restart `next dev`.
+If the browser shows raw/unstyled HTML again, stop the process on port 3000, delete only `C:\Users\siddi\Documents\The Missing Peace\.next`, then restart `next dev`.
 
 ## What Is Built
 
@@ -598,3 +598,27 @@ After sign-in, go to `/onboarding` and submit the form to create the first works
 ## Known Gaps
 
 - `0003_clerk_jwt_rls.sql` has been written but likely not ye
+
+## Codex - Phase 0 boundary work (2026-07-21)
+
+- **Canonical repository/path:** `https://github.com/kiddsiid/themissingpeace` with the product
+  working tree at `C:\Users\siddi\Documents\The Missing Peace`. The old `...\Documents\TMP`
+  path does not exist. The product source branch is `codex/update-prototype-from-zip`.
+- **Audit corrections:** the canonical repository contains the Next.js product and its standalone
+  prototype materials. The live suite is 42 tests, not 27.
+- **Secrets:** `.env.local` is ignored, untracked, and absent from all Git history; `.env.example`
+  is the only tracked env file. No live-key-shaped values were found by the masked history scan.
+- **Hygiene:** added `*.tsbuildinfo` to `.gitignore` and untracked `tsconfig.tsbuildinfo` while
+  preserving the ignored local cache. The two ZIP archives and all listed build outputs were already
+  untracked and ignored. Removed seven ignored `tmp/claude-prototype-*` working folders and the empty
+  legacy `cloudflare-page/` directory. Retained `cloudflare-pages/` as the product Pages target and
+  `cloudflare-prototype/` as the demo target.
+- **Docs:** moved North Star, Build Plan v2, and this handoff under `/docs`; kept the full Phase 0
+  document set under `/docs/phase-0`; all Phase 0 README links resolve.
+- **Verification:** `pnpm install` up to date; `pnpm typecheck` passed; Vitest passed 42/42 across
+  7 suites; `pnpm build` passed (28 routes); esbuild parsed all 105 files under `app/` and `src/`
+  with zero failures.
+- **Preserved/deferred:** retained `prototype/*.html`, both deploy targets, and all pre-existing
+  owner canvas/prototype work. Did not run or edit migrations, RLS, dashboards, or Phase 1 features.
+  The pre-existing final Known Gaps sentence above was already truncated in committed history and
+  was preserved rather than reconstructed from guesswork.

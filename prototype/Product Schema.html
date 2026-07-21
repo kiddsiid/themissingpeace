@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#F1ECE2;color:#201C18;font-family:'Manrope',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:#7A531A;text-decoration:none}
+a:hover{color:#A8782A}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:rgba(32,28,24,0.18);border-radius:8px;border:2px solid #F1ECE2}
+h1,h2,h3,p{margin:0}
+@keyframes ps-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div data-screen-label="Product Schema" style="min-height:100vh;background:radial-gradient(120% 80% at 50% -10%,#FBF6EC 0%,#F1ECE2 55%)">
+
+  <!-- MASTHEAD -->
+  <header style="max-width:1200px;margin:0 auto;padding:56px 32px 30px">
+    <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#A8782A;margin-bottom:14px">The Missing Peace · Product Schema</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(38px,6vw,68px);line-height:0.98;letter-spacing:-0.5px;max-width:16ch">Build the world your love will walk into.</h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.4vw,24px);color:#6D645B;margin-top:18px;max-width:60ch;line-height:1.35">One connected wedding-planning engine — not a collection of romantic pages with a shared header. This document maps what it is, what it is for, how every room works today, and where each is going.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:26px">
+      <sc-for list="{{ headerStats }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:2px;background:#FFFDFC;border:1px solid rgba(32,28,24,0.14);border-radius:13px;padding:12px 16px;min-width:120px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#201C18">{{ s.n }}</span>
+          <span style="font-size:11px;color:#6D645B">{{ s.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </header>
+
+  <!-- BODY: nav + content -->
+  <div style="max-width:1200px;margin:0 auto;padding:12px 32px 90px;display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- CONTENTS RAIL -->
+    <nav style="position:sticky;top:20px;flex:0 0 216px;width:216px;align-self:flex-start;background:#FFFDFC;border:1px solid rgba(32,28,24,0.14);border-radius:16px;padding:16px 8px;max-height:calc(100vh - 40px);overflow-y:auto">
+      <div style="font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#A8782A;padding:2px 12px 10px">Contents</div>
+      <sc-for list="{{ toc }}" as="t" hint-placeholder-count="9">
+        <a href="{{ t.href }}" style="display:flex;align-items:baseline;gap:9px;padding:7px 12px;border-radius:9px;font-size:12.5px;color:#3a352f;line-height:1.3"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#A8782A;flex-shrink:0">{{ t.n }}</span><span>{{ t.label }}</span></a>
+      </sc-for>
+    </nav>
+
+    <!-- MAIN -->
+    <main style="flex:1;min-width:320px;display:flex;flex-direction:column;gap:44px">
+
+      <!-- 01 · WHAT IT IS -->
+      <section id="what" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">01 · What it is</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:14px">A creative playground that quietly produces a practical, trustworthy plan</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch">The Missing Peace gathers what a couple wants the day to <em>feel</em> like, turns those wishes into a durable Wedding Compass, and carries that Compass through every decision — meal, money, guests, vendors, timeline, seating, documents, and the guest experience. It should feel intimate before it feels technical, visual before it feels administrative, and trustworthy before it feels magical. Poetry invites the decision; the interface makes the consequence clear.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:22px">
+          <sc-for list="{{ principles }}" as="p" hint-placeholder-count="3">
+            <div style="background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:14px;padding:16px 17px">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#201C18;line-height:1.1">{{ p.title }}</div>
+              <div style="font-size:13px;color:#6D645B;line-height:1.5;margin-top:6px">{{ p.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 02 · THE GOAL -->
+      <section id="goal" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">02 · The goal</div>
+        <div style="background:linear-gradient(160deg,#2A2621,#201C18);border-radius:20px;padding:30px 32px;color:#F7F4EE">
+          <div style="font-size:10.5px;letter-spacing:2.4px;text-transform:uppercase;color:#F2B134">North star</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.4vw,38px);font-weight:600;line-height:1.05;margin-top:8px;max-width:22ch">Build the world your love will walk into.</div>
+          <p style="font-size:14px;line-height:1.6;color:rgba(247,244,238,0.78);margin-top:16px;max-width:66ch">Success is not whether the product contains every wedding feature. It is whether each feature <em>knows why it exists</em> and can speak back to the dream that created it. A couple should enter through Dream, recognize their own values in the Compass, open the Living Canvas and feel the world respond, decide together, understand what still needs care, and leave with practical outputs drawn from one source of truth.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px">
+            <sc-for list="{{ roomPromises }}" as="r" hint-placeholder-count="4">
+              <div style="border-top:1px solid rgba(247,244,238,0.18);padding-top:12px"><div style="font-size:12px;font-weight:700;color:#F2B134;margin-bottom:4px">{{ r.room }}</div><div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:#F7F4EE;line-height:1.3">{{ r.promise }}</div></div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 · PRODUCT MODEL -->
+      <section id="model" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">03 · The product model</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">Four layers, one engine</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">The layers are visible in the experience but never become four separate apps. Each flows into the next, and the world flows back — a change downstream re-informs the engine.</p>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ layers }}" as="l" hint-placeholder-count="4">
+            <div style="display:flex;gap:16px;align-items:stretch;background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-left:4px solid {{ l.c }};border-radius:13px;padding:16px 18px">
+              <div style="flex:0 0 92px;display:flex;flex-direction:column;justify-content:center"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8782A">{{ l.step }}</div><div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#201C18;line-height:1">{{ l.name }}</div></div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;border-left:1px solid rgba(32,28,24,0.10);padding-left:16px"><div style="font-size:13.5px;color:#3a352f;line-height:1.5">{{ l.meaning }}</div><div style="font-size:11.5px;color:#6D645B;margin-top:4px"><span style="color:#A8782A;font-weight:600">Surface · </span>{{ l.surface }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#FBF6EC;border:1px dashed rgba(168,120,42,0.4);border-radius:13px;padding:14px 18px;margin-top:14px">
+          <span style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#A8782A;flex-shrink:0">Feedback loop</span>
+          <sc-for list="{{ loop }}" as="x" hint-placeholder-count="5">
+            <span style="display:inline-flex;align-items:center;gap:8px"><span style="font-size:12.5px;font-weight:600;color:#201C18">{{ x.label }}</span><span style="color:#A8782A">{{ x.arrow }}</span></span>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 04 · TWO TRACKS -->
+      <section id="tracks" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">04 · Two tracks</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">The showcase and the live product</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">Both exist at once with different jobs. The prototype demonstrates the feeling with seeded data; the live product makes it durable, collaborative, and safe. This is not a replatforming plan — it is making the two share one language, one model, and one intelligence layer.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+          <sc-for list="{{ tracks }}" as="t" hint-placeholder-count="2">
+            <div style="background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:15px;padding:18px 19px">
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px"><span style="width:9px;height:9px;border-radius:50%;background:{{ t.c }}"></span><span style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600">{{ t.name }}</span></div>
+              <div style="font-size:13px;color:#3a352f;line-height:1.55">{{ t.body }}</div>
+              <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ t.stack }}" as="s" hint-placeholder-count="4"><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#6D645B;background:#F1EADD;border-radius:7px;padding:4px 9px">{{ s }}</span></sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 05 · THE COMPASS -->
+      <section id="compass" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">05 · The Wedding Compass</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">The product contract</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">Dream does not just produce a sentence and floating clouds. It produces a structured Compass every module can read without asking the couple to repeat themselves. It keeps both the poetic phrase and the practical interpretation — <em>“one long, generous table”</em> stays human, but the engine also understands it implies family-style service, communal presentation, higher coordination, and household-proximate seating.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ compassDomains }}" as="d" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:150px 1fr;gap:14px;background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:12px;padding:13px 16px">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:#201C18;line-height:1.1">{{ d.domain }}</div>
+              <div><div style="font-size:12.5px;color:#3a352f;line-height:1.45">{{ d.examples }}</div><div style="font-size:11px;color:#6D645B;margin-top:4px"><span style="color:#A8782A;font-weight:600">Shapes · </span>{{ d.influence }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 06 · PEACE ENGINE -->
+      <section id="engine" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">06 · The Peace Engine</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">From a single score to honest readiness</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">The engine answers three questions continuously: what is the couple trying to protect, what is at risk, and what is the most helpful next step. It combines deterministic rules with optional generated guidance — which may draft or explain, but must never silently confirm a fact. It produces four projections: <strong>Next action</strong>, <strong>Watch list</strong>, <strong>Ripple map</strong>, and <strong>Readiness</strong>.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+          <div style="background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:15px;padding:18px 19px">
+            <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#6D645B;margin-bottom:3px">Today · Peace Score</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:12px">A weighted checklist</div>
+            <sc-for list="{{ scoreFactors }}" as="f" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(32,28,24,0.08)"><span style="font-size:12.5px;color:#3a352f">{{ f.label }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A8782A">{{ f.weight }}</span></div>
+            </sc-for>
+            <div style="font-size:11.5px;color:#6D645B;line-height:1.5;margin-top:10px">Honest but decorative: it ignores whether guests are cared for, whether the plan is feasible, or whether the signature experience is coherent.</div>
+          </div>
+          <div style="background:linear-gradient(160deg,#FBF6EC,#FFFDFC);border:1px solid rgba(168,120,42,0.3);border-radius:15px;padding:18px 19px">
+            <div style="font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:#A8782A;margin-bottom:3px">Next · Peace Readiness</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:12px">Five dimensions with reasons</div>
+            <sc-for list="{{ readiness }}" as="r" hint-placeholder-count="5">
+              <div style="padding:7px 0;border-bottom:1px solid rgba(32,28,24,0.08)"><div style="font-size:13px;font-weight:600;color:#201C18">{{ r.dim }}</div><div style="font-size:11.5px;color:#6D645B;line-height:1.4">{{ r.measures }}</div></div>
+            </sc-for>
+            <div style="font-size:11.5px;color:#6D645B;line-height:1.5;margin-top:10px">Each shows a score, a plain-language reason, and its open items. Never implies an allergy or religious requirement is “safe” from a checkbox.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 · MODULES -->
+      <section id="modules" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">07 · Every room, today and next</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">The tabs as connected projections</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:8px">Each surface is a different view of the same wedding world. For every room: its promise, how it works in the prototype now, where the redesign takes it, and what it reads and writes back.</p>
+
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+          <div style="margin-top:26px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;font-weight:700">{{ g.name }}</span><span style="flex:1;height:1px;background:rgba(32,28,24,0.14)"></span></div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ g.modules }}" as="m" hint-placeholder-count="3">
+                <div id="{{ m.id }}" style="scroll-margin-top:20px;background:#FFFDFC;border:1px solid rgba(32,28,24,0.13);border-radius:16px;overflow:hidden">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 19px 12px;background:linear-gradient(180deg,#FBF8F2,#FFFDFC)">
+                    <div style="min-width:0">
+                      <div style="font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:#201C18;line-height:1.05">{{ m.name }}</div>
+                      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:#6D645B;margin-top:2px">{{ m.promise }}</div>
+                    </div>
+                    <span style="{{ m.status.style }}">{{ m.status.label }}</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(32,28,24,0.10)">
+                    <div style="background:#FFFDFC;padding:14px 19px">
+                      <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#6D645B;margin-bottom:6px">Today</div>
+                      <div style="font-size:12.5px;color:#3a352f;line-height:1.55">{{ m.today }}</div>
+                    </div>
+                    <div style="background:#FCFAF5;padding:14px 19px">
+                      <div style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#A8782A;margin-bottom:6px">Where it's going</div>
+                      <div style="font-size:12.5px;color:#3a352f;line-height:1.55">{{ m.future }}</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:18px;padding:11px 19px;border-top:1px solid rgba(32,28,24,0.10)">
+                    <div style="min-width:0"><span style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#2F6D55;font-weight:600">Reads</span><div style="font-size:11.5px;color:#3a352f;line-height:1.4">{{ m.reads }}</div></div>
+                    <div style="min-width:0"><span style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#9A5716;font-weight:600">Writes</span><div style="font-size:11.5px;color:#3a352f;line-height:1.4">{{ m.writes }}</div></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- 08 · RIPPLE -->
+      <section id="ripple" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">08 · Ripple behavior</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">One change, visibly traveling</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">The product feels like one engine only when a decision moves through the world. A ripple has a source, affected objects, a reason, and the user's choice to accept, review, or dismiss. A quiet <em>“This will ripple into…”</em> preview appears before any major change.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ ripples }}" as="r" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:14px;align-items:center;background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:12px;padding:13px 16px">
+              <div style="display:flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:50%;background:#A8782A;flex-shrink:0"></span><span style="font-size:13px;font-weight:600;color:#201C18;line-height:1.25">{{ r.change }}</span></div>
+              <div style="display:flex;align-items:center;gap:8px;color:#6D645B"><span style="color:#A8782A;flex-shrink:0">→</span><span style="font-size:12.5px;color:#3a352f;line-height:1.4">{{ r.effect }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 09 · VISUAL SYSTEM -->
+      <section id="visual" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">09 · Visual system</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">Soft, editorial, and alive</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px"><strong>Cormorant Garamond</strong> for display and emotional moments; <strong>Manrope</strong> for interface; <strong>JetBrains Mono</strong> for figures. Italic serif carries intentions and stories, never essential instructions. The central surface feels alive because it changes — not because it is covered in animation.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+          <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="8">
+            <div style="background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:12px;overflow:hidden">
+              <div style="height:52px;background:{{ t.hex }};border-bottom:1px solid rgba(32,28,24,0.10)"></div>
+              <div style="padding:9px 12px"><div style="font-size:12px;font-weight:600;color:#201C18">{{ t.name }}</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6D645B">{{ t.hex }}</div><div style="font-size:10.5px;color:#8a8178;margin-top:2px">{{ t.use }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- 10 · ROADMAP -->
+      <section id="roadmap" style="scroll-margin-top:20px">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#A8782A;margin-bottom:8px">10 · Implementation sequence</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:32px;line-height:1.04;margin-bottom:6px">Eight phases, feast first</h2>
+        <p style="font-size:15px;line-height:1.6;color:#3a352f;max-width:70ch;margin-bottom:20px">The Feast Studio leads because it proves the central thesis: inspiration can become an emotional plan, guest care can become operational clarity, and the result can become a useful vendor brief.</p>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <sc-for list="{{ phases }}" as="p" hint-placeholder-count="8">
+            <div style="display:flex;gap:16px;background:#FFFDFC;border:1px solid rgba(32,28,24,0.12);border-radius:12px;padding:14px 17px">
+              <div style="flex:0 0 62px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#A8782A;padding-top:2px">{{ p.n }}</div>
+              <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:#201C18">{{ p.title }}</div><div style="font-size:12.5px;color:#6D645B;line-height:1.5;margin-top:3px">{{ p.body }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- CLOSING -->
+      <section style="text-align:center;padding:24px 0 0">
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,3vw,28px);color:#6D645B;line-height:1.3;max-width:52ch;margin:0 auto">Dream gives it meaning. The Compass gives it direction. The Peace Engine gives it intelligence. The Living Canvas gives the couple somewhere beautiful to shape the result.</div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals(){
+    const brass='#A8782A', sage='#2F6D55', warn='#9A5716', mut='#6D645B', ink='#201C18';
+    const badge=(label,c,bg)=>({label,style:`font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:${c};background:${bg};border-radius:999px;padding:4px 10px;white-space:nowrap;flex-shrink:0`});
+    const S={
+      seeded: badge('Seeded showcase',brass,'#F3ECDD'),
+      live: badge('Live foundation',sage,'#E6F0E8'),
+      signature: badge('Signature · rebuilt',ink,'#F2E6C9'),
+      concept: badge('Concept in Board',warn,'#F4EBDD')
+    };
+
+    const headerStats=[
+      {n:'4',label:'Product layers'},
+      {n:'3',label:'Creative studios'},
+      {n:'20',label:'Connected rooms'},
+      {n:'6',label:'Compass domains'}
+    ];
+
+    const toc=[
+      {n:'01',label:'What it is',href:'#what'},
+      {n:'02',label:'The goal',href:'#goal'},
+      {n:'03',label:'The product model',href:'#model'},
+      {n:'04',label:'Two tracks',href:'#tracks'},
+      {n:'05',label:'The Wedding Compass',href:'#compass'},
+      {n:'06',label:'The Peace Engine',href:'#engine'},
+      {n:'07',label:'Every room',href:'#modules'},
+      {n:'08',label:'Ripple behavior',href:'#ripple'},
+      {n:'09',label:'Visual system',href:'#visual'},
+      {n:'10',label:'Roadmap',href:'#roadmap'}
+    ];
+
+    const principles=[
+      {title:'Intimate before technical',body:'The emotional layer leads. Administration is the consequence of a feeling, never the entry point.'},
+      {title:'One model, one truth',body:'Every module reads from and writes to the same project. The couple never repeats a decision on two pages.'},
+      {title:'Trust before magic',body:'Generated help drafts and explains. It never silently confirms a certification, an allergy as safe, or a signed contract.'}
+    ];
+
+    const roomPromises=[
+      {room:'The Feast Studio',promise:'Build a meal every guest can enter.'},
+      {room:'The Atmosphere Lab',promise:'Design the feeling before anyone speaks.'},
+      {room:'The Atelier',promise:'Design the story your love will wear.'},
+      {room:'Peace Center',promise:'Know what matters now.'}
+    ];
+
+    const layers=[
+      {step:'Layer 1',name:'Dream',c:'#C98BA0',meaning:'What the couple wants to feel, protect, remember, and avoid.',surface:'Dream Walk & Dream'},
+      {step:'Layer 2',name:'Compass',c:brass,meaning:'The durable, structured interpretation of those wishes — poetic phrase plus practical meaning.',surface:'Wedding Compass'},
+      {step:'Layer 3',name:'Engine',c:sage,meaning:'Intelligence, dependencies, readiness, and next actions derived from the Compass and project data.',surface:'Peace Center & contextual Peace Panel'},
+      {step:'Layer 4',name:'World',c:ink,meaning:'The creative plan and practical outputs built from the shared model.',surface:'Living Canvas, planning modules, and outputs'}
+    ];
+    const loop=[
+      {label:'Dream',arrow:'→'},{label:'Compass',arrow:'→'},{label:'Engine',arrow:'→'},{label:'World',arrow:'→'},{label:'back to Engine',arrow:'↺'}
+    ];
+
+    const tracks=[
+      {name:'User-facing prototype',c:brass,body:'A beautiful showroom that communicates the feeling — seeded Dream Clouds, visual previews, and guided room interactions. It must never imply a seeded interaction is already persisted in production.',stack:['Declarative runtime','wedding-state.js','localStorage','Seeded fixtures']},
+      {name:'Live product',c:sage,body:'The durable engine: real collaboration, permissions, persistence, and production outputs. The work is to make it catch up to the prototype\u2019s emotional ambition while sharing one language.',stack:['Next.js App Router','Supabase','Clerk','Liveblocks','tldraw','Peace Engine']}
+    ];
+
+    const compassDomains=[
+      {domain:'Feeling',examples:'Warm, intimate, playful, peaceful, dramatic.',influence:'Atmosphere, music, language, lighting, website'},
+      {domain:'People',examples:'Family-centered, community, private, intergenerational.',influence:'Guest experience, seating, meal, timeline'},
+      {domain:'Hospitality',examples:'Everyone included, thoughtful alternatives, abundant, relaxed.',influence:'Feast coverage, service style, signage, vendor brief'},
+      {domain:'Meaning',examples:'Faith, culture, memory, place, ancestry, ritual.',influence:'Notes, ceremony, food stories, attire, playlist'},
+      {domain:'Boundaries',examples:'No owner dependency, no performance, no alcohol, no late-night pressure.',influence:'Decisions, vendor questions, risk flags, timeline'},
+      {domain:'Practical shape',examples:'Guest estimate, date confidence, location, budget, stage.',influence:'Timeline, Money Map, vendor readiness, deadlines'}
+    ];
+
+    // current engine factors (from wedding-state.js peaceScore)
+    const scoreFactors=[
+      {label:'Compass approved',weight:'15%'},
+      {label:'Timeline set',weight:'15%'},
+      {label:'Decisions settled',weight:'25%'},
+      {label:'Budget on track',weight:'20%'},
+      {label:'Vendors booked',weight:'15%'},
+      {label:'Documents signed',weight:'10%'}
+    ];
+    const readiness=[
+      {dim:'Clarity',measures:'Compass approved, major decisions understood, key facts known.'},
+      {dim:'Care',measures:'Guest requirements represented, meal coverage assessed, conflicts resolved or acknowledged.'},
+      {dim:'Feasibility',measures:'Venue, service, staffing, budget, timing, and vendor questions cohere.'},
+      {dim:'Alignment',measures:'Partners and collaborators have approved or commented on meaningful choices.'},
+      {dim:'Handoff',measures:'Briefs, documents, timeline, seating, and outputs are complete enough to use.'}
+    ];
+
+    const groups=[
+      {name:'Begin',modules:[
+        {id:'m-home',name:'Homepage',promise:'The emotional front door.',status:S.seeded,
+          today:'A candlelit landing that asks \u201cwho\u2019s arriving?\u201d and lets a participant pick their role (couple, planner, or vendor) before stepping into the Dream.',
+          future:'Emotional front door and identity selection driven by real project invitations and new-project state, scoped to a Clerk workspace.',
+          reads:'Project invitation / new-project state',writes:'Selected participant role'},
+        {id:'m-dreamwalk',name:'Dream Walk',promise:'The ceremonial entrance.',status:S.seeded,
+          today:'A guided origin story \u2014 season, light, intimacy, and feeling questions \u2014 that gathers wishes and generates a first Compass sentence and Dream Clouds.',
+          future:'Only asks questions that change a recommendation. Each answer shows a Dream Cloud appearing and a sentence of consequence; questions can be skipped or kept as open dreams; ends on a Compass the couple approves together.',
+          reads:'Dream answers, project profile',writes:'Compass, Dream Clouds, first watch list'},
+        {id:'m-dream',name:'Dream',promise:'The Compass editor & cloud map.',status:S.seeded,
+          today:'A constellation of Dream Clouds around a glowing Compass. Clouds carry a phrase and a private reflection; the Compass shows the woven sentence.',
+          future:'Drag a cloud toward the center to raise priority, mark it Real or return it to Dreaming, add a reflection, and see its ripples \u2014 \u201cFamily is influencing Feast, Seating, Timeline, Playlist, and Peace Notes.\u201d Making something real creates a visible project record.',
+          reads:'Compass & clouds',writes:'Priorities, realized dreams, linked intentions'}
+      ]},
+      {name:'Create · the Living Canvas',modules:[
+        {id:'m-board',name:'Living Canvas (Board)',promise:'The doorway to the three studios.',status:S.live,
+          today:'One very large surface currently holding the Design Studio, Feast, Atmosphere, and Atelier at once \u2014 gallery, canvas, Liveblocks presence, uploads, favorites, tags, Poof, and Master Vision.',
+          future:'Becomes a three-zone shell: a Dream Drawer (Compass + inspirations + ripples), the active room in the center, and a contextual Peace Panel. Each of the three rooms gets its own spatial grammar instead of one long form.',
+          reads:'Compass, inspirations, progress',writes:'Room selection, creative drafts (via Poof, with provenance)'},
+        {id:'m-feast',name:'The Feast Studio',promise:'Build a meal every guest can enter.',status:S.signature,
+          today:'Rebuilt as the signature room: a nine-scene meal journey (Feast Map · Tasting Canvas · Peace Panel), progressive Add-Dish editor, live guest-care coverage, a Hospitality Score, ripple previews, and a live Caterer Brief \u2014 responsive to mobile.',
+          future:'Live schema for feast plans, scenes, dishes, guest requirements, assessments, evidence, and versioned briefs. Requirement taxonomy (Unknown / Ingredient-compatible / Vendor-confirmed / Certified / Conflict) \u2014 never \u201csafe.\u201d Suggestions create Draft dishes with rationale.',
+          reads:'Guests, requirements, Compass, vendors, budget',writes:'Scenes, dishes, assessments, evidence, brief versions'},
+        {id:'m-atmosphere',name:'The Atmosphere Lab',promise:'Design the feeling before anyone speaks.',status:S.concept,
+          today:'Lives inside Board as a palette with named roles, an atmosphere-word set, and a three-moment palette journey (ceremony, cocktail, reception).',
+          future:'An atmosphere control room: pick feeling words, then layered palette roles, and \u201cRipple through the world\u201d updates invitation, website, tablescape, attire, florals, cake, menu cards, signage, and lighting previews. Palette Journey Timeline, design-intelligence critiques, and later image color extraction.',
+          reads:'Compass, palette, materials, rooms',writes:'Palette tokens, surface applications, intentional exceptions'},
+        {id:'m-atelier',name:'The Atelier',promise:'Design the story your love will wear.',status:S.concept,
+          today:'Lives inside Board as look cards (bride, groom, party) with silhouette/fabric details and hard-coded approver names.',
+          future:'A 2.5D fashion studio: culturally-aware Look Selector and Composer, Couple Harmony and Wedding-Party Harmony views against the real palette and venue, context previews (aisle, portraits, dance floor), attire rules, and a guest dress-code generator. Approver labels become editable project roles.',
+          reads:'Compass, palette, venue, season, party',writes:'Looks, approvals, attire requirements, harmony notes'}
+      ]},
+      {name:'Plan',modules:[
+        {id:'m-peace',name:'Peace Center',promise:'Know what matters now.',status:S.seeded,
+          today:'A dashboard with the Peace Score band and planning metrics across decisions, budget, vendors, and documents.',
+          future:'A calm command center that opens with a compact Compass statement, current readiness, the one watch item, the one next action, and recent ripples \u2014 every recommendation carrying a reason. Focus mode opens the module in context without losing the reason you entered.',
+          reads:'All derived projections',writes:'Action completion, decision focus, accept / dismiss'},
+        {id:'m-decisions',name:'Decisions',promise:'The ledger between intention and execution.',status:S.seeded,
+          today:'A list of open and settled decisions (dinner style, band vs. DJ, welcome dinner, the sendoff) with a final choice.',
+          future:'Every major decision shows its linked Dream Cloud, options considered, participants, state, rationale, and affected modules. Settling creates a ripple summary; reopening flags which downstream objects become stale. Openable from Peace Center, Feast, Money Map, Timeline, or Vendors \u2014 always the same record.',
+          reads:'Engine recommendations, linked objects',writes:'Options, votes, rationale, final decisions'},
+        {id:'m-timeline',name:'Timeline',promise:'The road to the day, and through it.',status:S.seeded,
+          today:'A planning roadmap of milestones and tasks; the wedding date can still be a \u201cdream.\u201d',
+          future:'Two connected views \u2014 Planning Roadmap and Run of Day. Dependencies are generated from decisions, vendors, documents, meal service, and music, explained in plain language (\u201cCatering agreement waits on the meal-service decision\u201d). Setting a date unlocks the Run of Day and converts relative tasks to due dates.',
+          reads:'Date, venue, vendors, decisions, meal, music',writes:'Milestones, tasks, dependencies, day sequence'},
+        {id:'m-money',name:'Money Map',promise:'Advisory, always traceable.',status:S.seeded,
+          today:'Contributors, category planning, and scheduled/paid payments with derived totals and protected categories. It never processes payments.',
+          future:'Every number traces to a source (a vendor record or a stated assumption). A guest-count change shows its effect on catering, rentals, seating, and printables. Scenario mode compares family-style vs. plated without silently changing the approved plan.',
+          reads:'Vendors, decisions, guest estimate, modules',writes:'Guidance, protected categories, assumptions, scenarios'}
+      ]},
+      {name:'People & partners',modules:[
+        {id:'m-guests',name:'Guests',promise:'The source of truth for people & care.',status:S.live,
+          today:'A guest CRM with invited / responded / attending counts and dietary-restriction records.',
+          future:'The single home for households, attendance, meal requirements, travel, and seating context. Feast reads requirements from here rather than a separate editor. A guest profile shows their affected dishes and seating; changing a requirement ripples into Feast, Seating, Printables, and the engine.',
+          reads:'RSVPs, households, requirements, meals',writes:'Guest facts, attendance, meal requirements, travel notes'},
+        {id:'m-seating',name:'Seating Studio',promise:'An immersive spatial tool.',status:S.live,
+          today:'Reception and ceremony charts with tables, assignments, household seating, and drag interactions.',
+          future:'Mobile-first Arrange Mode (full-screen map, guest drawer, pinch/drag). Advisory Magic Arrange that explains its priorities and requires confirmation, and never groups guests by sensitive requirements in a way that exposes private information. Keyboard alternatives for every drag.',
+          reads:'Guests, households, VIPs, requirements, venue tables',writes:'Table plan, assignments, conflicts, exceptions'},
+        {id:'m-vendors',name:'Vendors',promise:'Internal records with expectations.',status:S.live,
+          today:'Vendor records with category, status (idea \u2192 booked), quote, and paid amounts feeding the budget.',
+          future:'Each record shows what the project expects from that vendor from the Compass and connected modules, and flags gaps \u2014 \u201cthe caterer has no evidence for the Zabiha requirement.\u201d Generates a shareable brief without requiring the vendor to make an account. No vendor portal or payments in v1.',
+          reads:'Compass, module needs, documents, budget',writes:'Status, contact notes, open questions, evidence'}
+      ]},
+      {name:'Outputs',modules:[
+        {id:'m-website',name:'Website & Guest Experience',promise:'The public face of the world.',status:S.live,
+          today:'A public guest website (story, details, dress code, menu, registries, RSVP) with a private Website Studio for editing the slug and content.',
+          future:'Explicit Draft / Preview / Published / RSVP-open / Photos-open / Needs-update states. Public loaders expose only intentionally published fields; RSVP writes meals and addresses into the correct Guest CRM workspace; song requests flow to Playlist; guest photos are moderated and served through signed URLs. Compass, timeline, dress-code, or menu changes flag affected sections before publishing.',
+          reads:'Compass, content, timeline, menu, attire, Master Vision',writes:'Published page, RSVP, contacts, photo album, moderation'},
+        {id:'m-printables',name:'Printables',promise:'Paper drawn from the live model.',status:S.seeded,
+          today:'Generated escort cards, menus, save-the-dates, and day-of cards previewed from project data.',
+          future:'Each printable carries a source summary and a stale state: change the seating after exporting escort cards and it reads \u201cUpdate available\u201d and names the affected output. The earlier export stays as a version. Preview first, then export.',
+          reads:'Guests, seating, menu, timeline, Compass',writes:'Export versions and stale state'},
+        {id:'m-documents',name:'Documents',promise:'A private vault.',status:S.seeded,
+          today:'Contracts and shared files with signer records, due dates, and statuses (draft, sent, signed, shared).',
+          future:'Clear states \u2014 Draft, Awaiting internal signature, Signed, Shared externally, Expired, Needs update \u2014 with each file connected to its vendor, budget category, decision, deadline, and affected modules. Mobile stacks title, status, signers, and due date with secondary actions in an overflow.',
+          reads:'Vendors, briefs, agreements, generated exports',writes:'Status, signers, deadlines, notes, versions'}
+      ]},
+      {name:'Soul & afterglow',modules:[
+        {id:'m-notes',name:'Peace Notes',promise:'The private emotional layer.',status:S.seeded,
+          today:'Vows, letters, memories, poems, and gratitude \u2014 some sealed until a chosen date. Kept out of engine scoring.',
+          future:'Stays the private soul layer, never used as analytics unless the couple explicitly links a note to a project area. Sealing is local and clearly explained. A note can optionally become a ceremony line or website story, but the default is private.',
+          reads:'Dream, people, memories, rituals',writes:'Letters, vows, poems, sealed notes, optional links'},
+        {id:'m-playlist',name:'Playlist',promise:'The soundtrack by moment.',status:S.live,
+          today:'Tracks and requests for the wedding soundtrack.',
+          future:'Organized by moment \u2014 first dance, ceremony, cocktail, dinner, dance floor, last dance, sendoff \u2014 connected to Timeline and the Compass mood. Guest requests and a hard-no list stay visible with ownership and approval states.',
+          reads:'Compass, timeline, guest requests',writes:'Tracks, requests, hard-no list, moment associations'},
+        {id:'m-honeymoon',name:'Honeymoon',promise:'Afterglow, not another dashboard.',status:S.live,
+          today:'A distinct space for destination wishes and honeymoon planning.',
+          future:'Framed as Afterglow: inherits the couple\u2019s mood, pace, and budget guardrails but stays separate from the wedding-day readiness score. Wishes can come from Peace Notes or the Compass, and the couple is never forced to plan it before the foundation is clear.',
+          reads:'Preferences, budget guidance, notes',writes:'Destination, wishes, itinerary drafts'}
+      ]}
+    ];
+
+    const ripples=[
+      {change:'Dream says \u201cone long, generous table\u201d',effect:'Family-style Feast template, long-table seating, communal presentation, staffing review, and rental guidance.'},
+      {change:'Guest adds a certified-kosher requirement',effect:'Guest Care updates, affected dishes go Unknown or Conflict, a vendor-evidence action opens, and the brief section is flagged.'},
+      {change:'Palette changes from sage to plum',effect:'Invitation, website preview, tablescape, attire context, florals, cake, menu card, and lighting previews all visibly update.'},
+      {change:'Family-style changes to plated',effect:'Feast service, staffing, rentals, timeline, catering decision, vendor brief, and Money Map scenario all shift \u2014 previewed first.'},
+      {change:'The date is set',effect:'Roadmap tasks convert to due dates, Run of Day scaffolds, vendor deadlines and document dates refresh.'},
+      {change:'Guest count rises',effect:'Advisory food, beverage, rental, seating-capacity, and printable guidance recalculates.'},
+      {change:'A brief version is created',effect:'A snapshot freezes; when source data later changes, the brief flags exactly which sections moved.'}
+    ];
+
+    const tokens=[
+      {name:'Canvas',hex:'#F7F4EE',use:'App background'},
+      {name:'Surface',hex:'#FFFDFC',use:'Cards & sheets'},
+      {name:'Ink',hex:'#201C18',use:'Primary text'},
+      {name:'Muted ink',hex:'#6D645B',use:'Secondary text'},
+      {name:'Brass',hex:'#A8782A',use:'Borders, selected accents'},
+      {name:'Candle',hex:'#F2B134',use:'Warm highlight only'},
+      {name:'Sage',hex:'#2F6D55',use:'Confirmed / positive'},
+      {name:'Warning',hex:'#9A5716',use:'Needs confirmation'},
+      {name:'Danger',hex:'#A23B32',use:'Conflicts & destructive'}
+    ];
+
+    const phases=[
+      {n:'Phase 0',title:'Keep the showcase alive',body:'Stabilize the prototype, remove unresolved template tokens, and build a parity register mapping every prototype interaction to a live counterpart.'},
+      {n:'Phase 1',title:'Strengthen the live foundation',body:'Unify route metadata, navigation groups, project context, participant labels, and authorization across the existing Next.js pages. Add a build check for unresolved interpolation.'},
+      {n:'Phase 2',title:'Complete Dream \u2192 Compass \u2192 Poof \u2192 Ripple',body:'Add stable Compass principle ids, source links, module influences, confidence, and version history. Make Poof a typed, provenance-preserving bridge; expand engine context.'},
+      {n:'Phase 3',title:'Establish the Living Canvas shell',body:'Introduce the Dream Drawer, room selector, and contextual Peace Panel over the working Board primitives. Master Vision becomes the approved World view.'},
+      {n:'Phase 4',title:'Build the Feast Studio first',body:'The priority room \u2014 nine-scene canvas, progressive dish editor, guest-care coverage, assessment states, evidence, Hospitality Score, and versioned Caterer Brief.'},
+      {n:'Phase 5',title:'Atmosphere Lab & Atelier',body:'Atmosphere as a visual system with palette roles, journey timeline, intelligence notes, and \u201cRipple through the world.\u201d Atelier as a 2.5D fashion studio with harmony views.'},
+      {n:'Phase 6',title:'Connect planning & guest surfaces',body:'Wire Money Map, Vendors, Decisions, Timeline, Guests, Seating, Documents, Playlist, Honeymoon, Notes, Printables, and the public Guest Experience to the shared engine.'},
+      {n:'Phase 7',title:'Mobile, collaboration, resilience',body:'Dedicated mobile shell and Arrange Mode, object-level collaboration and comments, offline draft recovery, version conflicts, and full accessibility passes.'}
+    ];
+
+    return { headerStats, toc, principles, roomPromises, layers, loop, tracks, compassDomains, scoreFactors, readiness, groups, ripples, tokens, phases };
+  }
+}
+</script>
+</body>
+</html>

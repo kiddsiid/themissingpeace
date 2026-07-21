@@ -172,9 +172,9 @@ class Component extends DCLogic {
   SHAREPOOL=['Saffron & Sage','Priya Anand','Willowbrook','Aria (planner)','Fern & Flora'];
   state = { wed:null, filter:'All', newTitle:'' };
   componentDidMount(){ this._initWS(); }
-  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>this.setState({wed:w})); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
+  _initWS=(t=0)=>{ if(window.WeddingState){ this.setState({wed:WeddingState.get()}); this._off=WeddingState.subscribe(w=>{ this.state.wed=w; this.forceUpdate(); }); } else if(t<40){ setTimeout(()=>this._initWS(t+1),50);} };
   componentWillUnmount(){ if(this._off) this._off(); }
-  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.setState({wed:WeddingState.get()}); } }
+  up(fn){ if(window.WeddingState){ WeddingState.update(fn); this.state.wed=WeddingState.get(); this.forceUpdate(); } }
   notify(s,text,kind){ s.notifications=s.notifications||[]; s.notifications.unshift({id:'n'+Date.now()+Math.round(Math.random()*999),text:text,kind:kind,ts:Date.now(),read:false}); }
   fmtDate(iso){ if(!iso) return ''; try{ const d=new Date(iso+'T00:00:00'); return this.MON[d.getMonth()]+' '+d.getDate(); }catch(e){ return iso; } }
   daysUntil(iso){ if(!iso) return null; try{ return Math.round((new Date(iso+'T00:00:00')-new Date())/86400000); }catch(e){ return null; } }

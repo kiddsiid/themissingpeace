@@ -60,7 +60,7 @@ The application has the main product surface in place, including:
 - Supabase migrations through `0013_guest_pages.sql`
 - Cloudflare Workers deployment setup through OpenNext
 
-See [HANDOFF.md](./HANDOFF.md) for the latest engineering handoff and remaining work.
+See [docs/HANDOFF.md](./docs/HANDOFF.md) for the latest engineering handoff and remaining work.
 
 ## Tech Stack
 
@@ -164,7 +164,7 @@ src/lib/seed/            Seed data and prompt assets
 supabase/migrations/     Database schema and RLS migrations
 tests/                   Vitest coverage for product logic
 DEPLOY.md                GitHub to Cloudflare deployment guide
-HANDOFF.md               Current build status and next engineering steps
+docs/                    Product intent, handoff, and Phase 0 audit documents
 ```
 
 ## Quality Checks
