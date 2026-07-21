@@ -15,6 +15,7 @@ build/
 cloudflare-prototype/dist/
 .wrangler/
 cloudflare-env.d.ts
+*.tsbuildinfo
 next-env.d.ts
 coverage/
 tmp/
