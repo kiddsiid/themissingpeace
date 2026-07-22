@@ -39,6 +39,10 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 @keyframes dream-twinkle { 0%,100% { opacity:.15; transform:scale(.8) } 50% { opacity:.9; transform:scale(1.15) } }
 @keyframes dream-float { 0%,100% { transform:translateY(0) rotate(0) } 50% { transform:translateY(14px) rotate(20deg) } }
 @keyframes dream-bob { 0%,100% { transform:var(--rot,rotate(0)) translateY(0) } 50% { transform:var(--rot,rotate(0)) translateY(-7px) } }
+/* Design-system overlay motion (Drawer). Honored by motion-safe: variants; the
+   global reduced-motion reset below also neutralizes these. */
+@keyframes drawer-in-left { from { transform:translateX(-100%) } to { transform:translateX(0) } }
+@keyframes drawer-in-right { from { transform:translateX(100%) } to { transform:translateX(0) } }
 
 .motion-world > * { animation:page-rise .48s cubic-bezier(.22,1,.36,1) both; }
 .motion-world :where(section, article, li, form) { transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease; }
