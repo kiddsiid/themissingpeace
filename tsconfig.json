@@ -17,5 +17,5 @@
     "paths": { "@/*": ["./*"], "@/lib/*": ["./src/lib/*"], "@/components/*": ["./src/components/*"], "@/design-system": ["./src/design-system/index.ts"], "@/design-system/*": ["./src/design-system/*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "tmp", "docs/_archive"]
 }

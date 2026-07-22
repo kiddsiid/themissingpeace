@@ -1,0 +1,56 @@
+{
+  "site": {
+    "canonicalUrl": "https://themissingpeace.pages.dev/",
+    "name": "The Missing Peace",
+    "tagline": "Wedding Planning Engine",
+    "contactEmail": "hello@themissingpeace.app",
+    "earlyAccessLabel": "Early access preview"
+  },
+  "offers": {
+    "founding-couple": {
+      "active": true,
+      "audience": "couple",
+      "name": "Founding Couple",
+      "headline": "One wedding. The whole engine. A founding seat.",
+      "priceCents": 7900,
+      "currency": "usd",
+      "billingType": "one-time",
+      "billingLabel": "one-time payment",
+      "stripeMode": "payment",
+      "benefits": [
+        "Full Wedding Planning Engine access for your wedding when early access opens",
+        "Your Dream Walk and Wedding Compass carry over — nothing is lost",
+        "Founding price locked: no subscription, ever, for your wedding",
+        "A direct line to the founders — founding couples shape what gets built next",
+        "Partner and one planner or helper included in your shared workspace"
+      ],
+      "accessTiming": "Early access opens in waves. Founding couples are the first wave; you will receive your invitation by email.",
+      "cancellation": "Cancel anytime before your access begins for a full refund — one email is enough.",
+      "refundPolicy": "14-day full refund after your access begins, no questions asked."
+    },
+    "founding-planner": {
+      "active": true,
+      "audience": "planner",
+      "name": "Founding Planner",
+      "headline": "Every client wedding, one calm engine.",
+      "priceCents": 19900,
+      "currency": "usd",
+      "billingType": "one-time",
+      "billingLabel": "one-time payment",
+      "stripeMode": "payment",
+      "benefits": [
+        "Multi-wedding workspace: run every client through the same engine",
+        "Founding-planner pricing locked before professional plans are announced",
+        "Client-facing sharing: couples see their plan, you keep the controls",
+        "A direct line to the founders on the professional roadmap"
+      ],
+      "accessTiming": "Professional early access follows the first couples wave; founding planners are invited first.",
+      "cancellation": "Cancel anytime before your access begins for a full refund — one email is enough.",
+      "refundPolicy": "14-day full refund after your access begins, no questions asked."
+    }
+  },
+  "checkout": {
+    "successPath": "/?checkout=success",
+    "cancelPath": "/?checkout=cancelled"
+  }
+}

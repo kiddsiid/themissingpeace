@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Missing Peace — One Engine Visual System (§17)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mp-canvas:#F7F4EE;--mp-surface:#FFFDFC;--mp-ink:#201C18;--mp-muted:#6D645B;
+    --mp-brass-text:#7A531A;--mp-brass:#A8782A;--mp-candle:#F2B134;--mp-sage:#2F6D55;
+    --mp-warning:#9A5716;--mp-danger:#A23B32;--mp-border:rgba(32,28,24,.14);
+    --tint-sage:#E4EDE8;--tint-brass:#F3E7CF;--tint-danger:#F3E0DD;--tint-ink:#ECE7E0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--mp-canvas);color:var(--mp-ink);font-family:'Manrope',ui-sans-serif,system-ui,sans-serif;line-height:1.5}
+  .voice{font-family:'Cormorant Garamond',ui-serif,Georgia,serif}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 24px}
+  .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mp-brass-text)}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:44px;margin:.15em 0 0}
+  h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;margin:0}
+  .card{background:var(--mp-surface);border:1px solid var(--mp-border);border-radius:14px;box-shadow:0 8px 24px rgba(32,28,24,.06)}
+  .sw{height:52px;border-radius:8px;border:1px solid rgba(0,0,0,.06)}
+  .grid{display:grid;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;font-weight:600;font-size:14px;border:1px solid transparent;cursor:pointer}
+  .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;border:1px solid transparent}
+  .pill{border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600}
+  section{margin-top:34px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  code{background:var(--tint-ink);padding:1px 5px;border-radius:5px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">The Missing Peace · One Engine redesign · §17</div>
+    <h1>Visual system</h1>
+    <p style="max-width:60ch;color:var(--mp-muted);margin-top:8px">
+      The new canonical palette and type. Introduced as a <code>--mp-*</code> token layer added
+      alongside the legacy tokens, so existing pages and the Living Canvas keep working until each
+      surface is migrated. Contrast pairings below are WCAG-AA validated.
+    </p>
+  </header>
+
+  <section>
+    <h2>Palette</h2>
+    <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-top:12px">
+      <div><div class="sw" style="background:var(--mp-canvas)"></div><small>Canvas #F7F4EE</small></div>
+      <div><div class="sw" style="background:var(--mp-surface)"></div><small>Surface #FFFDFC</small></div>
+      <div><div class="sw" style="background:var(--mp-ink)"></div><small>Ink #201C18</small></div>
+      <div><div class="sw" style="background:var(--mp-muted)"></div><small>Muted #6D645B</small></div>
+      <div><div class="sw" style="background:var(--mp-brass)"></div><small>Brass #A8782A</small></div>
+      <div><div class="sw" style="background:var(--mp-candle)"></div><small>Candle #F2B134</small></div>
+      <div><div class="sw" style="background:var(--mp-sage)"></div><small>Sage #2F6D55</small></div>
+      <div><div class="sw" style="background:var(--mp-danger)"></div><small>Danger #A23B32</small></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Type</h2>
+    <div class="card" style="padding:20px;margin-top:12px">
+      <div class="voice" style="font-size:34px">Build the world your love will walk into.</div>
+      <div class="voice" style="font-style:italic;font-size:20px;color:var(--mp-muted)">Cormorant Garamond — intentions, quotes, and emotional moments.</div>
+      <p style="margin:12px 0 0">Manrope carries the interface: labels, controls, data, and body copy. Brass text
+        (<span style="color:var(--mp-brass-text);font-weight:600">#7A531A</span>) is the accessible accent for important labels — pale gold alone never carries meaning.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Buttons</h2>
+    <div class="card" style="padding:20px;margin-top:12px">
+      <div class="row">
+        <button class="btn" style="background:var(--mp-ink);color:#FFFDFC">Primary</button>
+        <button class="btn" style="background:var(--mp-sage);color:#FFFDFC">Confirm</button>
+        <button class="btn" style="background:var(--mp-danger);color:#FFFDFC">Delete</button>
+        <button class="btn" style="background:var(--mp-surface);color:var(--mp-ink);border-color:var(--mp-brass)">Outline</button>
+        <button class="btn" style="background:transparent;color:var(--mp-muted)">Ghost</button>
+        <button class="btn" style="background:var(--mp-ink);color:#FFFDFC;box-shadow:0 0 0 2px var(--mp-surface),0 0 0 4px var(--mp-brass)">Focused</button>
+      </div>
+      <p style="margin:12px 0 0;font-size:13px;color:var(--mp-muted)">Solid ink / sage / danger with white all clear AA text. Brass = borders + the focus ring (validated ≥3:1).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Chips &amp; status</h2>
+    <div class="card" style="padding:20px;margin-top:12px">
+      <div class="row">
+        <span class="chip" style="background:var(--tint-sage);color:var(--mp-sage)">Covered</span>
+        <span class="chip" style="background:var(--tint-brass);color:var(--mp-brass-text)">Needs review</span>
+        <span class="chip" style="background:var(--tint-danger);color:var(--mp-danger)">Conflict</span>
+        <span class="chip" style="background:var(--tint-ink);color:var(--mp-ink)">Neutral</span>
+        <span class="chip" style="background:var(--mp-ink);color:#FFFDFC">Ink</span>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <span class="pill" style="background:var(--tint-sage);color:var(--mp-sage)">Peace readiness · Clarity strong</span>
+        <span class="pill" style="background:var(--tint-brass);color:var(--mp-brass-text)">Care · 2 to confirm</span>
+      </div>
+      <p style="margin:12px 0 0;font-size:13px;color:var(--mp-muted)">Status never rides on color alone — every state carries text + shape (§23).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Navigation groups (§15)</h2>
+    <div class="card" style="padding:20px;margin-top:12px">
+      <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+        <div><div class="eyebrow">Begin</div><div style="color:var(--mp-muted);font-size:14px">Dream · Compass</div></div>
+        <div><div class="eyebrow">Create</div><div style="color:var(--mp-muted);font-size:14px">Living Canvas · Feast · Atmosphere · Atelier</div></div>
+        <div><div class="eyebrow">Plan</div><div style="color:var(--mp-muted);font-size:14px">Peace Center · Decisions · Timeline · Money Map</div></div>
+        <div><div class="eyebrow">People &amp; partners</div><div style="color:var(--mp-muted);font-size:14px">Guests · Seating · Vendors</div></div>
+        <div><div class="eyebrow">Outputs</div><div style="color:var(--mp-muted);font-size:14px">Briefs · Documents · Printables · Guest Experience</div></div>
+        <div><div class="eyebrow">Soul &amp; afterglow</div><div style="color:var(--mp-muted);font-size:14px">Peace Notes · Playlist · Honeymoon</div></div>
+      </div>
+      <p style="margin:14px 0 0;font-size:13px;color:var(--mp-muted)">Mobile core: <b>Home · Dream · Studio · Guests · Peace</b>, with a full-height More drawer.</p>
+    </div>
+  </section>
+
+  <footer style="margin-top:40px;border-top:1px solid var(--mp-border);padding-top:14px;font-size:12px;color:var(--mp-muted)">
+    Preview of the One Engine §17 visual system. Values mirror <code>src/design-system/tokens.ts</code> and <code>app/globals.css</code>.
+  </footer>
+</div>
+</body>
+</html>

@@ -5,6 +5,7 @@ import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 import { buildCompass, type DreamResponses } from '@/lib/engine/compass';
+import { emitRipple } from '@/lib/engine/ripple';
 
 function text(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -113,6 +114,14 @@ export async function saveDream(formData: FormData) {
     updated_at: new Date().toISOString(),
   }, { onConflict: 'workspace_id' });
   if (compassError) throw compassError;
+
+  // Ripple: a Compass change re-weights priorities across the plan. Non-blocking.
+  await emitRipple(workspace.id, {
+    sourceType: 'compass',
+    changeKind: 'updated',
+    summary: 'Your Compass was updated',
+    createdBy: workspace.userId,
+  });
 
   await db.from('audit_events').insert({
     workspace_id: workspace.id,

@@ -22,7 +22,7 @@ export default function Landing() {
           A Wedding Planning Engine for the day, the people, the details, and the peace behind it all.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/sign-up" className="rounded-full bg-[var(--clay)] px-6 py-3 text-sm text-white hover:opacity-90">
+          <Link href="/welcome" className="rounded-full bg-[var(--clay)] px-6 py-3 text-sm text-white hover:opacity-90">
             Begin your Dream
           </Link>
           <Link href="/sign-in" className="rounded-full border border-[#D8C7A6] px-6 py-3 text-sm text-[var(--ink-soft)] hover:bg-[var(--gold-bg)]">

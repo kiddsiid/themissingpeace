@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Missing Peace — Auth & Profile (preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mp-canvas:#F7F4EE;--mp-surface:#FFFDFC;--mp-ink:#201C18;--mp-muted:#6D645B;
+    --mp-brass-text:#7A531A;--mp-brass:#A8782A;--mp-candle:#F2B134;--mp-sage:#2F6D55;
+    --mp-danger:#A23B32;--mp-border:rgba(32,28,24,.14);
+    --tint-sage:#E4EDE8;--tint-brass:#F3E7CF;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--mp-canvas);color:var(--mp-ink);font-family:'Manrope',system-ui,sans-serif;line-height:1.5}
+  .voice{font-family:'Cormorant Garamond',Georgia,serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 20px 60px}
+  .lead{color:var(--mp-muted);max-width:64ch}
+  .screens{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:22px}
+  .screen{background:var(--mp-surface);border:1px solid var(--mp-border);border-radius:18px;box-shadow:0 12px 32px rgba(32,28,24,.07);overflow:hidden}
+  .screen h3{margin:0;padding:12px 20px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mp-brass-text);border-bottom:1px solid var(--mp-border)}
+  .body{padding:22px}
+  .brand{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px}
+  .tag{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--mp-muted)}
+  label{display:block;font-size:12px;font-weight:600;margin:14px 0 5px}
+  input{width:100%;height:42px;border:1px solid var(--mp-border);border-radius:10px;background:var(--mp-surface);padding:0 12px;font:inherit;font-size:14px;color:var(--mp-ink)}
+  input:focus{outline:none;border-color:var(--mp-brass);box-shadow:0 0 0 2px var(--mp-surface),0 0 0 4px var(--mp-brass)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;border-radius:11px;font-weight:600;font-size:14px;border:1px solid transparent;cursor:pointer;margin-top:16px}
+  .btn-primary{background:var(--mp-ink);color:var(--mp-surface)}
+  .oauth{display:flex;gap:10px;margin-top:12px}
+  .btn-oauth{flex:1;height:44px;border:1px solid var(--mp-border);background:var(--mp-surface);border-radius:11px;font-weight:600;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;color:var(--mp-ink)}
+  .divider{display:flex;align-items:center;gap:10px;color:var(--mp-muted);font-size:12px;margin:18px 0}
+  .divider::before,.divider::after{content:"";height:1px;background:var(--mp-border);flex:1}
+  .muted{color:var(--mp-muted);font-size:13px}
+  .link{color:var(--mp-brass-text);font-weight:600;text-decoration:none}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .role{border:1px solid var(--mp-border);border-radius:12px;padding:12px;cursor:pointer;background:var(--mp-surface)}
+  .role.sel{border-color:var(--mp-brass);background:var(--tint-brass)}
+  .role .rt{font-weight:600;font-size:14px}
+  .role .rd{font-size:11px;color:var(--mp-muted);margin-top:2px}
+  .avatar{width:64px;height:64px;border-radius:50%;background:var(--tint-brass);display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--mp-brass-text)}
+  .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;background:var(--tint-sage);color:var(--mp-sage)}
+  .soon{font-size:10px;background:var(--tint-sage);color:var(--mp-sage);border-radius:999px;padding:1px 7px;font-weight:700;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mp-brass-text)">The Missing Peace · Auth &amp; Profile · preview</div>
+  <h1 class="voice" style="font-size:40px;margin:.15em 0 0">Everyone gets a place in the story</h1>
+  <p class="lead">Own login on Supabase Auth: spouses, partners, planners, and dreamers each build a profile,
+    with Google / Apple added later. These are static mockups in the §17 system — tell me what to change and I'll regenerate live.</p>
+
+  <div class="screens">
+    <!-- SIGN IN -->
+    <div class="screen">
+      <h3>Sign in</h3>
+      <div class="body">
+        <div class="brand">The Missing Peace</div>
+        <div class="tag">Build the world your love will walk into.</div>
+        <label>Email</label><input value="maya@example.com" />
+        <label>Password</label><input type="password" value="••••••••" />
+        <button class="btn btn-primary">Sign in</button>
+        <div class="divider">or continue with</div>
+        <div class="oauth">
+          <button class="btn-oauth">Google <span class="soon">soon</span></button>
+          <button class="btn-oauth">Apple <span class="soon">soon</span></button>
+        </div>
+        <p class="muted" style="margin-top:16px;text-align:center">New here? <a class="link" href="#">Create your profile</a></p>
+      </div>
+    </div>
+
+    <!-- CREATE ACCOUNT -->
+    <div class="screen">
+      <h3>Create your profile</h3>
+      <div class="body">
+        <div class="voice" style="font-size:22px">Who are you to this wedding?</div>
+        <div class="roles">
+          <div class="role sel"><div class="rt">Spouse</div><div class="rd">One of the two getting married</div></div>
+          <div class="role"><div class="rt">Partner</div><div class="rd">The other half, planning together</div></div>
+          <div class="role"><div class="rt">Planner</div><div class="rd">Guiding the plan, pro or family</div></div>
+          <div class="role"><div class="rt">Dreamer</div><div class="rd">Invited to shape the vision</div></div>
+        </div>
+        <label>Your name</label><input value="Maya" />
+        <label>Email</label><input value="maya@example.com" />
+        <label>Password</label><input type="password" value="••••••••" />
+        <button class="btn btn-primary">Create profile</button>
+        <p class="muted" style="margin-top:14px;text-align:center">Already have one? <a class="link" href="#">Sign in</a></p>
+      </div>
+    </div>
+
+    <!-- PROFILE SETUP -->
+    <div class="screen">
+      <h3>Finish your profile</h3>
+      <div class="body">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div class="avatar">M</div>
+          <div>
+            <div style="font-weight:600">Maya</div>
+            <span class="chip">Spouse</span>
+          </div>
+        </div>
+        <label>Display name</label><input value="Maya" />
+        <label>A line about you <span class="muted">(optional)</span></label>
+        <input value="Here for the warmth, the people, and the peace." />
+        <div class="divider">connect accounts</div>
+        <div class="oauth">
+          <button class="btn-oauth">Connect Google <span class="soon">soon</span></button>
+          <button class="btn-oauth">Connect Apple <span class="soon">soon</span></button>
+        </div>
+        <button class="btn btn-primary">Enter the workspace</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:26px">
+    Notes: roles map to <code>workspace_members.role</code>; the profile (name, avatar, line) lives in <code>users</code> keyed by
+    <code>auth.uid()</code>. “soon” tags are where Google/Apple providers switch on in Supabase later.
+  </p>
+</div>
+</body>
+</html>

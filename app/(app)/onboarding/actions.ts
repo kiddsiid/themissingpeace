@@ -1,9 +1,10 @@
 'use server';
 
-import { auth, clerkClient } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { buildCompass, type DreamResponses } from '@/lib/engine/compass';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getSessionUser, ensureAppUser } from '@/lib/auth/session';
+import { createWorkspaceWithOwner, firstActiveWorkspaceId } from '@/lib/workspace/create';
 import { generateWorkspace } from '@/lib/workspace/generate';
 import { track } from '@/lib/analytics';
 
@@ -27,6 +28,13 @@ export interface OnboardingInput {
   dream: DreamResponses;
 }
 
+// The current signed-in user's public.users.id (Supabase Auth identity).
+async function requireUserId(): Promise<string> {
+  const authUser = await getSessionUser();
+  if (!authUser) throw new Error('Unauthorized');
+  return ensureAppUser(authUser);
+}
+
 async function fallbackSummarize(dream: DreamResponses) {
   const top = (dream.priorities ?? []).slice(0, 3).join(', ') || 'what matters most to you';
   const meaning = dream.sharedMeaning || dream.meaning;
@@ -43,22 +51,6 @@ function seasonRange(season?: string, year?: string): { start?: string; end?: st
   if (value === 'fall') return { start: `${parsed}-09-01`, end: `${parsed}-11-30` };
   if (value === 'winter') return { start: `${parsed}-12-01`, end: `${parsed + 1}-02-28` };
   return {};
-}
-
-async function ensureUser(db: DB, clerkUserId: string): Promise<string> {
-  const existing = await db.from('users').select('id').eq('clerk_user_id', clerkUserId).maybeSingle();
-  if (existing.data?.id) return existing.data.id as string;
-  const client = await clerkClient();
-  const clerkUser = await client.users.getUser(clerkUserId);
-  const email = clerkUser.emailAddresses?.[0]?.emailAddress ?? '';
-  const name = [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null;
-  const { data, error } = await db
-    .from('users')
-    .upsert({ clerk_user_id: clerkUserId, email, name, avatar_url: clerkUser.imageUrl ?? null }, { onConflict: 'clerk_user_id' })
-    .select('id')
-    .single();
-  if (error) throw error;
-  return data.id as string;
 }
 
 async function applyOnboarding(db: DB, workspaceId: string, userId: string, input: OnboardingInput) {
@@ -104,10 +96,8 @@ async function applyOnboarding(db: DB, workspaceId: string, userId: string, inpu
 }
 
 export async function completeOnboarding(input: OnboardingInput) {
-  const { userId: clerkUserId } = await auth();
-  if (!clerkUserId) throw new Error('Unauthorized');
+  const userId = await requireUserId();
   const db = supabaseAdmin();
-  const userId = await ensureUser(db, clerkUserId);
   await applyOnboarding(db, input.workspaceId, userId, input);
 }
 
@@ -126,30 +116,19 @@ function text(formData: FormData, key: string) {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 
+// Completes the Dream Walk. By this point the user has created their profile (Supabase
+// Auth) and a workspace exists (from the Create-profile step); we resolve or create it,
+// then apply the Dream to it. No Clerk org — the workspace is Postgres-native.
 export async function createWorkspaceFromOnboarding(formData: FormData) {
-  const { userId: clerkUserId } = await auth();
-  if (!clerkUserId) throw new Error('Unauthorized');
+  const userId = await requireUserId();
   const db = supabaseAdmin();
-  const userId = await ensureUser(db, clerkUserId);
 
   const name = String(formData.get('workspaceName') || 'Our Wedding').trim() || 'Our Wedding';
-  const client = await clerkClient();
-  const org = await client.organizations.createOrganization({ name, createdBy: clerkUserId });
-
-  const { data: workspace, error: workspaceError } = await db
-    .from('workspaces')
-    .upsert({ clerk_org_id: org.id, name, created_by: userId }, { onConflict: 'clerk_org_id' })
-    .select('id')
-    .single();
-  if (workspaceError || !workspace) throw workspaceError ?? new Error('Workspace not created');
-
-  // Analytics (T4): coarse, non-identifying. No-ops unless analytics is enabled.
-  track('workspace_created', { source: 'onboarding' }, { workspaceId: workspace.id, userId, surface: 'server' });
-
-  await db.from('workspace_members').upsert(
-    { workspace_id: workspace.id, user_id: userId, role: 'owner', status: 'active', invited_by: userId },
-    { onConflict: 'workspace_id,user_id' }
-  );
+  let workspaceId = await firstActiveWorkspaceId(userId);
+  if (!workspaceId) {
+    workspaceId = await createWorkspaceWithOwner(userId, name);
+    track('workspace_created', { source: 'onboarding' }, { workspaceId, userId, surface: 'server' });
+  }
 
   const dateStatus = (String(formData.get('dateStatus') || 'none') as 'known' | 'range' | 'none');
   const dateSeason = text(formData, 'dateSeason');
@@ -177,8 +156,8 @@ export async function createWorkspaceFromOnboarding(formData: FormData) {
     desiredYear,
   };
 
-  await applyOnboarding(db, workspace.id, userId, {
-    workspaceId: workspace.id,
+  await applyOnboarding(db, workspaceId, userId, {
+    workspaceId,
     partnerOneLabel: text(formData, 'partnerOneLabel'),
     partnerTwoLabel: text(formData, 'partnerTwoLabel'),
     dateStatus,

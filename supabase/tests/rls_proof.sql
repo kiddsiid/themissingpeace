@@ -46,6 +46,9 @@ insert into peace_notes(id,workspace_id,author_id,type,visibility,lock_kind,plan
 insert into canvas_state(workspace_id,board_json) values
   ('11111111-1111-1111-1111-111111111111','{"palette":{"name":"A canvas"}}'),
   ('22222222-2222-2222-2222-222222222222','{"palette":{"name":"B canvas"}}');
+insert into ripple_events(workspace_id,source_type,change_kind,summary) values
+  ('11111111-1111-1111-1111-111111111111','decision','approved','A ripple'),
+  ('22222222-2222-2222-2222-222222222222','decision','approved','B ripple');
 
 create temp table rls_checks(kind text, name text, passed boolean, detail text) on commit drop;
 grant all on rls_checks to authenticated;
@@ -82,6 +85,17 @@ begin
     insert into rls_checks values('MUST','A INSERT into B canvas_state is blocked', false,'INSERT SUCCEEDED — LEAK');
   exception when others then
     insert into rls_checks values('MUST','A INSERT into B canvas_state is blocked', true,'blocked ('||sqlstate||')');
+  end;
+  select count(*) into c from ripple_events;
+    insert into rls_checks values('MUST','A reads only own ripple_events (expect 1)', c=1,'saw '||c);
+  select count(*) into c from ripple_events where workspace_id='22222222-2222-2222-2222-222222222222';
+    insert into rls_checks values('MUST','A cannot read B ripple_events (expect 0)', c=0,'saw '||c);
+  begin
+    insert into ripple_events(workspace_id,source_type,change_kind)
+      values ('22222222-2222-2222-2222-222222222222','decision','approved');
+    insert into rls_checks values('MUST','A INSERT into B ripple_events is blocked', false,'INSERT SUCCEEDED — LEAK');
+  exception when others then
+    insert into rls_checks values('MUST','A INSERT into B ripple_events is blocked', true,'blocked ('||sqlstate||')');
   end;
 
   perform set_clerk_user('clerkB');

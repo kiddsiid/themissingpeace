@@ -6,6 +6,9 @@ import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getActiveWorkspace } from '@/lib/workspace/current';
 import type { DreamResponses } from '@/lib/engine/compass';
+import type { Citation } from '@/lib/engine/weaver';
+import { InsightActions } from '@/components/peace/InsightActions';
+import { RippleFeed, type RippleRow } from '@/components/peace/RippleFeed';
 
 function timeAgo(iso?: string | null): string {
   if (!iso) return '';
@@ -109,7 +112,7 @@ export default async function PeaceCenter() {
     db.from('wedding_profiles').select('planning_stage, guest_estimate, guest_max, budget_total, budget_confidence, honeymoon_enabled').eq('workspace_id', workspace.id).maybeSingle(),
     db.from('dreams').select('responses_json, created_at').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
     db.from('wedding_compass').select('summary, tone').eq('workspace_id', workspace.id).maybeSingle(),
-    db.from('planning_recommendations').select('id, title, description, recommendation_type, priority, reason, linked_entity_type, suggested_owner_id, suggested_due_date, status, created_at').eq('workspace_id', workspace.id).eq('status', 'new').order('created_at', { ascending: false }).limit(5),
+    db.from('planning_recommendations').select('id, title, description, recommendation_type, priority, reason, linked_entity_type, suggested_owner_id, suggested_due_date, status, created_at, citations_json, source').eq('workspace_id', workspace.id).eq('status', 'new').order('created_at', { ascending: false }).limit(5),
     db.from('planning_risks').select('id, risk_type, severity, title, description, suggested_resolution, status, created_at').eq('workspace_id', workspace.id).eq('status', 'open').order('created_at', { ascending: false }).limit(12),
     db.from('workspace_members').select('role, user_id').eq('workspace_id', workspace.id).eq('status', 'active'),
     db.from('board_items').select('id, title, created_at, created_by').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(6),
@@ -141,6 +144,15 @@ export default async function PeaceCenter() {
   const userMap = new Map((usersRes.data ?? []).map((user: any) => [user.id, user]));
   const members = (membersRes.data ?? []).map((member: any) => ({ role: member.role, user: userMap.get(member.user_id) }));
 
+  // Ripple feed (P5): recent changes and the areas they touched.
+  const ripplesRes = await db
+    .from('ripple_events')
+    .select('id, source_type, change_kind, summary, impact_json, created_at')
+    .eq('workspace_id', workspace.id)
+    .order('created_at', { ascending: false })
+    .limit(8);
+  const ripples = (ripplesRes.data ?? []) as RippleRow[];
+
   const unresolvedDecisions = decisions.filter((decision: any) => !['approved', 'deferred', 'rejected'].includes(decision.status));
   const coreVendors = ['venue', 'caterer', 'photographer', 'officiant', 'florist'];
   const vendorReady = new Set(['selected', 'booked', 'paid_deposit', 'fully_paid']);
@@ -166,7 +178,10 @@ export default async function PeaceCenter() {
   const nextActions = recommendations.map((rec: any) => {
     const mod = moduleFor(rec.linked_entity_type || rec.recommendation_type);
     return {
-      key: rec.id,
+      key: rec.id as string,
+      recId: rec.id as string | undefined,
+      citations: (rec.citations_json ?? []) as Citation[],
+      source: (rec.source ?? 'ai') as string,
       title: rec.title,
       reason: rec.reason || rec.description || 'Recommended by the Peace Engine.',
       module: mod.label,
@@ -180,7 +195,8 @@ export default async function PeaceCenter() {
   function addFallback(key: string, title: string, reason: string, type: string) {
     if (nextActions.length >= 5 || nextActions.some((action) => action.key === key || action.title === title)) return;
     const mod = moduleFor(type);
-    nextActions.push({ key, title, reason, module: mod.label, href: mod.href, owner: 'You two', due: null, priority: 'med' });
+    // Fallbacks are heuristic (not real recommendation rows) → no recId, no state controls.
+    nextActions.push({ key, recId: undefined, citations: [], source: 'ai', title, reason, module: mod.label, href: mod.href, owner: 'You two', due: null, priority: 'med' });
   }
 
   if (dreamStatus(dream, !!compass?.summary) !== 'Compass ready') {
@@ -282,7 +298,14 @@ export default async function PeaceCenter() {
                 <span>{action.owner}</span>
                 {action.due && <span>Due {action.due}</span>}
               </div>
-              <Link href={action.href} className="mt-3 inline-flex rounded-full bg-[var(--clay)] px-3 py-1.5 text-xs text-white">Open</Link>
+              {action.recId ? (
+                <>
+                  <InsightActions recId={action.recId} citations={action.citations} source={action.source} />
+                  <Link href={action.href} className="mt-2 inline-flex text-xs text-[var(--clay-ink)] underline underline-offset-2">Open {action.module}</Link>
+                </>
+              ) : (
+                <Link href={action.href} className="mt-3 inline-flex rounded-full bg-[var(--clay)] px-3 py-1.5 text-xs text-white">Open</Link>
+              )}
             </article>
           ))}
         </div>
@@ -357,6 +380,17 @@ export default async function PeaceCenter() {
           <p className="mt-2 text-[11px] text-[var(--ink-faint)]">Affects venue, food, seating, invitations, budget, travel, and timeline.</p>
         </section>
       </div>
+
+      <section className="mt-7">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">Ripple layer</p>
+            <h2 className="voice text-xl">Ripples</h2>
+          </div>
+          <span className="text-xs text-[var(--ink-faint)]">Recent changes and what they touched</span>
+        </div>
+        <RippleFeed ripples={ripples} />
+      </section>
 
       <section className="mt-7">
         <h2 className="voice text-xl">Recent Activity</h2>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Wedding — The Missing Peace</title>
+<meta name="robots" content="noindex">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;--line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--plum:#A1748F;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink);text-decoration:none}a:hover{color:var(--gold)}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes arch-glow{0%,100%{opacity:.5}50%{opacity:.85}}
+@keyframes petal{0%{transform:translateY(-10px) rotate(0);opacity:0}10%{opacity:.7}100%{transform:translateY(320px) rotate(220deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+@media(max-width:560px){
+  [style*="font-size: 60px"]{font-size:44px !important;line-height:1.02}
+  [style*="padding: 20px 34px"]{padding:16px 20px !important}
+  [style*="width: 352px"]{width:300px !important}
+  [style*="width: 270px"]{width:228px !important}
+}
+</style>
+</helmet>
+<div style="position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(120% 80% at 50% 8%,#FDF9F0 0%,#F5EEDF 62%,#EFE7D6 100%);display:flex;flex-direction:column">
+
+  <!-- background clouds/arches/twinkles -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <linearGradient id="hp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1EBDD"/></linearGradient>
+    <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FCF4E0"/><stop offset="1" stop-color="#EEDFBB"/></linearGradient>
+    <linearGradient id="hs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F6ED"/><stop offset="1" stop-color="#DBE5D1"/></linearGradient>
+  <linearGradient id="hb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDF3EE"/><stop offset="1" stop-color="#F3E0D5"/></linearGradient></defs></svg>
+
+  <!-- luminous doorway arch -->
+  <div style="position:absolute;left:50%;top:60px;transform:translateX(-50%);width:352px;height:412px;border-radius:176px 176px 26px 26px;background:radial-gradient(78% 66% at 50% 30%,rgba(255,251,240,.96),rgba(244,236,218,.5) 60%,rgba(244,236,218,0));border:2px solid rgba(184,146,74,.42);box-shadow:0 0 60px rgba(184,146,74,.15),inset 0 0 70px rgba(255,251,240,.6);animation:arch-glow 7s ease-in-out infinite;pointer-events:none"></div>
+  <div style="position:absolute;left:50%;top:90px;transform:translateX(-50%);width:270px;height:330px;border-radius:135px 135px 20px 20px;border:1.5px solid rgba(184,146,74,.3);box-shadow:inset 0 0 46px rgba(255,251,240,.55);animation:arch-glow 7s ease-in-out 1s infinite;pointer-events:none"></div>
+
+  <!-- decorative clouds -->
+  <div style="position:absolute;left:8%;top:150px;width:150px;opacity:.5;animation:floaty 9s ease-in-out infinite;pointer-events:none"><svg viewBox="0 0 260 170" style="width:100%;filter:drop-shadow(0 12px 18px rgba(58,54,49,.05))" aria-hidden="true"><g fill="url(#hp)"><rect x="24" y="106" width="212" height="40" rx="20"></rect><circle cx="60" cy="106" r="34"></circle><circle cx="96" cy="82" r="41"></circle><circle cx="138" cy="64" r="47"></circle><circle cx="184" cy="80" r="41"></circle><circle cx="216" cy="106" r="30"></circle><circle cx="120" cy="102" r="45"></circle><circle cx="172" cy="106" r="41"></circle><circle cx="80" cy="115" r="30"></circle><circle cx="202" cy="118" r="26"></circle></g></svg></div>
+  <div style="position:absolute;right:7%;top:210px;width:172px;opacity:.5;animation:floaty 11s ease-in-out .6s infinite;pointer-events:none"><svg viewBox="0 0 260 170" style="width:100%;filter:drop-shadow(0 12px 18px rgba(58,54,49,.05))" aria-hidden="true"><g fill="url(#hb)"><rect x="24" y="106" width="212" height="40" rx="20"></rect><circle cx="60" cy="106" r="34"></circle><circle cx="96" cy="82" r="41"></circle><circle cx="138" cy="64" r="47"></circle><circle cx="184" cy="80" r="41"></circle><circle cx="216" cy="106" r="30"></circle><circle cx="120" cy="102" r="45"></circle><circle cx="172" cy="106" r="41"></circle><circle cx="80" cy="115" r="30"></circle><circle cx="202" cy="118" r="26"></circle></g></svg></div>
+  <div style="position:absolute;left:14%;bottom:60px;width:132px;opacity:.42;animation:floaty 10s ease-in-out 1.2s infinite;pointer-events:none"><svg viewBox="0 0 260 170" style="width:100%;filter:drop-shadow(0 12px 18px rgba(58,54,49,.05))" aria-hidden="true"><g fill="url(#hp)"><rect x="24" y="106" width="212" height="40" rx="20"></rect><circle cx="60" cy="106" r="34"></circle><circle cx="96" cy="82" r="41"></circle><circle cx="138" cy="64" r="47"></circle><circle cx="184" cy="80" r="41"></circle><circle cx="216" cy="106" r="30"></circle><circle cx="120" cy="102" r="45"></circle><circle cx="172" cy="106" r="41"></circle><circle cx="80" cy="115" r="30"></circle><circle cx="202" cy="118" r="26"></circle></g></svg></div>
+
+  <sc-for list="{{ twinkles }}" as="k" hint-placeholder-count="10"><span style=" {{ k.style }}">✦</span></sc-for>
+  <span style="position:absolute;left:24%;top:120px;width:7px;height:7px;border-radius:50%;background:var(--blush);animation:petal 9s linear infinite;pointer-events:none"></span>
+  <span style="position:absolute;left:70%;top:80px;width:6px;height:6px;border-radius:50%;background:var(--gold-bg);animation:petal 11s linear 2s infinite;pointer-events:none"></span>
+
+  <!-- top brand bar -->
+  <div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:20px 34px">
+    <div style="display:flex;align-items:baseline;gap:12px"><div class="voice" style="font-size:20px">The Missing Peace</div><div style="font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-faint)">Wedding Planning Engine</div></div>
+    <div style="display:flex;align-items:center;gap:12px"><span style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(184,146,74,.45);border-radius:999px;padding:5px 12px;background:rgba(244,236,218,.6)">Demo mode</span><a href="/" style="font-size:12px;color:var(--ink-soft)">← Leave the demo</a></div>
+  </div>
+
+  <!-- hero -->
+  <div style="position:relative;z-index:10;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 24px 40px">
+    <div style="animation:rise .6s ease both;display:flex;flex-direction:column;align-items:center">
+      <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(184,146,74,.38);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;box-shadow:0 0 26px rgba(184,146,74,.15)">✦</div>
+      <div style="font-size:10px;letter-spacing:3.6px;text-transform:uppercase;color:var(--ink-faint);margin-top:16px">A demo wedding · Maya &amp; Julian’s</div>
+    </div>
+    <div class="voice" style="font-size:60px;line-height:1;letter-spacing:.4px;color:var(--ink);margin-top:12px;animation:rise .6s ease .05s both">The Missing Peace</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:16px;animation:rise .6s ease .1s both">
+      <span style="width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--line))"></span>
+      <span style="font-size:11px;letter-spacing:3.6px;text-transform:uppercase;color:var(--gold)">Where forever begins</span>
+      <span style="width:56px;height:1px;background:linear-gradient(270deg,transparent,var(--line))"></span>
+    </div>
+    <div style="font-size:14px;line-height:1.65;color:var(--ink-soft);max-width:520px;margin-top:16px;animation:rise .6s ease .15s both">This is a <b>demo</b> of the wedding planning engine, pre-filled with Maya &amp; Julian’s fictional wedding. Wander every room, move things, break nothing — none of it is saved to a real account. When you’re ready for your own, <a href="/">start your free Dream Walk</a>.</div>
+
+    <!-- login -->
+    <div style="margin-top:34px;animation:rise .6s ease .2s both;width:100%;max-width:720px">
+      <div style="font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px">Choose a character to explore as</div>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <sc-for list="{{ users }}" as="u" hint-placeholder-count="3">
+          <button onClick="{{ u.onPick }}" style=" {{ u.cardStyle }}">
+            <div style="display:flex;align-items:center;gap:11px">
+              <div style=" {{ u.avatarStyle }}">{{ u.initial }}</div>
+              <div style="text-align:left;min-width:0">
+                <div class="voice" style="font-size:19px;line-height:1;color:var(--ink)">{{ u.name }}</div>
+                <div style="font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;color: {{ u.roleColor }};margin-top:3px">{{ u.role }}</div>
+              </div>
+              <span style=" {{ u.checkStyle }}">✦</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--ink-soft);margin-top:9px;text-align:left;line-height:1.4">{{ u.line }}</div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="margin-top:26px;animation:rise .6s ease .25s both;min-height:52px">
+      <sc-if value="{{ picked }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div style="font-size:13px;color:var(--ink-soft)">Welcome, <span class="voice" style="font-size:16px;color:var(--clay-ink)">{{ pickedName }}</span> — let's find the feeling first.</div>
+          <div style="display:flex;gap:11px;align-items:center;flex-wrap:wrap;justify-content:center">
+            <a href="Dream%20Walk.html" style="font-size:14px;font-weight:500;color:#fff;background:var(--clay);border-radius:999px;padding:13px 28px;box-shadow:0 6px 20px rgba(188,116,89,.32)">Begin the Dream Walk ✦</a>
+            <a href="Peace%20Center.html" style="font-size:13px;color:var(--ink-soft);border:1px solid var(--line);background:var(--pearl);border-radius:999px;padding:12px 22px">Skip to the plan →</a>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notPicked }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:var(--ink-faint);padding-top:14px">Choose a character to open the door.</div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="position:relative;z-index:10;text-align:center;padding:0 24px 26px;font-size:11px;color:var(--gold);animation:rise .6s ease .3s both">Just exploring — nothing here is saved. <a href="/">Begin your own free Dream Walk</a> when the feeling strikes. ✦</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  USERS = [
+    {id:'maya',name:'Maya',initial:'M',role:'The dreamer',bg:'var(--clay)',roleColor:'var(--clay-ink)',line:'Started this whole thing. Wants warmth over show.'},
+    {id:'julian',name:'Julian',initial:'J',role:'Her person',bg:'var(--gold)',roleColor:'#9A7B33',line:'Says yes to the big stuff. Guards the dance floor.'},
+    {id:'aria',name:'Aria',initial:'A',role:'Wedding planner',bg:'var(--slate)',roleColor:'#5E7688',line:'Keeps the peace. Protects the Compass they set.'},
+  ];
+  state = { picked:null };
+  pick=(id)=>{ this.setState({picked:id}); try{ localStorage.setItem('tmp_user', id); }catch(e){} };
+  componentDidMount(){ try{ const u=localStorage.getItem('tmp_user'); if(u) this.setState({picked:u}); }catch(e){} }
+  renderVals(){
+    const users=this.USERS.map(u=>{
+      const on=this.state.picked===u.id;
+      return {name:u.name,initial:u.initial,role:u.role,roleColor:u.roleColor,line:u.line,onPick:()=>this.pick(u.id),
+        cardStyle:'width:216px;text-align:left;cursor:pointer;padding:16px 17px;border-radius:16px;transition:all .2s;background:'+(on?'linear-gradient(160deg,var(--gold-bg),var(--pearl) 70%)':'rgba(252,249,243,.82)')+';border:1px solid '+(on?'#E4D3AC':'var(--line)')+';box-shadow:'+(on?'0 12px 30px rgba(184,146,74,.18)':'0 8px 22px rgba(58,54,49,.06)')+';'+(on?'transform:translateY(-3px)':''),
+        avatarStyle:'flex-shrink:0;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff;background:'+u.bg+';border:2px solid var(--pearl);box-shadow:0 3px 10px rgba(58,54,49,.12)',
+        checkStyle:'margin-left:auto;color:var(--gold);font-size:15px;transition:opacity .2s;opacity:'+(on?'1':'0')};
+    });
+    const p=this.USERS.find(u=>u.id===this.state.picked);
+    const twinkles=Array.from({length:11}).map((_,i)=>({style:'position:absolute;color:var(--gold);font-size:'+(8+i%4*3)+'px;left:'+((i*8.7+5)%94)+'%;top:'+((i*90+40)%560)+'px;animation:twinkle '+(3+i%4)+'s ease-in-out '+(i*0.3)+'s infinite;pointer-events:none;z-index:1'}));
+    return {users,twinkles,picked:!!p,notPicked:!p,pickedName:p?p.name:''};
+  }
+}
+</script>
+<script>
+try{
+  var sid=null;try{sid=localStorage.getItem('tmp_sid');}catch(e){}
+  var b=JSON.stringify({event:'demo_opened',props:{},sid:sid,url:location.pathname,utm:null});
+  if(navigator.sendBeacon)navigator.sendBeacon('/api/event',b);
+}catch(e){}
+</script>
+</body>
+</html>

@@ -4,6 +4,10 @@ import { revalidatePath } from 'next/cache';
 import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
+import { emitRipple } from '@/lib/engine/ripple';
+
+// Decision statuses that represent a settled outcome worth rippling.
+const SETTLED_DECISION_STATUSES = new Set(['approved', 'rejected', 'changed', 'deferred']);
 
 async function requirePlanWrite() {
   const workspace = await requireActiveWorkspace();
@@ -160,12 +164,26 @@ export async function updateDecisionStatus(formData: FormData) {
   const status = text(formData, 'status');
   if (!id || !status) throw new Error('Decision and status are required');
 
-  const { error } = await supabaseAdmin()
+  const { data: updated, error } = await supabaseAdmin()
     .from('decisions')
     .update({ status })
     .eq('id', id)
-    .eq('workspace_id', workspace.id);
+    .eq('workspace_id', workspace.id)
+    .select('id, title, category')
+    .single();
   if (error) throw error;
+
+  // Ripple: a settled decision has consequences elsewhere. Non-blocking.
+  if (SETTLED_DECISION_STATUSES.has(status)) {
+    await emitRipple(workspace.id, {
+      sourceType: 'decision',
+      sourceId: id,
+      changeKind: status,
+      category: updated?.category ?? undefined,
+      summary: updated?.title ? `${updated.title} — ${status}` : `Decision ${status}`,
+      createdBy: workspace.userId,
+    });
+  }
   revalidatePath('/decisions');
 }
 

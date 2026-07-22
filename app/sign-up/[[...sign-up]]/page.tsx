@@ -1,9 +1,7 @@
-import { SignUp } from '@clerk/nextjs';
-// New couples land in the storybook opening after signing up.
+import { redirect } from 'next/navigation';
+
+// The sign-up journey now begins with "Tell us about you" (/welcome) before the
+// Create-profile step (/join). Keep the old path working by forwarding into it.
 export default function Page() {
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-[var(--cream)]">
-      <SignUp forceRedirectUrl="/onboarding" signInUrl="/sign-in" />
-    </main>
-  );
+  redirect('/welcome');
 }

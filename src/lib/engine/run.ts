@@ -1,6 +1,19 @@
 import { facts, deriveRisks, type Snapshot } from '@/lib/engine/rules';
 import { interpret, type EngineOutput } from '@/lib/engine/peacekeeper';
+import { buildEntityIndex, guardClaims, contextInputHash, type Citation, type GuardedClaim } from '@/lib/engine/weaver';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+
+// Deterministic risks cite the fact that produced them (source of truth for the UI).
+const RISK_FACT_CITATION: Record<string, string> = {
+  budget: 'projected_overage',
+  timeline: 'overdue_tasks',
+  decision_bottleneck: 'open_decisions',
+  vendor_booking: 'missing_vendors',
+};
+function deterministicRiskCitations(riskType: string): Citation[] {
+  const kind = RISK_FACT_CITATION[riskType];
+  return kind ? [{ type: 'fact', id: kind }] : [];
+}
 
 const RISK_TYPES = new Set([
   'budget',
@@ -83,59 +96,33 @@ function riskType(type: string) {
   return RISK_TYPES.has(type) ? type : 'dream_mismatch';
 }
 
-function recommendationRows(workspaceId: string, engineRunId: string, output: EngineOutput) {
+function recommendationRows(
+  workspaceId: string,
+  engineRunId: string,
+  output: EngineOutput,
+  keptNextActions: GuardedClaim[],
+) {
+  const base = { workspace_id: workspaceId, engine_run_id: engineRunId, priority: 'med', source: 'ai', citations_json: [] as Citation[] };
   return [
-    ...output.nextActions.map((item) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
+    // next_action rows come from the GUARDED set only (each carries grounded citations).
+    ...keptNextActions.map((item) => ({
+      ...base,
       title: item.title,
-      description: item.reason ?? null,
+      description: item.detail ?? null,
       recommendation_type: 'next_action',
-      priority: 'med',
-      reason: item.reason ?? null,
+      reason: item.detail ?? null,
+      citations_json: item.citations,
     })),
-    ...output.openDecisions.map((title) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
-      title,
-      recommendation_type: 'decision_prompt',
-      priority: 'med',
-    })),
-    ...output.budgetGuidance.map((title) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
-      title,
-      recommendation_type: 'budget_guidance',
-      priority: 'med',
-    })),
-    ...output.vendorGaps.map((title) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
-      title,
-      recommendation_type: 'vendor_gap',
-      priority: 'med',
-    })),
-    ...output.guestImpact.map((title) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
-      title,
-      recommendation_type: 'guest_impact',
-      priority: 'med',
-    })),
-    ...output.dreamAlignment.map((title) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
-      title,
-      recommendation_type: 'compass_check',
-      priority: 'med',
-    })),
+    ...output.openDecisions.map((title) => ({ ...base, title, recommendation_type: 'decision_prompt' })),
+    ...output.budgetGuidance.map((title) => ({ ...base, title, recommendation_type: 'budget_guidance' })),
+    ...output.vendorGaps.map((title) => ({ ...base, title, recommendation_type: 'vendor_gap' })),
+    ...output.guestImpact.map((title) => ({ ...base, title, recommendation_type: 'guest_impact' })),
+    ...output.dreamAlignment.map((title) => ({ ...base, title, recommendation_type: 'compass_check' })),
     ...output.poofSuggestions.map((item) => ({
-      workspace_id: workspaceId,
-      engine_run_id: engineRunId,
+      ...base,
       title: item.why,
       description: item.why,
       recommendation_type: 'poof_suggestion',
-      priority: 'med',
       linked_entity_type: item.boardItemId ? 'board_item' : null,
       linked_entity_id: item.boardItemId ?? null,
       reason: `Suggested target: ${item.target}`,
@@ -159,10 +146,24 @@ export async function runPeaceEngine(args: { workspaceId: string; actorUserId?: 
 
   try {
     const { snapshot, context } = await workspaceContext(args.workspaceId);
-    const output = await interpret(context);
+    const { output, model, promptVersion, usage, raw } = await interpret(context);
     const deterministicRisks = deriveRisks(snapshot);
 
-    const recommendations = recommendationRows(args.workspaceId, run.id, output);
+    // Deterministic guard: only AI insights that cite something real in the context survive.
+    const idx = buildEntityIndex(context);
+    const naGuard = guardClaims(
+      output.nextActions.map((a) => ({ type: 'next_action', title: a.title, detail: a.reason, citations: a.citations })),
+      idx,
+    );
+    const aiRiskGuard = guardClaims(
+      output.risks.map((r) => ({ type: riskType(r.type), title: r.title, detail: r.severity, citations: r.citations })),
+      idx,
+    );
+    const aiClaimTotal = output.nextActions.length + output.risks.length;
+    const aiClaimKept = naGuard.kept.length + aiRiskGuard.kept.length;
+    const citationCoverage = aiClaimTotal === 0 ? 1 : Number((aiClaimKept / aiClaimTotal).toFixed(4));
+
+    const recommendations = recommendationRows(args.workspaceId, run.id, output, naGuard.kept);
     const risks = [
       ...deterministicRisks.map((risk) => ({
         workspace_id: args.workspaceId,
@@ -170,23 +171,37 @@ export async function runPeaceEngine(args: { workspaceId: string; actorUserId?: 
         risk_type: risk.type,
         severity: risk.severity,
         title: risk.title,
+        source: 'deterministic',
+        citations_json: deterministicRiskCitations(risk.type),
       })),
-      ...output.risks.map((risk) => ({
+      ...aiRiskGuard.kept.map((risk) => ({
         workspace_id: args.workspaceId,
         engine_run_id: run.id,
-        risk_type: riskType(risk.type),
-        severity: risk.severity ?? 'med',
+        risk_type: riskType(risk.type),          // claim.type was already riskType(r.type)
+        severity: risk.detail ?? 'med',          // AI severity was carried in `detail`
         title: risk.title,
+        source: 'ai',
+        citations_json: risk.citations,
       })),
     ];
 
     await Promise.all([
       recommendations.length ? db.from('planning_recommendations').insert(recommendations) : Promise.resolve({ error: null }),
       risks.length ? db.from('planning_risks').insert(risks) : Promise.resolve({ error: null }),
-      db.from('planning_engine_runs').update({ status: 'completed', completed_at: new Date().toISOString(), summary: output.planningSummary }).eq('id', run.id),
+      db.from('planning_engine_runs').update({
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        summary: output.planningSummary,
+        model,
+        prompt_version: promptVersion,
+        input_hash: contextInputHash(context),
+        output_json: output as unknown as Record<string, unknown>,
+        usage_json: usage,
+        citation_coverage: citationCoverage,
+      }).eq('id', run.id),
     ]);
 
-    return { runId: run.id as string, output };
+    return { runId: run.id as string, output, citationCoverage, droppedInsights: naGuard.dropped.length + aiRiskGuard.dropped.length };
   } catch (error) {
     await db
       .from('planning_engine_runs')

@@ -1,6 +1,19 @@
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "themissingpeace",
-  "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-06-05"
+  "pages_build_output_dir": "../.pages-prototype",
+  "compatibility_date": "2026-06-05",
+  // Lead / order / analytics storage for the landing funnel.
+  // Database created 2026-07-21 (D1 "tmp-landing"). Schema: see LANDING-README.md.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tmp-landing",
+      "database_id": "b87beb14-b875-4947-bb35-c26861683379"
+    }
+  ]
+  // Stripe secrets are NEVER stored here. Set them on the Pages project:
+  //   wrangler --cwd cloudflare-prototype pages secret put STRIPE_SECRET_KEY
+  //   wrangler --cwd cloudflare-prototype pages secret put STRIPE_WEBHOOK_SECRET
+  // Until they exist, the offer section runs in the free "reserve a spot" mode.
 }

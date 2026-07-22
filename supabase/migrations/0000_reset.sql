@@ -2,6 +2,7 @@
 -- something "already exists" (i.e. a previous run left objects behind).
 -- Destructive: drops all Missing Peace objects. Safe on a fresh project.
 
+drop table if exists ripple_events cascade;
 drop table if exists audit_events cascade;
 drop table if exists canvas_state cascade;
 drop table if exists financial_activity_logs cascade;
@@ -61,6 +62,10 @@ drop table if exists workspaces cascade;
 drop table if exists users cascade;
 
 drop function if exists auth_workspace_ids() cascade;
+drop function if exists auth_user_row_id() cascade;
+drop function if exists auth_visible_user_ids() cascade;
+drop function if exists set_auth_user(uuid) cascade;
+drop function if exists app_clerk_user_id() cascade;
 drop function if exists set_clerk_user(text) cascade;
 drop function if exists peace_note_is_open(peace_notes, timestamptz, date) cascade;
 

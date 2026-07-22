@@ -1,9 +1,16 @@
-import { SignIn } from '@clerk/nextjs';
-// Returning couples go straight to their Peace Center.
-export default function Page() {
+import { DreamBackdrop } from '@/components/onboarding/DreamBackdrop';
+import { SignInForm } from '@/app/sign-in/[[...sign-in]]/SignInForm';
+
+// Returning couples sign back into their Peace Center (Supabase Auth).
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>;
+}) {
+  const { redirect } = await searchParams;
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[var(--cream)]">
-      <SignIn forceRedirectUrl="/peace-center" signUpUrl="/sign-up" />
-    </main>
+    <DreamBackdrop>
+      <SignInForm redirectTo={redirect} />
+    </DreamBackdrop>
   );
 }

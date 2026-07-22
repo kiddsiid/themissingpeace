@@ -13,6 +13,9 @@ const componentsDir = path.join(outputDir, '_components');
 
 const pages = [
   { name: 'Homepage', file: 'Homepage.html', slug: 'home', route: '/' },
+  { name: 'Demo', file: 'Demo.html', slug: 'demo', route: '/demo' },
+  { name: 'Privacy', file: 'Privacy.html', slug: 'privacy', route: '/privacy' },
+  { name: 'Terms', file: 'Terms.html', slug: 'terms', route: '/terms' },
   { name: 'Dream Walk', file: 'Dream Walk.html', slug: 'dreamwalk', route: '/dreamwalk' },
   { name: 'Dream', file: 'Dream.html', slug: 'dream', route: '/dream' },
   { name: 'Peace Center', file: 'Peace Center.html', slug: 'peacecenter', route: '/peacecenter' },
@@ -43,6 +46,14 @@ const extraRedirects = {
 };
 
 await assertExists(sourceDir, 'prototype');
+
+const landingConfig = JSON.parse(
+  await readFile(path.join(sourceDir, 'landing-config.json'), 'utf8'),
+);
+const landingApiSource = await readFile(
+  path.join(root, 'scripts', 'prototype-landing-api.js'),
+  'utf8',
+);
 
 await rm(outputDir, { recursive: true, force: true });
 await mkdir(pagesDir, { recursive: true });
@@ -121,7 +132,52 @@ function cleanHtml(source) {
     }
   }
 
+  html = html.replace(
+    '<!--__LANDING_CONFIG__-->',
+    `<script>window.TMP_LANDING=${JSON.stringify(landingConfig)};</script>`,
+  );
+
+  html = html.replace('<!--__LANDING_JSONLD__-->', buildJsonLd());
+
   return html;
+}
+
+function buildJsonLd() {
+  const site = landingConfig.site;
+  const offers = Object.entries(landingConfig.offers || {})
+    .filter(([, offer]) => offer.active)
+    .map(([id, offer]) => ({
+      '@type': 'Offer',
+      name: `${offer.name} (early access)`,
+      price: (offer.priceCents / 100).toFixed(2),
+      priceCurrency: offer.currency.toUpperCase(),
+      url: `${site.canonicalUrl}#founding`,
+      availability: 'https://schema.org/PreOrder',
+      category: id,
+    }));
+
+  const data = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: site.name,
+      alternateName: `${site.name} — ${site.tagline}`,
+      url: site.canonicalUrl,
+      applicationCategory: 'LifestyleApplication',
+      operatingSystem: 'Web',
+      description:
+        'A wedding planning engine that turns a couple’s wedding vision into a shared, living plan: a short Dream Walk becomes a Wedding Compass, and guests, food, budget, timeline, vendors, and seating stay connected to it in one collaborative wedding planning workspace. Early access.',
+      offers,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: site.name,
+      url: site.canonicalUrl,
+    },
+  ];
+
+  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
 }
 
 function patchSupportJs(source) {
@@ -184,6 +240,12 @@ function buildWorkerSource() {
   return `const ROUTES = ${JSON.stringify(routes, null, 2)};
 const REDIRECTS = ${JSON.stringify(redirects, null, 2)};
 
+const LANDING_CONFIG = ${JSON.stringify(landingConfig)};
+
+/* ---- landing API (generated from scripts/prototype-landing-api.js) ---- */
+${landingApiSource}
+/* ---- end landing API ---- */
+
 const HTML_HEADERS = {
   'content-type': 'text/html; charset=utf-8',
 };
@@ -191,6 +253,10 @@ const HTML_HEADERS = {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.pathname.startsWith('/api/')) {
+      return handleApi(request, env, url);
+    }
 
     if (url.pathname.length > 1 && url.pathname.endsWith('/')) {
       url.pathname = url.pathname.replace(/\\/+$/, '');
