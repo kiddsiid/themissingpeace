@@ -3,6 +3,7 @@
 -- Destructive: drops all Missing Peace objects. Safe on a fresh project.
 
 drop table if exists audit_events cascade;
+drop table if exists canvas_state cascade;
 drop table if exists financial_activity_logs cascade;
 drop table if exists budget_alerts cascade;
 drop table if exists budget_scenario_items cascade;

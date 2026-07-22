@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Missing Peace — Design System (T1 preview)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#7A726A;--ink-faint:#A99A86;
+    --line:#E5DCCD;--gold:#B8924A;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-bg:#EDF0E9;
+    --clay:#BC7459;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--surface:var(--cream);
+  }
+  html,body{background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,sans-serif;}
+  .voice{font-family:'Cormorant Garamond',ui-serif,Georgia,serif;}
+  @keyframes page-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes drawer-in-left{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+  .dream-float{animation:cloud-drift 9s ease-in-out infinite}
+  @keyframes cloud-drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition-duration:.01ms!important}}
+  .swatch{width:100%;height:44px;border-radius:8px;border:1px solid rgba(0,0,0,.06)}
+</style>
+</head>
+<body class="min-h-screen">
+<div class="mx-auto max-w-5xl px-6 py-10">
+  <header class="mb-8">
+    <div class="text-[10px] uppercase tracking-[0.15em] text-[var(--ink-faint)]">The Missing Peace · Phase 1 · T1</div>
+    <h1 class="voice text-4xl mt-1">Design System — primitive layer</h1>
+    <p class="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">
+      A static preview of the <code>src/design-system/</code> primitives, rendered from the same tokens
+      (<code>app/globals.css</code>). Every interactive control below ships default / hover / <strong>focus-visible</strong> /
+      active / disabled / loading states with an ink focus ring and reduced-motion fallbacks.
+      <em>Tab through the page to see focus rings; enable “Reduce motion” in your OS to see motion collapse.</em>
+    </p>
+  </header>
+
+  <!-- TOKENS -->
+  <section class="mb-10">
+    <h2 class="voice text-2xl mb-3">Color tokens & AA pairings</h2>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div><div class="swatch" style="background:var(--pearl)"></div><div class="mt-1 text-xs">pearl · #FCF9F3</div></div>
+      <div><div class="swatch" style="background:var(--cream)"></div><div class="mt-1 text-xs">cream · #F6F1E8</div></div>
+      <div><div class="swatch" style="background:var(--ink)"></div><div class="mt-1 text-xs">ink · #3A3631</div></div>
+      <div><div class="swatch" style="background:var(--ink-soft)"></div><div class="mt-1 text-xs">ink-soft · #7A726A</div></div>
+      <div><div class="swatch" style="background:var(--gold)"></div><div class="mt-1 text-xs">gold · #B8924A</div></div>
+      <div><div class="swatch" style="background:var(--sage)"></div><div class="mt-1 text-xs">sage · #8A9A80</div></div>
+      <div><div class="swatch" style="background:var(--clay)"></div><div class="mt-1 text-xs">clay · #BC7459</div></div>
+      <div><div class="swatch" style="background:var(--blush)"></div><div class="mt-1 text-xs">blush · #E7D2C8</div></div>
+    </div>
+    <div class="mt-4 rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-4 text-xs text-[var(--ink-soft)]">
+      Emphasis uses <strong>solid ink + warm-white</strong> (11:1, AA text). Accents use tonal
+      <code>*-bg</code> fills with dark text (clay-ink/ink, 5–10:1, AA text). White-on-sage/gold and a gold focus ring
+      fail contrast, so they are not used for text or focus.
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section class="mb-10">
+    <h2 class="voice text-2xl mb-3">Button</h2>
+    <div class="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-5">
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--ink)] text-[var(--pearl)] transition-colors hover:bg-[#2e2a26]">Primary</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--pearl)] text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--cream)]">Secondary</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-transparent text-[var(--ink-soft)] hover:bg-[var(--cream)] hover:text-[var(--ink)]">Ghost</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--clay-bg)] text-[var(--clay-ink)] hover:bg-[#eed7cd]">Clay</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--sage-bg)] text-[var(--ink)] hover:bg-[#e2e8dc]">Sage</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--gold-bg)] text-[var(--ink)] hover:bg-[#efe4cb]">Gold</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--clay-bg)] text-[var(--clay-ink)] border border-[#e0b6a6]">Danger</button>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <button class="h-8 px-3 rounded-[8px] text-xs font-medium bg-[var(--ink)] text-[var(--pearl)]">Small</button>
+        <button class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--ink)] text-[var(--pearl)]">Medium</button>
+        <button class="h-12 px-6 rounded-[12px] text-base font-medium bg-[var(--ink)] text-[var(--pearl)]">Large</button>
+        <button disabled class="h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--ink)] text-[var(--pearl)] opacity-55 cursor-not-allowed">Disabled</button>
+        <button class="relative h-10 px-4 rounded-[10px] text-sm font-medium bg-[var(--ink)] text-[var(--pearl)] cursor-progress" aria-busy="true">
+          <span class="absolute left-1/2 -translate-x-1/2"><svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <span class="invisible">Loading</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARD + FIELD -->
+  <section class="mb-10 grid gap-6 md:grid-cols-2">
+    <div>
+      <h2 class="voice text-2xl mb-3">Card</h2>
+      <div class="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] shadow-[0_8px_24px_rgba(58,54,49,.07)]">
+        <div class="flex items-start justify-between gap-3 p-4 pb-2"><h3 class="voice text-lg">Grazing table</h3><span class="text-xs text-[var(--ink-faint)]">Feast</span></div>
+        <div class="p-4 pt-2 text-sm text-[var(--ink-soft)]">One long, generous board everyone gathers around before dinner.</div>
+        <div class="flex items-center gap-2 border-t border-[var(--line)] p-4">
+          <button class="h-8 px-3 rounded-[8px] text-xs font-medium bg-[var(--ink)] text-[var(--pearl)]">Bless</button>
+          <button class="h-8 px-3 rounded-[8px] text-xs font-medium bg-transparent text-[var(--ink-soft)] hover:bg-[var(--cream)]">Edit</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="voice text-2xl mb-3">Field</h2>
+      <div class="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-4 space-y-4">
+        <div>
+          <label class="mb-1 block text-xs font-medium">Wedding date</label>
+          <input placeholder="June 2027" class="h-10 w-full rounded-[10px] border border-[var(--line)] bg-[var(--pearl)] px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--pearl)]" />
+          <p class="mt-1 text-xs text-[var(--ink-soft)]">A range is fine — you can refine later.</p>
+        </div>
+        <div>
+          <label class="mb-1 block text-xs font-medium">Guest estimate <span class="text-[var(--clay-ink)]">*</span></label>
+          <input value="-5" class="h-10 w-full rounded-[10px] border border-[var(--clay)] bg-[var(--pearl)] px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--clay-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--pearl)]" />
+          <p class="mt-1 text-xs text-[var(--clay-ink)]">Enter a number of guests greater than zero.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHIPS -->
+  <section class="mb-10">
+    <h2 class="voice text-2xl mb-3">Chip</h2>
+    <div class="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-5 flex flex-wrap gap-2">
+      <span class="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--cream)] px-2.5 py-1 text-xs font-medium">Neutral</span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-[var(--clay-bg)] text-[var(--clay-ink)] px-2.5 py-1 text-xs font-medium">Halal · verify</span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-[var(--sage-bg)] text-[var(--ink)] px-2.5 py-1 text-xs font-medium">Aligned</span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-[var(--gold-bg)] text-[var(--ink)] px-2.5 py-1 text-xs font-medium">Blessed</span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-[var(--ink)] text-[var(--pearl)] px-2.5 py-1 text-xs font-medium">Ink</span>
+      <span class="inline-flex items-center gap-1 rounded-full bg-[var(--cream)] px-2.5 py-1 text-xs font-medium ring-1 ring-[var(--ink)] ring-offset-1 ring-offset-[var(--pearl)]">Selected · Vegan ✕</span>
+    </div>
+  </section>
+
+  <!-- ARCH + CLOUD -->
+  <section class="mb-10 grid gap-6 md:grid-cols-2">
+    <div>
+      <h2 class="voice text-2xl mb-3">Arch</h2>
+      <div class="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-6 grid place-items-center">
+        <div class="relative" style="width:220px;height:170px">
+          <svg aria-hidden class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 100 130" preserveAspectRatio="none">
+            <path d="M4 128 L4 55 Q4 4 50 4 Q96 4 96 55 L96 128" fill="none" stroke="#D8C7A6" stroke-width="1.5" stroke-linecap="round" opacity=".7" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <div class="relative h-full flex flex-col items-center justify-center px-6 text-center">
+            <div class="text-[10px] uppercase tracking-[0.15em] text-[var(--ink-faint)]">Your compass</div>
+            <div class="voice text-lg mt-1 leading-tight">An intimate, family-first celebration — warmth over show.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="voice text-2xl mb-3">DreamCloud</h2>
+      <div class="rounded-[12px] border border-[var(--line)] bg-gradient-to-b from-[#fffaf2] to-[#f6f1e8] p-6 grid place-items-center overflow-hidden">
+        <span class="dream-float relative block" style="width:220px;height:144px">
+          <svg viewBox="0 0 260 170" width="220" height="144" style="overflow:visible" aria-hidden>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1EBDD"/></linearGradient>
+            <filter id="s" x="-40%" y="-40%" width="180%" height="190%"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#3A3631" flood-opacity="0.16"/></filter></defs>
+            <g fill="url(#g)" filter="url(#s)"><rect x="24" y="106" width="212" height="40" rx="20"/><circle cx="60" cy="106" r="34"/><circle cx="96" cy="82" r="41"/><circle cx="138" cy="64" r="47"/><circle cx="184" cy="80" r="41"/><circle cx="216" cy="106" r="30"/><circle cx="120" cy="102" r="45"/><circle cx="172" cy="106" r="41"/><circle cx="80" cy="115" r="30"/><circle cx="202" cy="118" r="26"/></g>
+          </svg>
+          <span class="absolute flex flex-col items-center justify-center text-center" style="top:34%;left:13%;right:13%;bottom:15%">
+            <span class="text-[8px] uppercase tracking-[0.1em] text-[var(--ink-faint)]">Feeling</span>
+            <span class="voice mt-0.5 text-[15px] leading-tight">Family &amp; our people</span>
+          </span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERLAYS (static mocks) -->
+  <section class="mb-10">
+    <h2 class="voice text-2xl mb-3">Dialog &amp; Drawer <span class="text-sm text-[var(--ink-soft)]">(static mocks — real ones trap focus + close on Esc)</span></h2>
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="relative overflow-hidden rounded-[12px] border border-[var(--line)] bg-[rgba(58,54,49,.12)] p-6" style="min-height:210px">
+        <div class="mx-auto max-w-sm rounded-[16px] border border-[var(--line)] bg-[var(--pearl)] shadow-[0_14px_34px_rgba(58,54,49,.18)]">
+          <div class="flex items-start justify-between gap-4 p-5 pb-2"><h3 class="voice text-2xl">Poof this idea?</h3><span class="grid h-8 w-8 place-items-center rounded-full text-[var(--ink-soft)]">✕</span></div>
+          <div class="px-5 py-2 text-sm">It leaves the board but is kept in your archive — nothing is truly lost.</div>
+          <div class="flex items-center justify-end gap-2 p-5 pt-3">
+            <button class="h-10 px-4 rounded-[10px] text-sm bg-transparent text-[var(--ink-soft)]">Keep</button>
+            <button class="h-10 px-4 rounded-[10px] text-sm bg-[var(--ink)] text-[var(--pearl)]">Poof</button>
+          </div>
+        </div>
+      </div>
+      <div class="relative overflow-hidden rounded-[12px] border border-[var(--line)] bg-[rgba(58,54,49,.12)]" style="min-height:210px">
+        <div class="absolute inset-y-0 left-0 w-56 border-r border-[var(--line)] bg-[var(--pearl)] p-3" style="animation:drawer-in-left .4s ease">
+          <div class="flex items-center justify-between border-b border-[var(--line)] pb-3"><span class="voice text-lg">The Missing Peace</span><span class="text-[var(--ink-soft)]">✕</span></div>
+          <nav class="mt-2 space-y-1 text-sm">
+            <div class="rounded-[10px] bg-[var(--clay-bg)] text-[var(--clay-ink)] px-3 py-2">Dream</div>
+            <div class="rounded-[10px] text-[var(--ink-soft)] px-3 py-2">Peace Center</div>
+            <div class="rounded-[10px] text-[var(--ink-soft)] px-3 py-2">Living Canvas</div>
+            <div class="rounded-[10px] text-[var(--ink-soft)] px-3 py-2">Guests</div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="mt-12 border-t border-[var(--line)] pt-4 text-xs text-[var(--ink-faint)]">
+    Preview of <code>src/design-system/</code> · The Missing Peace · generated for Phase 1 review. Not the shipped React source — a faithful visual mirror using the same tokens.
+  </footer>
+</div>
+</body>
+</html>
