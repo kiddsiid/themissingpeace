@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 export const NAV = [
   { href: '/dream', label: 'Dream', icon: 'dream' },
   { href: '/peace-center', label: 'Peace Center', icon: 'sparkles' },
-  { href: '/board', label: 'The Board', icon: 'board' },
+  { href: '/canvas', label: 'Living Canvas', icon: 'board' },
   { href: '/decisions', label: 'Decisions', icon: 'check' },
   { href: '/budget', label: 'Money Map', icon: 'wallet' },
   { href: '/vendors', label: 'Vendors', icon: 'users' },
@@ -21,7 +21,7 @@ export const NAV = [
   { href: '/settings', label: 'Settings', icon: 'settings' },
 ] as const;
 
-export const MOBILE_NAV = ['/dream', '/peace-center', '/board', '/guests'] as const;
+export const MOBILE_NAV = ['/dream', '/peace-center', '/canvas', '/guests'] as const;
 
 export function SideNav() {
   const path = usePathname();
@@ -37,6 +37,7 @@ export function SideNav() {
           <Link
             key={item.href}
             href={item.href}
+            aria-current={active ? 'page' : undefined}
             className={
               'flex items-center gap-2 rounded-[10px] px-3 py-2 text-sm ' +
               (active ? 'bg-[var(--clay-bg)] text-[var(--clay-ink)]' : 'text-[var(--ink-soft)] hover:bg-[var(--cream)]')
