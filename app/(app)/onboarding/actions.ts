@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { buildCompass, type DreamResponses } from '@/lib/engine/compass';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { generateWorkspace } from '@/lib/workspace/generate';
+import { track } from '@/lib/analytics';
 
 type DB = ReturnType<typeof supabaseAdmin>;
 
@@ -141,6 +142,9 @@ export async function createWorkspaceFromOnboarding(formData: FormData) {
     .select('id')
     .single();
   if (workspaceError || !workspace) throw workspaceError ?? new Error('Workspace not created');
+
+  // Analytics (T4): coarse, non-identifying. No-ops unless analytics is enabled.
+  track('workspace_created', { source: 'onboarding' }, { workspaceId: workspace.id, userId, surface: 'server' });
 
   await db.from('workspace_members').upsert(
     { workspace_id: workspace.id, user_id: userId, role: 'owner', status: 'active', invited_by: userId },
