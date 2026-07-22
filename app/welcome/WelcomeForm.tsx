@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { saveWelcome } from '@/lib/auth/actions';
 
@@ -10,7 +11,9 @@ type Role = 'couple' | 'planner';
 // stashed (server action -> short-lived cookie) so the Create-profile step can name
 // the workspace and seed partner labels the moment the profile is made.
 export function WelcomeForm() {
-  const [role, setRole] = useState<Role>('couple');
+  const params = useSearchParams();
+  const initialRole: Role = params.get('role') === 'planner' ? 'planner' : 'couple';
+  const [role, setRole] = useState<Role>(initialRole);
   const [p1, setP1] = useState('');
   const [p2, setP2] = useState('');
   const [workspaceName, setWorkspaceName] = useState('');

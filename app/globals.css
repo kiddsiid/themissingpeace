@@ -24,8 +24,27 @@
   --radius: 12px;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-voice: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  --font-voice: var(--font-cormorant, 'Cormorant Garamond'), ui-serif, Georgia, serif;
+
+  /* ===== One Engine redesign — §17 visual system (new canonical tokens) =====
+     Added alongside the legacy tokens above; existing pages + the Living Canvas keep
+     their current look until each surface is migrated to these. */
+  --mp-canvas: #F7F4EE;
+  --mp-surface: #FFFDFC;
+  --mp-ink: #201C18;
+  --mp-muted: #6D645B;
+  --mp-brass-text: #7A531A;
+  --mp-brass: #A8782A;
+  --mp-candle: #F2B134;
+  --mp-sage: #2F6D55;
+  --mp-warning: #9A5716;
+  --mp-danger: #A23B32;
+  --mp-border: rgba(32, 28, 24, 0.14);
+  --font-ui: var(--font-manrope, 'Manrope'), ui-sans-serif, system-ui, sans-serif;
 }
+
+/* Interface text opts into Manrope on the new design-system surfaces. */
+.font-ui { font-family: var(--font-ui); }
 
 html, body { background: var(--surface-page); color: var(--ink); }
 body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
@@ -78,6 +97,16 @@ body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
 .dream-petal { position:absolute; width:10px; height:10px; border-radius:60% 40% 60% 40%; background:var(--blush); opacity:.7; animation:dream-float 9s ease-in-out infinite; pointer-events:none }
 .dream-bob { animation:dream-bob 7s ease-in-out infinite }
 .dream-arch { position:absolute; left:50%; transform:translateX(-50%); border:1.5px solid #D8C7A6; opacity:.5; pointer-events:none }
+
+/* Homepage hero — the radiant doorway (light rays + warm glow behind the arch). */
+.hero-rays { position:absolute; left:50%; top:-4%; transform:translateX(-50%); width:1120px; height:940px; pointer-events:none; z-index:0;
+  background: repeating-conic-gradient(from 90deg at 50% 40%, rgba(184,146,74,.055) 0deg, rgba(184,146,74,0) 2.4deg 9.4deg);
+  -webkit-mask-image: radial-gradient(58% 54% at 50% 40%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(58% 54% at 50% 40%, #000 0%, transparent 74%); }
+.hero-glow { position:absolute; left:50%; top:6%; transform:translateX(-50%); width:680px; height:680px; pointer-events:none; z-index:0;
+  background: radial-gradient(closest-side, rgba(247,225,211,.7), rgba(247,225,211,0) 70%); }
+.mp-soft { box-shadow: 0 24px 60px rgba(58,54,49,.08); }
+@keyframes twinkle-soft { 0%,100% { opacity:.2; transform:scale(.8) } 50% { opacity:.9; transform:scale(1.1) } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

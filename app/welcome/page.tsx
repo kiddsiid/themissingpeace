@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { DreamBackdrop } from '@/components/onboarding/DreamBackdrop';
 import { WelcomeForm } from '@/app/welcome/WelcomeForm';
 
@@ -5,7 +6,9 @@ import { WelcomeForm } from '@/app/welcome/WelcomeForm';
 export default function WelcomePage() {
   return (
     <DreamBackdrop>
-      <WelcomeForm />
+      <Suspense fallback={null}>
+        <WelcomeForm />
+      </Suspense>
     </DreamBackdrop>
   );
 }

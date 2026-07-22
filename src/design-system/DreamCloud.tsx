@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { cn } from './cn';
 
-type CloudTone = 'pearl' | 'gold' | 'sage' | 'clay';
+type CloudTone = 'pearl' | 'gold' | 'sage' | 'clay' | 'blush' | 'sky';
 
 export interface DreamCloudProps {
   /** Rendered inside the cloud belly. */
@@ -22,6 +22,8 @@ const GRAD: Record<CloudTone, [string, string]> = {
   gold: ['#FCF4E0', '#EEDFBB'],
   sage: ['#F2F6ED', '#DBE5D1'],
   clay: ['#FBEAE1', '#EFCBBA'],
+  blush: ['#FBEAE8', '#F1D3CD'],
+  sky: ['#EEF3F8', '#D2DFEA'],
 };
 
 let cloudSeq = 0;
