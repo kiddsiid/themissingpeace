@@ -4,7 +4,9 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
 // Public routes; everything else (the workspace) requires an authenticated session.
-const PUBLIC_PREFIXES = ['/sign-in', '/sign-up', '/welcome', '/join', '/auth', '/w'];
+// '/version' and '/api/version' are the build stamp (One-Engine §26.3): a deploy must be
+// confirmable from the URL without a login, so they stay outside the auth guard.
+const PUBLIC_PREFIXES = ['/sign-in', '/sign-up', '/welcome', '/join', '/auth', '/w', '/version', '/api/version'];
 function isPublic(pathname: string): boolean {
   if (pathname === '/') return true;
   return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p));

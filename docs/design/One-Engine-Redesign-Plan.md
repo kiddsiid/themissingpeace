@@ -727,24 +727,182 @@ Add object presence, comments, version conflicts, local draft queues, reconnect 
 
 | Ticket | Scope | Definition of done |
 | --- | --- | --- |
-| MP 001 | Route aware shell | All modules use one shell, real links, current route state, and browser history |
-| MP 002 | Mobile navigation | Home, Dream, Studio, Guests, Peace bottom navigation works with a More drawer |
-| MP 003 | Project provider | Existing local state migrates into a versioned project model without data loss |
-| MP 004 | Wedding Compass | Dream answers produce structured principles, priorities, and linked modules |
-| MP 005 | Ripple engine | Major changes preview affected objects before applying recommendations |
-| MP 006 | Peace Engine | Next action, watch list, readiness, and decision records derive from shared data |
-| MP 007 | Living Canvas | Dream Drawer, center canvas, and Peace Panel work across all three rooms |
-| MP 008 | Feast Canvas | Nine scene journey, scene map, dish editor, and mobile Flow view work end to end |
-| MP 009 | Hospitality intelligence | Coverage explanations, assessment states, evidence, and Hospitality Score work |
-| MP 010 | Caterer brief | Private preview, readiness, versions, changed sections, and PDF export work |
-| MP 011 | Atmosphere ripple | Palette changes visibly update invitation, table, attire, florals, cake, lighting, and preview |
-| MP 012 | Atelier context | Look composer, context previews, couple harmony, and editable approvers work |
-| MP 013 | Decision ledger | Decisions link to Compass items, affected modules, votes, rationale, and history |
-| MP 014 | Money and timeline | Advisory scenarios and dependencies update from decisions, guests, vendors, and date |
-| MP 015 | Guest and seating | Requirements, households, coverage, seating conflicts, and mobile Arrange Mode work |
-| MP 016 | Output projections | Documents, printables, and Guest Experience preview show source and stale state |
-| MP 017 | Collaboration | Presence, object comments, optimistic edits, and version conflict resolution work |
-| MP 018 | Quality gates | Accessibility, overflow, route, unresolved template, performance, and visual checks pass |
+| MP-001 | Route aware shell | All modules use one shell, real links, current route state, and browser history |
+| MP-002 | Mobile navigation | Home, Dream, Studio, Guests, Peace bottom navigation works with a More drawer |
+| MP-003 | Project provider | Existing local state migrates into a versioned project model without data loss |
+| MP-004 | Wedding Compass | Dream answers produce structured principles, priorities, and linked modules |
+| MP-005 | Ripple engine | Major changes preview affected objects before applying recommendations |
+| MP-006 | Peace Engine | Next action, watch list, readiness, and decision records derive from shared data |
+| MP-007 | Living Canvas | Dream Drawer, center canvas, and Peace Panel work across all three rooms |
+| MP-008 | Feast Canvas | Nine scene journey, scene map, dish editor, and mobile Flow view work end to end |
+| MP-009 | Hospitality intelligence | Coverage explanations, assessment states, evidence, and Hospitality Score work |
+| MP-010 | Caterer brief | Private preview, readiness, versions, changed sections, and PDF export work |
+| MP-011 | Atmosphere ripple | Palette changes visibly update invitation, table, attire, florals, cake, lighting, and preview |
+| MP-012 | Atelier context | Look composer, context previews, couple harmony, and editable approvers work |
+| MP-013 | Decision ledger | Decisions link to Compass items, affected modules, votes, rationale, and history |
+| MP-014 | Money and timeline | Advisory scenarios and dependencies update from decisions, guests, vendors, and date |
+| MP-015 | Guest and seating | Requirements, households, coverage, seating conflicts, and mobile Arrange Mode work |
+| MP-016 | Output projections | Documents, printables, and Guest Experience preview show source and stale state |
+| MP-017 | Collaboration | Presence, object comments, optimistic edits, and version conflict resolution work |
+| MP-018 | Quality gates | Accessibility, overflow, route, unresolved template, performance, and visual checks pass, and the 26.1 phase gate is recorded for the phase |
+
+### 26.1 Phase gate — the verification rule
+
+Owner directive, 2026-07-25. No phase closes on a build log. Every phase gate from here
+requires all four of the following, in writing, in that phase's plan document.
+
+1. **Nav surface re-read.** Any phase that adds or renames a route re-reads
+   `src/components/nav.tsx` and `src/components/MobileNav.tsx` after the work lands, and
+   records the resulting entry list in the phase document. A route that exists but is
+   unreachable from the nav is not shipped, and a nav entry that contradicts this
+   document's placement — Feast is a room inside the Living Canvas, never a top-level
+   tab — is a defect, not a detail.
+2. **Prototype-vs-app diff.** For every section the phase touches, diff the app route
+   against its `prototype/*.html` counterpart in both directions: what the prototype does
+   that the app does not, and what the app does that the prototype never had. The second
+   direction is the regression guard — a ticket implemented by porting prototype markup
+   over the app would delete it. Record both directions.
+3. **Confirmed deploy, checked by URL.** The gate is the live page — not the build log,
+   and not a local `wrangler` command either. The deploy is triggered by the push. The
+   Cloudflare Pages project `themissingpeace` is wired to the GitHub repository
+   `kiddsiid/themissingpeace`, so the URL a gate reads is the deployment that push
+   produced: the production URL for `master`, the branch preview URL for any other
+   branch. Open it, read the build stamp (26.3), and confirm it carries the commit the
+   phase closed on. What that push currently builds, and the defect that has to close
+   before the check can pass, are in 26.4. A green build on the wrong target is exactly
+   the failure this rule exists to catch.
+4. **Ask when unsure.** Where a phase plan and this document disagree, or where a
+   definition of done is open to more than one reading, interview the owner before
+   building. A wrong assumption carried through a phase costs more than a question.
+
+### 26.2 Parity backlog — folded in
+
+`docs/PARITY-2026-07-25-tickets.md` (80 tickets: 9 blockers, 36 majors, 35 minors) is a
+**superseded appendix**. It is kept for its evidence and for its per-section AHEAD lists,
+which are the regression guard rule 26.1(2) refers to. MP-### is the only ticket scheme.
+Its sections map on as follows.
+
+| Parity section | Tickets | Owning MP ticket |
+| --- | --- | --- |
+| FEAST | F-2…F-10 | MP-008, MP-009, MP-010 |
+| DREAM / DREAM WALK | D-1…D-8 | MP-004 |
+| MONEY MAP | M-1…M-8 | MP-014 |
+| TIMELINE | T-1…T-5 | MP-014 |
+| SEATING | S-1…S-9 | MP-015 |
+| GUESTS | G-1 | MP-015 |
+| DECISIONS | DC-1…DC-4 | MP-013 |
+| PEACE CENTER | PC-1…PC-5 | MP-006 |
+| PEACE NOTES | PN-1…PN-4 | MP-006 — note bodies never leave the note |
+| WEBSITE | W-1…W-5 | MP-016 |
+| DOCUMENTS | DO-1…DO-4 | MP-016 |
+| PRINTABLES | PR-1…PR-3 | MP-016 |
+| Cross-cutting | X-1…X-3 | MP-018 |
+| VENDORS | V-1…V-4 | MP-019 (new row — none existed) |
+| PLAYLIST | PL-1…PL-4 | MP-019 |
+| HONEYMOON | H-1…H-3 | MP-019 |
+| LANDING | L-1 | MP-020 (new row — none existed) |
+
+Folding the parity list in exposed two holes in the map above. Section 25 lists Vendors,
+Playlist and Honeymoon under connected planning modules, but section 26 carried no ticket
+for any of them; and the public landing surface — the first thing anyone sees, and the
+thing that was stale on the live URL — was never ticketed at all. Both are now rows.
+
+| Ticket | Scope | Definition of done |
+| --- | --- | --- |
+| MP-019 | Vendors, playlist, honeymoon | Each module reads from the shared project model, shows its source data and linked decisions, and holds no private local state |
+| MP-020 | Public landing | The deployed landing matches the design source of truth, its Compass is the real deterministic model, and the build stamp is readable without a login |
+
+Two parity findings were **withdrawn on inspection** and are not tickets. F-1, "remove the
+top-level Feast Studio tab": `src/components/nav.tsx` never had one — the live site was
+serving a stale prototype build. And the `/board` product fork: the prototype's three-room
+Design Studio already exists in the app as `/canvas`, while `/board` is the unlinked Master
+Vision pin board. Both were reported from source reading rather than from a running page.
+They are the reason rule 26.1 exists.
+
+### 26.3 Build stamp
+
+Every deploy writes its commit SHA and build time to a surface reachable **without a
+login**, so that any deploy can be verified from the URL alone. This is what rule 26.1(3)
+reads. It is public by owner decision, 2026-07-25.
+
+Built 2026-07-25. `next.config.mjs` resolves the commit at build time — CI value first
+(`CF_PAGES_COMMIT_SHA`, `VERCEL_GIT_COMMIT_SHA`, `GITHUB_SHA`), then `git rev-parse`, then the
+literal string `unknown`; it never guesses. `src/lib/build/info.ts` reads the injected values,
+and both routes below sit outside the auth guard via `PUBLIC_PREFIXES` in
+`src/lib/supabase/middleware.ts`.
+
+| Surface | What it is |
+| --- | --- |
+| `/version` | The readable page: commit, short commit, branch, build time |
+| `/api/version` | The same as JSON, `cache-control: no-store`, for scripted checks |
+
+The gate is: open `/version` on the deployment the push produced, and compare the short commit
+against `git log`. A mismatch means the deploy did not land on the target you thought it did,
+whatever the build log said. `CF_PAGES_COMMIT_SHA` is the value that resolves inside a
+Cloudflare git build, which is why it is first in the precedence list above. The local wrangler
+scripts (`pnpm deploy:product`, `pnpm prototype:deploy`) stay available as a manual override,
+but they are not what the gate reads — see 26.4.
+
+### 26.4 Deploy path — what a push actually builds
+
+Owner directive, 2026-07-25: *the URL should be the GitHub page after it has been pushed.* The
+deploy is push-triggered, not CLI-triggered. Verified against the repository the same day.
+
+| Fact | Value | How it was verified |
+| --- | --- | --- |
+| Remote | `https://github.com/kiddsiid/themissingpeace.git` | `git remote -v` |
+| GitHub Actions | none | `.github/workflows/` does not exist |
+| GitHub Pages | not used | no workflow, no `gh-pages` branch, no publish source |
+| Trigger | Cloudflare Pages git integration, on push | `DEPLOY.md`, "GitHub To Cloudflare Automation" |
+| Production branch | `master` | same |
+| Branch at time of writing | `codex/update-prototype-from-zip` | `git rev-parse --abbrev-ref HEAD` |
+
+So a gate reads the URL that push produced: `themissingpeace.pages.dev` for `master`, the branch
+preview alias for anything else. Read that alias off the Cloudflare deployment or the GitHub
+deployment status rather than constructing it — Cloudflare lowercases the branch, replaces
+non-alphanumerics with `-`, and truncates, and the constructed guess for the current branch
+returns 404.
+
+**The open defect.** The git build is still configured to build the *prototype*, not the product:
+
+```text
+Root directory:          cloudflare-prototype
+Build command:           node ../scripts/prepare-prototype-pages.mjs
+Build output directory:  dist
+```
+
+Confirmed live on 2026-07-25: `themissingpeace.pages.dev` serves the prototype, complete with the
+unresolved `{{ u.initial }}` and `{{ pickedName }}` template placeholders MP-018 covers, and
+`/version` does not exist there. This is the same single root cause traced earlier — the prototype
+publishing over the product — but it has a second home, in the Pages project's build settings
+rather than only in a script alias. Pushing the product while these settings stand redeploys the
+prototype, and the 26.1(3) check fails by design.
+
+Closing it is a settings change on the owner's Cloudflare account and needs owner sign-off. The
+settings the product needs:
+
+```text
+Root directory:          /                      (repository root)
+Build command:           pnpm run pages:build
+Build output directory:  .open-next/pages
+```
+
+plus the build-time variables, because every `NEXT_PUBLIC_*` value is inlined into the client
+bundle at build time and a Cloudflare git build does not read `.env.local`:
+
+```text
+NEXT_PUBLIC_APP_URL=https://themissingpeace.pages.dev
+NEXT_PUBLIC_SUPABASE_URL=https://ztgixihhivtharrelmps.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>
+NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=<public key>
+```
+
+with `SUPABASE_SERVICE_ROLE_KEY`, `LIVEBLOCKS_SECRET_KEY` and `ANTHROPIC_API_KEY` set as secrets
+rather than plain variables. Clerk variables are dead — no source file imports `@clerk` or reads
+a `CLERK_*` value; auth is Supabase. The prototype keeps its own project,
+`themissingpeace-prototype`, which does not exist yet: that hostname does not resolve as of
+2026-07-25.
+
 
 ## 27. Release acceptance scenarios
 

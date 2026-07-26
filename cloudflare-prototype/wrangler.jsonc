@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
-  "name": "themissingpeace",
+  "name": "themissingpeace-prototype",
   "pages_build_output_dir": "../.pages-prototype",
   "compatibility_date": "2026-06-05",
   // Lead / order / analytics storage for the landing funnel.

@@ -99,7 +99,7 @@ export function WelcomeForm() {
       >
         Continue
       </button>
-      <p className="mt-4 text-[11px] text-[var(--gold)]">Free to dream. Invite your person anytime.</p>
+      <p className="mt-4 text-[11px] text-[var(--gold)]">Nothing is locked in. Invite your person anytime.</p>
     </form>
   );
 }

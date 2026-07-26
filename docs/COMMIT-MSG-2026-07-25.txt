@@ -1,0 +1,48 @@
+Phases 2-5: engine, world layer, connected modules, Feast Studio
+
+Restore point for three phases of work that had no commit boundary.
+HEAD was 65af9c1 (2026-07-22); everything since sat in the working tree.
+
+Phase 2 - Core engine
+  Ripple emission at all five mutation points (compass, decision settle,
+  vendor status, budget item, guest estimate); Weaver citation grounding
+  and determinism guard; insight lifecycle persists acted_by/acted_at.
+  src/lib/engine/ripple.ts, decision-ripple.ts, dream-clouds.ts + tests.
+
+Phase 3 - World layer
+  0022_world_layer.sql (atmosphere_plans, attire_looks; RLS in-migration).
+  src/lib/engine/atmosphere.ts derivePaletteRipple + tests.
+  Living Canvas shell, Atmosphere lab, Atelier.
+
+Phase 4 - Connected modules, collaboration, planner
+  0023_collaboration_outputs.sql (decision-ledger columns, object_comments,
+  output_versions; RLS in-migration).
+  src/lib/collaboration/, src/lib/outputs/, app/(app)/collaboration/,
+  app/(app)/outputs/, app/(app)/planner/ + tests.
+
+Phase 5 - Feast Studio as the Living Canvas Feast room
+  0024_feast.sql (feast_plans, meal_scenes, dishes, guest_requirements,
+  confirmation_evidence, dish_assessments, caterer_brief_versions;
+  RLS in-migration on every table).
+  src/lib/feast/hospitality.ts - the deterministic coverage engine.
+  "Safe" is never a status: certified requirements need a documented
+  certificate, allergies need vendor-confirmed preparation/cross-contact,
+  and every confirmed state is evidence-guarded. 13/13 tests green.
+  Feast Studio routes under /canvas/feast (scenes, guests, requirements,
+  flow, presentation, brief).
+
+Fixes from the 2026-07-25 provenance trace
+  Feast Studio removed from the top-level nav - it is a Living Canvas room,
+  not a peer section (src/components/nav.tsx).
+  Living Canvas active state now matches any /canvas/* route, so Atmosphere,
+  Atelier and Feast highlight the Canvas (nav.tsx, MobileNav.tsx).
+
+Migrations 0022 and 0023 are applied to live (2026-07-23, with sign-off).
+0024 tables are functionally present on live, but the migration-ledger entry
+has not been independently captured; inspect history before any re-application.
+0000_reset is synchronized through 0024 in child-before-parent order.
+
+Not in this commit: the HomeLanding port, the Cloudflare project split, and
+the prototype-vs-app parity backlog. See docs/TRACE-2026-07-25-how-we-fell-behind.md.
+
+Excluded deliberately: .agents/ and .claude/ (CRLF-only churn, 2196/2196).
