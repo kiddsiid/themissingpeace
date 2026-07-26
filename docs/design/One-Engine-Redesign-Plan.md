@@ -764,13 +764,18 @@ requires all four of the following, in writing, in that phase's plan document.
    over the app would delete it. Record both directions.
 3. **Confirmed deploy, checked by URL.** The gate is the live page — not the build log,
    and not a local `wrangler` command either. The deploy is triggered by the push. The
-   Cloudflare Pages project `themissingpeace` is wired to the GitHub repository
-   `kiddsiid/themissingpeace`, so the URL a gate reads is the deployment that push
-   produced: the production URL for `master`, the branch preview URL for any other
-   branch. Open it, read the build stamp (26.3), and confirm it carries the commit the
-   phase closed on. What that push currently builds, and the defect that has to close
-   before the check can pass, are in 26.4. A green build on the wrong target is exactly
-   the failure this rule exists to catch.
+   Worker `themissingpeace` is wired to the GitHub repository `kiddsiid/themissingpeace`
+   through Workers Builds, so the URL a gate reads is the deployment that push produced:
+   the production URL for `master`, and for any other branch the **Branch Preview URL**
+   Workers Builds posts as a comment on the pull request. Read that URL off the comment or
+   the Worker's version list; never construct it by hand. Open it, read the build stamp
+   (26.3), and confirm it carries the commit the phase closed on. **The stamp is the
+   evidence, never the status code.** The target that stood here before the migration
+   answered every path with HTTP 200 — see 26.4, *The catch-all trap* — so a page that
+   loads proves nothing. What the gate is looking for is the commit; a page with no build
+   stamp on it is a failure that happens to render. The deploy path, and what still has to
+   close before this check can pass, are in 26.4. A green build on the wrong target is
+   exactly the failure this rule exists to catch.
 4. **Ask when unsure.** Where a phase plan and this document disagree, or where a
    definition of done is open to more than one reading, interview the owner before
    building. A wrong assumption carried through a phase costs more than a question.
@@ -825,9 +830,11 @@ Every deploy writes its commit SHA and build time to a surface reachable **witho
 login**, so that any deploy can be verified from the URL alone. This is what rule 26.1(3)
 reads. It is public by owner decision, 2026-07-25.
 
-Built 2026-07-25. `next.config.mjs` resolves the commit at build time — CI value first
-(`CF_PAGES_COMMIT_SHA`, `VERCEL_GIT_COMMIT_SHA`, `GITHUB_SHA`), then `git rev-parse`, then the
-literal string `unknown`; it never guesses. `src/lib/build/info.ts` reads the injected values,
+Built 2026-07-25; precedence updated 2026-07-26 for Workers Builds. `next.config.mjs` resolves
+the commit at build time — CI value first (`WORKERS_CI_COMMIT_SHA`, then the retired-path names
+`CF_PAGES_COMMIT_SHA`, `VERCEL_GIT_COMMIT_SHA`, `GITHUB_SHA`), then `git rev-parse`, then the
+literal string `unknown`; it never guesses. The branch resolves the same way from
+`WORKERS_CI_BRANCH`. `src/lib/build/info.ts` reads the injected values,
 and both routes below sit outside the auth guard via `PUBLIC_PREFIXES` in
 `src/lib/supabase/middleware.ts`.
 
@@ -838,32 +845,141 @@ and both routes below sit outside the auth guard via `PUBLIC_PREFIXES` in
 
 The gate is: open `/version` on the deployment the push produced, and compare the short commit
 against `git log`. A mismatch means the deploy did not land on the target you thought it did,
-whatever the build log said. `CF_PAGES_COMMIT_SHA` is the value that resolves inside a
-Cloudflare git build, which is why it is first in the precedence list above. The local wrangler
-scripts (`pnpm deploy:product`, `pnpm prototype:deploy`) stay available as a manual override,
-but they are not what the gate reads — see 26.4.
+whatever the build log said. `WORKERS_CI_COMMIT_SHA` and `WORKERS_CI_BRANCH` are the values
+Workers Builds injects into a build — verified against Cloudflare's build-configuration
+documentation, 2026-07-26 — which is why they lead the precedence list above; the `CF_PAGES_*`
+names sit behind them so a hand-run Pages build would still stamp rather than read `unknown`.
+The local wrangler scripts (`pnpm deploy:product`, `pnpm prototype:deploy`) stay available as a
+manual override, but they are not what the gate reads — see 26.4.
 
 ### 26.4 Deploy path — what a push actually builds
 
 Owner directive, 2026-07-25: *the URL should be the GitHub page after it has been pushed.* The
-deploy is push-triggered, not CLI-triggered. Verified against the repository the same day.
+deploy is push-triggered, not CLI-triggered.
+
+Owner decision, 2026-07-26: **the deploy target is Cloudflare Workers, not Cloudflare Pages.**
+Everything below is the Workers Builds path. The Pages path this section used to describe is
+recorded here only as the thing being retired, because the failure it caused is the reason rule
+26.1 exists and the record has to survive the fix.
+
+**Why the target moved.** Four checks, each verified 2026-07-26 rather than assumed.
+
+| Reason | Evidence |
+| --- | --- |
+| The adapter is a Workers adapter | `@opennextjs/cloudflare` v1.20.1 describes itself as deploying Next.js "to Cloudflare Workers". Cloudflare's own Next.js framework guide documents only the Workers path; there is no documented Pages path for it |
+| The Pages path needed hand-written glue | `scripts/prepare-cloudflare-pages.mjs`, 88 lines, sat in the deploy critical path rebuilding `.open-next/assets` into a Pages layout. Nothing maintains it but us |
+| Workers Builds keeps deploy config in the repository | The Worker's shape lives in `wrangler.jsonc`, under review and in git. The Pages equivalent lived in dashboard fields no workspace could read — which is exactly where this project's defect hid for weeks |
+| Workers Builds gives a stable per-branch preview URL | Each non-production branch gets a Branch Preview URL, posted as a comment on the pull request. That retires the old warning in this section about hand-constructing a Pages alias, because there is now an authoritative URL to read instead of a pattern to guess |
+
+Cloudflare's own position, quoted from its migration guidance: "Unlike Pages, Workers has a
+distinctly broader set of features available to it, (including Durable Objects, Cron Triggers,
+and more comprehensive Observability)."
+
+**Ground truth.**
 
 | Fact | Value | How it was verified |
 | --- | --- | --- |
 | Remote | `https://github.com/kiddsiid/themissingpeace.git` | `git remote -v` |
 | GitHub Actions | none | `.github/workflows/` does not exist |
 | GitHub Pages | not used | no workflow, no `gh-pages` branch, no publish source |
-| Trigger | Cloudflare Pages git integration, on push | `DEPLOY.md`, "GitHub To Cloudflare Automation" |
-| Production branch | `master` | same |
-| Branch at time of writing | `codex/update-prototype-from-zip` | `git rev-parse --abbrev-ref HEAD` |
+| Trigger | Workers Builds git integration, on push | owner decision 2026-07-26 |
+| Production branch | `master` | unchanged |
+| Worker name | `themissingpeace` | `wrangler.jsonc` `name` |
+| Worker entrypoint | `.open-next/worker.js` | `wrangler.jsonc` `main` |
+| Static assets | `.open-next/assets`, binding `ASSETS` | `wrangler.jsonc` `assets` |
+| Wrangler | `^4.68.0` | `package.json` — already past the v4 line the migration requires |
 
-So a gate reads the URL that push produced: `themissingpeace.pages.dev` for `master`, the branch
-preview alias for anything else. Read that alias off the Cloudflare deployment or the GitHub
-deployment status rather than constructing it — Cloudflare lowercases the branch, replaces
-non-alphanumerics with `-`, and truncates, and the constructed guess for the current branch
-returns 404.
+**What the push builds.** These are the Workers Builds fields on the `themissingpeace` Worker.
+They are dashboard settings, not repository files, and setting them is an owner action.
 
-**The open defect.** The git build is still configured to build the *prototype*, not the product:
+```text
+Git repository:                        kiddsiid/themissingpeace
+Git branch (production):               master
+Build command:                         pnpm run build:worker
+Deploy command:                        npx wrangler deploy
+Non-production branch deploy command:  npx wrangler versions upload
+Root directory:                        /
+Non-production branch builds:          enabled
+```
+
+The split between build and deploy is deliberate. `pnpm run build:worker` is
+`opennextjs-cloudflare build` and nothing else, so the build runs once; the two deploy commands
+then differ only in the wrangler verb — `deploy` promotes to production, `versions upload`
+publishes a preview version without touching production traffic. Both are Cloudflare's own
+defaults for those fields. Do not put `pnpm run deploy:worker` in the deploy field: it would
+rebuild, and it would give the non-production branch no way to upload without deploying.
+
+One trap worth naming, from Cloudflare's build documentation: **"Workers Builds does not honor
+the configurations set in Custom Builds within your Wrangler configuration file."** A `[build]`
+section added to `wrangler.jsonc` will be silently ignored by CI. The build command is a
+dashboard field, and only a dashboard field.
+
+**Build variables.** Every `NEXT_PUBLIC_*` value is inlined into the client bundle at build time,
+and a Cloudflare git build does not read `.env.local`. Cloudflare states this explicitly for this
+adapter: Workers Builds "requires you to configure environment variables in the Build Variables
+and secrets section. This ensures the Next build has the necessary access to both public
+`NEXT_PUBLIC_...` variables and non-`NEXT_PUBLIC_...`, which are essential for tasks like
+inlining and building SSG pages." A runtime variable is too late for these.
+
+```text
+NEXT_PUBLIC_APP_URL=<the Worker's production URL — see below>
+NEXT_PUBLIC_SUPABASE_URL=https://ztgixihhivtharrelmps.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>
+NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=<public key>
+```
+
+`SUPABASE_SERVICE_ROLE_KEY`, `LIVEBLOCKS_SECRET_KEY` and `ANTHROPIC_API_KEY` are set as build
+secrets, never as plain variables, and as runtime secrets on the Worker. `ANTHROPIC_MODEL` can be
+an ordinary variable. Clerk variables are dead: no source file imports `@clerk` or reads a
+`CLERK_*` value, and auth is Supabase.
+
+`NEXT_PUBLIC_APP_URL` has to change with the target, and its new value is **not known from any
+workspace**. A Worker's production URL is `themissingpeace.<subdomain>.workers.dev`, where
+`<subdomain>` is the account's own workers.dev subdomain, or a custom domain if one is attached.
+Read it off the Worker after the first deploy and set it then. Do not guess it, and do not leave
+it pointing at `themissingpeace.pages.dev`.
+
+**Reading the URL a push produced.** `master` publishes to the Worker's production URL. Every
+other branch gets two URLs from Workers Builds: a **Commit Preview URL**
+(`<version-prefix>-themissingpeace.<subdomain>.workers.dev`, one per version) and a stable
+**Branch Preview URL** (`<branch-name>-themissingpeace.<subdomain>.workers.dev`), and Cloudflare
+posts them as a comment on the pull request. The gate reads that comment, or the version list on
+the Worker. It does not construct the URL by hand — the subdomain is account-specific and the
+branch segment is normalised, so a constructed guess is a guess. Preview URLs require preview
+URLs enabled on the Worker and non-production branch builds enabled on the build configuration;
+if the PR comment never appears, that is the first thing to check.
+
+**The mandatory disconnect.** The Cloudflare **Pages** project `themissingpeace` is still wired to
+the same GitHub repository. If it stays wired, one push builds both targets, and the older,
+misconfigured one keeps publishing over the product — the original failure, reproduced by the
+migration meant to end it. So: **disconnect the Pages project from git before, or in the same
+sitting as, connecting the Worker.** Nothing else in this section is safe until that is done. The
+Pages project can then be deleted, or left dormant with its git integration removed; either is
+fine, but "leave it connected and change its settings too" is not, because it re-creates two
+sources of truth for one push.
+
+**The catch-all trap.** An earlier revision of this section said `/version` "does not exist there."
+That was wrong, and wrong in the direction that hides the defect. The prototype build serves a
+single-page catch-all: `/version`, `/api/version` and an invented path such as
+`/this-path-does-not-exist-97531` all return **HTTP 200 with the prototype's landing HTML** — no
+404, no JSON, no build stamp. A gate that checks whether the URL loads, or whether it avoids a
+404, passes against the wrong target every time. This is why 26.1(3) reads the stamp itself: the
+failure signal is *a page with no commit on it*, not an error page. `/api/version` is the sharper
+probe of the two, because the product returns JSON there and the prototype returns HTML, so the
+content type alone separates them. This lesson outlives the Pages project. It is a property of
+any single-page fallback, and the Worker serves assets before the script by default, so it can be
+made to behave the same way by a misconfigured asset directory.
+
+**Why `run_worker_first` is not needed.** Workers serve static assets *before* the Worker script,
+which inverts the Pages order, where Functions ran first. That would matter if an auth check had
+to run ahead of asset serving. It does not here: the matcher in `middleware.ts` is
+`'/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'`, which already excludes every static
+path, so no guarded route is served from assets. Checked 2026-07-26. If a future change starts
+guarding files by extension, `assets.run_worker_first` becomes required and this paragraph is the
+thing to revisit.
+
+**What was wrong before, and stays on the record.** Until this migration the git build was
+configured to build the *prototype*, not the product:
 
 ```text
 Root directory:          cloudflare-prototype
@@ -871,38 +987,81 @@ Build command:           node ../scripts/prepare-prototype-pages.mjs
 Build output directory:  dist
 ```
 
-Confirmed live on 2026-07-25: `themissingpeace.pages.dev` serves the prototype, complete with the
-unresolved `{{ u.initial }}` and `{{ pickedName }}` template placeholders MP-018 covers, and
-`/version` does not exist there. This is the same single root cause traced earlier — the prototype
-publishing over the product — but it has a second home, in the Pages project's build settings
-rather than only in a script alias. Pushing the product while these settings stand redeploys the
-prototype, and the 26.1(3) check fails by design.
+Confirmed live 2026-07-25 and re-confirmed by direct fetch 2026-07-26:
+`themissingpeace.pages.dev` served the prototype, unresolved `{{ u.initial }}`, `{{ u.name }}`,
+`{{ u.role }}`, `{{ u.line }}` and `{{ pickedName }}` template placeholders and all — the same
+root cause traced earlier, the prototype publishing over the product, in its second home. This
+does not close because the Worker exists; it closes when the Pages project stops building on
+push.
 
-Closing it is a settings change on the owner's Cloudflare account and needs owner sign-off. The
-settings the product needs:
+**What the migration makes dead.** These files and scripts belong to the retired path and must
+not be extended:
 
-```text
-Root directory:          /                      (repository root)
-Build command:           pnpm run pages:build
-Build output directory:  .open-next/pages
-```
+| Dead | Was |
+| --- | --- |
+| `cloudflare-pages/wrangler.jsonc` | the Pages config, `pages_build_output_dir` |
+| `scripts/prepare-cloudflare-pages.mjs` | the 88-line Pages layout glue |
+| `pnpm run pages:build` / `pages:preview` / `pages:deploy` | removed from `package.json` 2026-07-26 |
 
-plus the build-time variables, because every `NEXT_PUBLIC_*` value is inlined into the client
-bundle at build time and a Cloudflare git build does not read `.env.local`:
+The two files are still on disk. Removing them is an owner action — the sandbox cannot delete
+files on the machine — and it is housekeeping, not a blocker. `pnpm run deploy:product` now
+aliases `deploy:worker`, so the name that used to publish through the Pages glue publishes the
+Worker instead. The prototype scripts are untouched and keep their own separate project.
 
-```text
-NEXT_PUBLIC_APP_URL=https://themissingpeace.pages.dev
-NEXT_PUBLIC_SUPABASE_URL=https://ztgixihhivtharrelmps.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>
-NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=<public key>
-```
+**What a Cloudflare-authenticated session can and cannot verify.** As of 2026-07-26 this workspace
+reaches the Cloudflare account directly. That account is confirmed to be the right one: the D1
+database it lists, `tmp-landing` / `b87beb14-b875-4947-bb35-c26861683379`, is byte-for-byte the
+binding recorded in `cloudflare-prototype/wrangler.jsonc`.
 
-with `SUPABASE_SERVICE_ROLE_KEY`, `LIVEBLOCKS_SECRET_KEY` and `ANTHROPIC_API_KEY` set as secrets
-rather than plain variables. Clerk variables are dead — no source file imports `@clerk` or reads
-a `CLERK_*` value; auth is Supabase. The prototype keeps its own project,
-`themissingpeace-prototype`, which does not exist yet: that hostname does not resolve as of
-2026-07-25.
+| Fact | Value | How it was verified |
+| --- | --- | --- |
+| Workers on the account | none | `workers_list` returns an empty set — the Worker does not exist yet, and `deploy:worker` has never run |
+| D1 databases | `tmp-landing` only | `d1_databases_list`; matches the prototype binding |
+| Wrangler version | `^4.68.0` | `package.json` |
 
+The limit: **Pages projects are not reachable from that session.** It exposes Workers, D1, KV, R2
+and Hyperdrive, and nothing for Pages. So the disconnect above cannot be read, confirmed or
+performed from a workspace — it stays a dashboard action on the owner's account, and it comes
+before the push. The one thing a workspace *can* now confirm, once the Worker exists, is that it
+exists: `workers_list` returning `themissingpeace` is the first machine-checkable evidence this
+project has ever had that the right target is live.
+
+### 26.5 Workers configuration standard
+
+Owner decision, 2026-07-26. Cloudflare's official Workers code-generation prompt is adopted as a
+standing standard **at the configuration level**, and as reference material everywhere else. The
+split is deliberate: its config rules govern files this repository actually has, while its code
+patterns mostly govern services this repository does not use, and importing rules for absent
+services invites cargo-culting a Durable Object into a codebase that needs none.
+
+**Binding.** These hold for every change to the Worker and its configuration. A change that
+breaks one of them is a defect, not a preference.
+
+| Rule | Why | How to check |
+| --- | --- | --- |
+| ES modules only — `export default { fetch }` | The Service Worker format (`addEventListener('fetch', ...)`) is legacy and incompatible with most current bindings | `.open-next/worker.js` is generated by OpenNext and is already ESM; any hand-written Worker code must match |
+| Config lives in `wrangler.jsonc`, never `wrangler.toml` | One format, with comments, so the reason for a field survives next to the field | `ls wrangler*.` — there is no `.toml` in this repository and none is to be added |
+| `compatibility_flags: ["nodejs_compat"]` | Required by the Next.js adapter; without it the build runs and the Worker fails at runtime | `wrangler.jsonc` |
+| `compatibility_date` kept current, never below `2024-09-23` | The adapter's floor. Currently `2026-06-05` | `wrangler.jsonc` |
+| `observability.enabled: true` with `head_sampling_rate: 1` | Log every request. This project has twice been unable to tell which target was live; full-fidelity logs are worth their cost until the deploy path is proven, and the rate can be lowered later by a deliberate decision rather than by never having set it | `wrangler.jsonc` |
+| Static assets via the `assets` binding | Workers Sites is deprecated; `pages_build_output_dir` belongs to the retired path | `wrangler.jsonc` — `directory` `.open-next/assets`, `binding` `ASSETS` |
+| No secret ever appears in `wrangler.jsonc` | It is a tracked file | `wrangler secret put`, or the dashboard |
+| `NEXT_PUBLIC_*` are **build** variables, not runtime variables | They are inlined into the client bundle at build time; a runtime variable is too late | Workers Builds → Build variables and secrets (26.4) |
+| Bindings are added only when something needs them | Speculative KV/D1/R2/Queues bindings are surface area with no caller | `wrangler.jsonc` binding list matches actual imports |
+| Types come from `pnpm cf-typegen` | Generated `CloudflareEnv`, not hand-maintained shapes | `cloudflare-env.d.ts` |
+
+**One divergence, stated so it is not read as drift.** Cloudflare's prompt reaches for D1 and KV
+as the default storage answer. In this product they are not: **Supabase is the product datastore**,
+with RLS as the isolation boundary, and that is canon everywhere else in this document. The only
+D1 database on the account, `tmp-landing`, belongs to the prototype landing page and nothing else.
+Where the prompt's storage guidance and this document disagree, this document wins — the prompt is
+advice for Workers in general, not for this Worker.
+
+**Reference, not binding.** The prompt's patterns for Durable Objects and the WebSocket
+Hibernation API, Queues, Vectorize, Workflows, Browser Rendering, Analytics Engine, Hyperdrive and
+the Agents SDK are the correct starting point *if* one of those is ever adopted. None is in use
+today. Adopting one is a decision that adds a row to the table above; copying one in without that
+decision is the drift rule 26.1 exists to catch.
 
 ## 27. Release acceptance scenarios
 

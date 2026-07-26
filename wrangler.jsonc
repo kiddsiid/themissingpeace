@@ -9,10 +9,12 @@
     "binding": "ASSETS"
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "head_sampling_rate": 1
   }
-  // Secrets (CLERK_SECRET_KEY, SUPABASE_SERVICE_ROLE_KEY, LIVEBLOCKS_SECRET_KEY,
-  // ANTHROPIC_API_KEY, CLERK_WEBHOOK_SECRET) are set via `wrangler secret put` or the
-  // dashboard — never in this file. NEXT_PUBLIC_* vars are inlined at build time, so set
-  // them as Build variables in Workers Builds (see DEPLOY.md).
+  // Secrets (SUPABASE_SERVICE_ROLE_KEY, LIVEBLOCKS_SECRET_KEY, ANTHROPIC_API_KEY) are set
+  // via `wrangler secret put` or the dashboard — never in this file. There are no CLERK_*
+  // secrets: no source file imports `@clerk` or reads a CLERK_ value, and auth is Supabase.
+  // NEXT_PUBLIC_* vars are inlined at build time, so they must be set as Build variables in
+  // Workers Builds as well — a runtime variable is too late for them (see DEPLOY.md).
 }

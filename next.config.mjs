@@ -9,6 +9,11 @@ import { execSync } from 'node:child_process';
  *
  * CI values win when present; a local build falls back to git; a build with
  * neither says "unknown" rather than lying.
+ *
+ * WORKERS_CI_COMMIT_SHA and WORKERS_CI_BRANCH are the values Workers Builds
+ * injects, and Workers Builds is the deploy path as of 2026-07-26 (see §26.4).
+ * The CF_PAGES_* names are kept behind them so an older Pages build, if one is
+ * ever run by hand, still stamps correctly instead of silently reading 'unknown'.
  */
 function readEnv(...names) {
   for (const name of names) {
@@ -27,12 +32,24 @@ function fromGit(command) {
 }
 
 const buildSha =
-  readEnv('BUILD_SHA', 'CF_PAGES_COMMIT_SHA', 'VERCEL_GIT_COMMIT_SHA', 'GITHUB_SHA') ||
+  readEnv(
+    'BUILD_SHA',
+    'WORKERS_CI_COMMIT_SHA',
+    'CF_PAGES_COMMIT_SHA',
+    'VERCEL_GIT_COMMIT_SHA',
+    'GITHUB_SHA',
+  ) ||
   fromGit('git rev-parse HEAD') ||
   'unknown';
 
 const buildBranch =
-  readEnv('BUILD_BRANCH', 'CF_PAGES_BRANCH', 'VERCEL_GIT_COMMIT_REF', 'GITHUB_REF_NAME') ||
+  readEnv(
+    'BUILD_BRANCH',
+    'WORKERS_CI_BRANCH',
+    'CF_PAGES_BRANCH',
+    'VERCEL_GIT_COMMIT_REF',
+    'GITHUB_REF_NAME',
+  ) ||
   fromGit('git rev-parse --abbrev-ref HEAD') ||
   'unknown';
 

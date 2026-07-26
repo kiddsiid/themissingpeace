@@ -22,6 +22,10 @@ cloudflare-env.d.ts
 next-env.d.ts
 coverage/
 tmp/
+# Staging folder for files awaiting manual deletion: this mount forbids unlink,
+# so files to be removed are moved here instead. Anchored to the root for the
+# same reason `/build/` is. Never track it.
+/_to_delete/
 
 # Credentials for the agentic test accounts. Never tracked.
 docs/access/

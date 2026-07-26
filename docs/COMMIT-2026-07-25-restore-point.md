@@ -169,6 +169,10 @@ right now, unresolved `{{ u.initial }}` placeholders and all.
 The settings the product needs, which is a change on your Cloudflare account and therefore yours
 to make:
 
+> **Superseded 2026-07-26.** The deploy target moved from Cloudflare Pages to Cloudflare Workers
+> and `pnpm run pages:build` no longer exists. See One-Engine §26.4 and `DEPLOY.md`. This record
+> is left as written because it is the state at the time of the commit it documents.
+
 ```text
 Root directory:          /                      (repository root)
 Build command:           pnpm run pages:build
