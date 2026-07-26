@@ -15,7 +15,7 @@ import { track } from '@/lib/analytics';
  * full NAV. The Drawer traps focus, closes on Esc / backdrop, and honors
  * reduced-motion. Route changes close the drawer.
  */
-export function MobileNav() {
+export function MobileNav({ backendAdmin = false }: { backendAdmin?: boolean }) {
   const [open, setOpen] = React.useState(false);
   const path = usePathname();
 
@@ -43,14 +43,26 @@ export function MobileNav() {
         </button>
         <div className="min-w-0">
           <div className="voice text-base leading-none">The Missing Peace</div>
+          {backendAdmin ? (
+            <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#6C4712]">
+              Backend admin · test
+            </div>
+          ) : null}
         </div>
       </header>
 
       <Drawer open={open} onClose={() => setOpen(false)} side="left" title="The Missing Peace" aria-label="Main navigation">
+        {backendAdmin ? (
+          <div className="mb-3 inline-flex rounded-full border border-[#A8782A]/35 bg-[#F4EBDD] px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#6C4712]">
+            Backend admin · test
+          </div>
+        ) : null}
         <nav aria-label="Primary">
           <ul className="space-y-1">
             {NAV.map((item) => {
-              const active = path === item.href || path?.startsWith(`${item.href}/`);
+              const active = item.href === '/canvas'
+                ? path === '/canvas' || Boolean(path?.startsWith('/canvas/'))
+                : path === item.href || path?.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
                   <Link

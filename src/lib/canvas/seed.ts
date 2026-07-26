@@ -35,7 +35,7 @@ export const CANVAS_SEED: CanvasBoard = {
         id: 'c3', name: 'The first course', scene: 'Warmth in a bowl as everyone finds their seat', slot: 'starter', mood: 'Candlelit', service: 'Plated',
         staffing: 'Standard plated service', rental: 'Small ceramic bowls, seeded garnish', timing: '7:00pm · once seated',
         dishes: [
-          { id: 'd4', name: 'Autumn squash soup', story: 'Warmth in a cup as the room settles and the toasts begin.', plate: 'Small bowls, toasted pumpkin-seed garnish, drizzle of herb oil.', tags: ['v'], restrictions: ['Vegan', 'Gluten free', 'Dairy free', 'Nut free'], compliance: 'Naturally vegan and gluten-free.', execution: 'Verify the vegetable stock is certified gluten-free and no cream is finished in. Safe for nearly every table when confirmed.', blessed: true, cost: 'gentle' },
+          { id: 'd4', name: 'Autumn squash soup', story: 'Warmth in a cup as the room settles and the toasts begin.', plate: 'Small bowls, toasted pumpkin-seed garnish, drizzle of herb oil.', tags: ['v'], restrictions: ['Vegan', 'Gluten free', 'Dairy free', 'Nut free'], compliance: 'Naturally vegan and gluten-free.', execution: 'Verify the vegetable stock is certified gluten-free and no cream is finished in. Once both are confirmed the ingredients clear vegan, gluten-free, dairy-free and nut-free \u2014 preparation and cross-contact still need the caterer\u2019s word.', blessed: true, cost: 'gentle' },
         ],
       },
       {

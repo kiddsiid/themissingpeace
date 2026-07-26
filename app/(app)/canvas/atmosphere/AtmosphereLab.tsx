@@ -6,7 +6,13 @@ import { tint, shade, readableInk } from '@/lib/canvas/color';
 import { can } from '@/lib/auth/permissions';
 import type { MemberRole } from '@/lib/types';
 import type { CanvasContext, PaletteBoard, PaletteJourneyMoment } from '@/lib/canvas/types';
-import { savePalette, saveLight, ripplePalette } from './actions';
+import { Button, Chip, Dialog } from '@/design-system';
+import {
+  derivePaletteRipple,
+  type Palette,
+  type Surface,
+} from '@/lib/engine/atmosphere';
+import { savePalette, saveLight, ripplePalette, saveSurfaceOverride } from './actions';
 
 /* ------------------------------------------------------------------ */
 /*  Static content (ported from the prototype)                         */
@@ -251,11 +257,23 @@ interface Props {
   palette: PaletteBoard;
   context: CanvasContext;
   workspaceRole: MemberRole;
+  surfaces: Surface[];
 }
 
 type RippleToast = { kicker: string; title: string; modules: string[] } | null;
 
-export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
+const SURFACE_ID: Record<string, string> = {
+  invite: 'invitation',
+  website: 'guest_experience',
+  tablescape: 'tablescape',
+  florals: 'florals',
+  cake: 'cake',
+  menu: 'menu_card',
+  reception: 'lighting',
+  attire: 'attire_context',
+};
+
+export function AtmosphereLab({ palette, context, workspaceRole, surfaces }: Props) {
   const canEdit = can(workspaceRole, 'plan.full');
 
   const roles = palette.roles.length ? palette.roles : ['Primary', 'Secondary', 'Accent', 'Neutral', 'Ink'];
@@ -272,12 +290,17 @@ export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
   const [selToken, setSelToken] = useState(0);
   const [layout, setLayout] = useState<'lab' | 'focus'>('lab');
   const [activeSurface, setActiveSurface] = useState('tablescape');
-  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
+  const [overrides, setOverrides] = useState<Record<string, boolean>>(() => Object.fromEntries(
+    Object.entries(SURFACE_ID)
+      .filter(([, storedId]) => surfaces.some((surface) => surface.surface === storedId && surface.override))
+      .map(([uiId]) => [uiId, true]),
+  ));
   const [rippled, setRippled] = useState(!!context.weddingPalette && context.weddingPalette === (palette.name || 'Sage & Clay'));
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<'palette' | 'preview' | 'insights'>('preview');
   const [ripple, setRipple] = useState<RippleToast>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const [vw, setVw] = useState(1440);
   const [isSaving, startTransition] = useTransition();
@@ -324,6 +347,17 @@ export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
   const panelIsOverlay = narrow && !mob;
 
   const c = colors;
+  const nextPalette: Palette = {
+    primary: c[0],
+    secondary: c[1],
+    accent: c[2],
+    neutrals: [c[3], c[4]],
+  };
+  const previewSurfaces = surfaces.map((surface) => {
+    const uiId = Object.entries(SURFACE_ID).find(([, storedId]) => storedId === surface.surface)?.[0];
+    return uiId ? { ...surface, override: !!overrides[uiId] } : surface;
+  });
+  const previewUpdates = derivePaletteRipple(nextPalette, previewSurfaces);
   const moodSummary = atmosphere.slice(0, 3).join(' · ') || 'Choose a feeling';
 
   const oList = Object.keys(overrides).filter((k) => overrides[k]);
@@ -370,18 +404,25 @@ export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
     run(() => savePalette({ name: nameRef.current }));
   };
   const toggleOverride = (id: string) => {
+    const nextValue = !overrides[id];
     setOverrides((prev) => {
       const next = { ...prev };
       if (next[id]) delete next[id];
       else next[id] = true;
       return next;
     });
+    const storedId = SURFACE_ID[id];
+    if (storedId) run(() => saveSurfaceOverride(storedId, nextValue, colorsForSurface(id)[0]));
   };
   const focusSurfaceId = (id: string) => {
     setActiveSurface(id);
     if (!mob) setLayout('focus');
   };
   const doRipple = () => {
+    setPreviewOpen(true);
+  };
+  const applyRipple = () => {
+    setPreviewOpen(false);
     setRippled(true);
     run(() => ripplePalette({ colors, name, atmosphere }));
     setRipple({
@@ -793,7 +834,9 @@ export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
                         </div>
                         <div style={sx('display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px')}>
                           <span style={sx('font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{sd.name}</span>
-                          <span title={ov ? 'Intentionally off-palette' : 'On palette'} style={{ width: 9, height: 9, borderRadius: '50%', flexShrink: 0, background: ov ? 'var(--clay-ink)' : 'var(--sage)' }} />
+                          <span style={{ flexShrink: 0, fontSize: 9.5, fontWeight: 600, color: ov ? 'var(--clay-ink)' : 'var(--sage)' }}>
+                            {ov ? 'Manual override' : 'On palette'}
+                          </span>
                         </div>
                       </div>
                     );
@@ -927,6 +970,41 @@ export function AtmosphereLab({ palette, context, workspaceRole }: Props) {
           Insights
         </button>
       )}
+
+      <Dialog
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        title="Preview the palette ripple"
+        description="Review every consequence before applying it. Manual overrides will not be replaced."
+        footer={(
+          <>
+            <Button variant="ghost" onClick={() => setPreviewOpen(false)}>Keep editing</Button>
+            <Button onClick={applyRipple} isLoading={isSaving}>
+              Apply to {previewUpdates.filter((update) => update.status === 'updated').length} surfaces
+            </Button>
+          </>
+        )}
+      >
+        <ul className="max-h-[50vh] space-y-2 overflow-y-auto py-2">
+          {previewUpdates.map((update) => {
+            const uiId = Object.entries(SURFACE_ID).find(([, storedId]) => storedId === update.surface)?.[0];
+            const surfaceName = SURFACE_DEFS.find((surface) => surface.id === uiId)?.name || update.surface.replace(/_/g, ' ');
+            return (
+              <li key={update.surface} className="flex items-center justify-between gap-3 rounded-[10px] border border-[var(--line)] bg-[var(--cream)]/45 px-3 py-2">
+                <span>
+                  <span className="block text-sm font-medium text-[var(--ink)]">{surfaceName}</span>
+                  <span className="block text-xs text-[var(--ink-soft)]">
+                    {update.status === 'override_kept' ? 'Your chosen surface color stays in place.' : `${update.from || 'Not applied'} → ${update.to}`}
+                  </span>
+                </span>
+                <Chip tone={update.status === 'override_kept' ? 'gold' : 'sage'}>
+                  {update.status === 'override_kept' ? 'Manual override kept' : 'Will update'}
+                </Chip>
+              </li>
+            );
+          })}
+        </ul>
+      </Dialog>
 
       {/* RIPPLE TOAST */}
       {ripple && (

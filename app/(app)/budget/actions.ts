@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { can } from '@/lib/auth/permissions';
 import { estimateMoneyMap } from '@/lib/engine/money-map';
+import { emitRipple } from '@/lib/engine/ripple';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 
@@ -53,6 +54,16 @@ export async function saveMoneyMapSetup(formData: FormData) {
     })
     .eq('workspace_id', workspace.id);
   if (profileError) throw profileError;
+
+  // Ripple: a guest-estimate change recomputes per-guest cost, seating capacity, feast counts.
+  if (guestCount != null) {
+    await emitRipple(workspace.id, {
+      sourceType: 'guest_count',
+      changeKind: 'updated',
+      summary: `Guest estimate set to ~${guestCount}`,
+      createdBy: workspace.userId,
+    });
+  }
 
   const { error: budgetError } = await db.from('budgets').upsert({
     workspace_id: workspace.id,

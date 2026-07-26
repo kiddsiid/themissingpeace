@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
+import { markGuestOutputsStale } from '@/app/(app)/outputs/actions';
 
 async function requireWrite() {
   const ws = await requireActiveWorkspace();
@@ -22,6 +23,7 @@ export async function createHousehold(fd: FormData) {
     primary_contact: text(fd, 'primary_contact'), invitation_status: text(fd, 'invitation_status'), created_by: ws.userId,
   });
   if (error) throw error;
+  await markGuestOutputsStale(ws.id);
   revalidatePath('/guests');
 }
 
@@ -29,6 +31,7 @@ export async function deleteHousehold(fd: FormData) {
   const ws = await requireWrite();
   const id = text(fd, 'id'); if (!id) throw new Error('Household required');
   await supabaseAdmin().from('households').delete().eq('id', id).eq('workspace_id', ws.id);
+  await markGuestOutputsStale(ws.id);
   revalidatePath('/guests');
 }
 
@@ -64,6 +67,7 @@ export async function createGuest(fd: FormData) {
     created_by: ws.userId,
   });
   if (error) throw error;
+  await markGuestOutputsStale(ws.id);
   revalidatePath('/guests');
 }
 
@@ -78,6 +82,7 @@ export async function updateGuestRsvp(fd: FormData) {
     thank_you_note_status: text(fd, 'thank_you_note_status'),
     gift_received: on(fd, 'gift_received'),
   }).eq('id', id).eq('workspace_id', ws.id);
+  await markGuestOutputsStale(ws.id);
   revalidatePath('/guests');
 }
 
@@ -85,6 +90,7 @@ export async function deleteGuest(fd: FormData) {
   const ws = await requireWrite();
   const id = text(fd, 'id'); if (!id) throw new Error('Guest required');
   await supabaseAdmin().from('guests').delete().eq('id', id).eq('workspace_id', ws.id);
+  await markGuestOutputsStale(ws.id);
   revalidatePath('/guests');
 }
 

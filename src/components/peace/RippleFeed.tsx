@@ -1,9 +1,15 @@
+'use client';
+
 import * as React from 'react';
+import { Chip } from '@/design-system';
+import { track } from '@/lib/analytics';
 
-// Presentational (server-renderable): the ripple feed for Peace Center (P5).
-// Shows recent changes and the areas they touched. Pure props; no client hooks.
+export interface RippleImpact {
+  area: string;
+  note?: string;
+  severity?: string;
+}
 
-export interface RippleImpact { area: string; note?: string; severity?: string }
 export interface RippleRow {
   id: string;
   source_type: string;
@@ -13,61 +19,86 @@ export interface RippleRow {
   created_at?: string | null;
 }
 
-const AREA_TONE: Record<string, string> = {
-  budget: 'bg-[var(--gold-bg)] text-[var(--ink)]',
-  seating: 'bg-[var(--sage-bg)] text-[var(--ink)]',
-  timeline: 'bg-[var(--cream)] text-[var(--ink-soft)]',
-  vendors: 'bg-[var(--cream)] text-[var(--ink-soft)]',
-  guests: 'bg-[var(--sage-bg)] text-[var(--ink)]',
-  canvas: 'bg-[var(--clay-bg)] text-[var(--clay-ink)]',
-  dream: 'bg-[var(--gold-bg)] text-[var(--ink)]',
-  decisions: 'bg-[var(--cream)] text-[var(--ink-soft)]',
-  honeymoon: 'bg-[var(--sage-bg)] text-[var(--ink)]',
-};
+function impactTone(severity?: string): 'clay' | 'gold' | 'sage' | 'neutral' {
+  const value = String(severity ?? '').toLowerCase();
+  if (value === 'high' || value === 'critical') return 'clay';
+  if (value === 'med' || value === 'medium') return 'gold';
+  if (value === 'low') return 'sage';
+  return 'neutral';
+}
 
 function timeAgo(iso?: string | null): string {
   if (!iso) return '';
-  const s = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
-  if (s < 60) return 'just now';
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const d = Math.floor(h / 24);
-  return d === 1 ? 'yesterday' : `${d}d ago`;
+  const seconds = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return days === 1 ? 'yesterday' : `${days}d ago`;
 }
 
 export function RippleFeed({ ripples }: { ripples: RippleRow[] }) {
-  if (!ripples || ripples.length === 0) {
-    return <p className="mt-3 text-sm text-[var(--ink-soft)]">No ripples yet — changes you make will show their downstream effects here.</p>;
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const tracked = React.useRef(false);
+
+  React.useEffect(() => {
+    const node = panelRef.current;
+    if (!node || tracked.current) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting) || tracked.current) return;
+      tracked.current = true;
+      track('ripple_viewed', { sourceType: ripples[0]?.source_type }, { surface: 'client' });
+      observer.disconnect();
+    }, { threshold: 0.35 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ripples]);
+
+  if (!ripples.length) {
+    return (
+      <div ref={panelRef}>
+        <p className="mt-3 text-sm text-[var(--ink-soft)]">
+          Changes you make will show their ripples here.
+        </p>
+      </div>
+    );
   }
+
   return (
-    <ul className="mt-3 space-y-2">
-      {ripples.map((r) => {
-        const impacts = Array.isArray(r.impact_json) ? r.impact_json : [];
-        return (
-          <li key={r.id} className="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-3">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-sm text-[var(--ink)]">{r.summary || `${r.source_type} ${r.change_kind}`}</span>
-              <span className="shrink-0 text-[11px] text-[var(--ink-soft)]">{timeAgo(r.created_at)}</span>
-            </div>
-            {impacts.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                <span className="text-[11px] text-[var(--ink-soft)]">Rippled to</span>
-                {impacts.map((im, i) => (
-                  <span
-                    key={`${im.area}-${i}`}
-                    title={im.note}
-                    className={`rounded-full px-2 py-0.5 text-[11px] ${AREA_TONE[im.area] ?? 'bg-[var(--cream)] text-[var(--ink-soft)]'}`}
-                  >
-                    {im.area}
-                  </span>
-                ))}
+    <div ref={panelRef}>
+      <ul className="mt-3 space-y-2">
+        {ripples.map((ripple) => {
+          const impacts = Array.isArray(ripple.impact_json) ? ripple.impact_json : [];
+          return (
+            <li key={ripple.id} className="rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm text-[var(--ink)]">
+                  {ripple.summary || `${ripple.source_type} ${ripple.change_kind}`}
+                </span>
+                <span className="shrink-0 text-[11px] text-[var(--ink-soft)]">
+                  {timeAgo(ripple.created_at)}
+                </span>
               </div>
-            )}
-          </li>
-        );
-      })}
-    </ul>
+              {impacts.length > 0 && (
+                <div className="mt-2 flex flex-wrap items-center gap-1">
+                  <span className="text-[11px] text-[var(--ink-soft)]">Rippled to</span>
+                  {impacts.map((impact, index) => (
+                    <Chip
+                      key={`${impact.area}-${index}`}
+                      tone={impactTone(impact.severity)}
+                      title={impact.note}
+                    >
+                      {impact.area.replace(/_/g, ' ')}
+                    </Chip>
+                  ))}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

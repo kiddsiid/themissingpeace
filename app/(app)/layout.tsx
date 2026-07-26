@@ -1,10 +1,13 @@
 import { SideNav } from '@/components/nav';
 import { MobileNav } from '@/components/MobileNav';
 import { MotionWorld } from '@/components/MotionWorld';
+import { getSessionUser, isBackendAdmin } from '@/lib/auth/session';
 
 // Authenticated app shell (Build Plan v2 §7 Phase 1).
-// NOTE (Codex): gate this layout behind Clerk auth + workspace membership.
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const authUser = await getSessionUser();
+  const backendAdmin = isBackendAdmin(authUser);
+
   return (
     <div className="flex min-h-screen">
       {/* Skip link: first tab stop, visible on focus, jumps past nav to content. */}
@@ -14,9 +17,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </a>
-      <SideNav />
+      <SideNav backendAdmin={backendAdmin} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileNav />
+        <MobileNav backendAdmin={backendAdmin} />
         <main
           id="main-content"
           tabIndex={-1}

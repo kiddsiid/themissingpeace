@@ -24,12 +24,16 @@ export default async function TimelinePage({ searchParams }: { searchParams: Pro
   if (!ws) redirect('/onboarding');
   const mode = (await searchParams)?.mode === 'day' ? 'day' : 'roadmap';
   const db = supabaseAdmin();
-  const [tasksRes, eventsRes, decisionsRes, milestonesRes, depsRes] = await Promise.all([
+  const [tasksRes, eventsRes, decisionsRes, milestonesRes, depsRes, profileRes, vendorsRes, guestsRes, rippleRes] = await Promise.all([
     db.from('tasks').select('id, title, category, status, due_date, priority, linked_decision_id').eq('workspace_id', ws.id).order('due_date', { ascending: true }),
     db.from('events').select('id, title, date, time, location, kind, notes').eq('workspace_id', ws.id).order('date', { ascending: true }),
     db.from('decisions').select('id, title, status').eq('workspace_id', ws.id),
     db.from('milestones').select('id, title, target_date').eq('workspace_id', ws.id).order('target_date', { ascending: true }),
     db.from('planning_dependencies').select('id, source_entity_id, depends_on_entity_id, dependency_reason').eq('workspace_id', ws.id),
+    db.from('wedding_profiles').select('wedding_date, date_range_start, guest_estimate').eq('workspace_id', ws.id).maybeSingle(),
+    db.from('vendors').select('id, name, category, status').eq('workspace_id', ws.id),
+    db.from('guests').select('id', { count: 'exact', head: true }).eq('workspace_id', ws.id).neq('rsvp_status', 'declined'),
+    db.from('ripple_events').select('summary, source_type, created_at').eq('workspace_id', ws.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
   ]);
   const tasks = tasksRes.data ?? [];
   const events = eventsRes.data ?? [];
@@ -39,6 +43,15 @@ export default async function TimelinePage({ searchParams }: { searchParams: Pro
   const taskTitle = new Map(tasks.map((task: any) => [task.id, task.title]));
   const openDecisions = decisions.filter((decision: any) => !['approved', 'deferred', 'rejected'].includes(decision.status));
   const blockedTasks = tasks.filter((task: any) => task.status === 'needs_decision' || task.linked_decision_id);
+  const profile = profileRes.data;
+  const vendorList = vendorsRes.data ?? [];
+  const anchorDate = profile?.wedding_date || profile?.date_range_start;
+  const derivedDependencies = [
+    openDecisions[0] ? `Decision ledger → resolve “${openDecisions[0].title}” before dependent work moves.` : null,
+    (guestsRes.count ?? profile?.guest_estimate) ? `Guests → ${guestsRes.count ?? profile?.guest_estimate} people drive catering, stationery, and seating timing.` : null,
+    vendorList.some((vendor: any) => vendor.status === 'booked') ? `Vendors → ${vendorList.filter((vendor: any) => vendor.status === 'booked').length} booked teams contribute handoffs and arrival windows.` : null,
+    anchorDate ? `Wedding profile → ${anchorDate} anchors every relative deadline.` : null,
+  ].filter(Boolean) as string[];
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -52,6 +65,23 @@ export default async function TimelinePage({ searchParams }: { searchParams: Pro
         <ModeLink href="/timeline" active={mode === 'roadmap'}>Planning Roadmap</ModeLink>
         <ModeLink href="/timeline?mode=day" active={mode === 'day'}>Run of Day</ModeLink>
       </div>
+
+      <section className="mt-5 rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">Connected advisory</p>
+            <h2 className="voice mt-1 text-2xl">Dependencies recomputed from the live plan</h2>
+          </div>
+          {rippleRes.data && <p className="max-w-sm text-right text-xs leading-5 text-[var(--ink-soft)]">Latest driver · {rippleRes.data.summary}</p>}
+        </div>
+        {derivedDependencies.length ? (
+          <ul className="mt-3 grid gap-2 md:grid-cols-2">
+            {derivedDependencies.map((dependency) => <li key={dependency} className="rounded-[10px] bg-[var(--cream)] px-3 py-2 text-xs leading-5 text-[var(--ink-soft)]">{dependency}</li>)}
+          </ul>
+        ) : (
+          <p className="mt-2 text-sm text-[var(--ink-faint)]">Add the date, guests, vendors, or a decision to reveal connected dependencies.</p>
+        )}
+      </section>
 
       {mode === 'roadmap' ? (
         <div>

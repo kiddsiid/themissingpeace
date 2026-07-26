@@ -39,6 +39,11 @@ export default async function GuestsPage({ searchParams }: { searchParams: Promi
   const traveling = guests.filter((guest: any) => guest.traveling_from).length;
   const children = guests.filter((guest: any) => guest.is_child).length;
   const plusOnes = guests.filter((guest: any) => guest.plus_one_eligible).length;
+  const requirementCount = guests.filter((guest: any) => guest.dietary || guest.accessibility || guest.transportation_need).length;
+  const answeredRsvps = guests.length ? (guests.length - pending) / guests.length : 0;
+  const addressedHouseholds = households.length ? households.filter((household: any) => household.address).length / households.length : 0;
+  const mealCoverage = accepted.length ? accepted.filter((guest: any) => guest.meal_choice).length / accepted.length : 0;
+  const coverage = Math.round(((answeredRsvps + addressedHouseholds + mealCoverage) / 3) * 100);
   const meals = new Map<string, number>();
   for (const guest of accepted) {
     const meal = (guest.meal_choice || 'no choice').toLowerCase();
@@ -120,7 +125,7 @@ export default async function GuestsPage({ searchParams }: { searchParams: Promi
         <Stat label="traveling" value={traveling} />
       </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-4">
+      <div className="mt-5 grid gap-3 md:grid-cols-5">
         <section className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
           <p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">Guest count range</p>
           <p className="mt-2 text-sm text-[var(--ink-soft)]">{profile?.guest_estimate || profile?.guest_max ? `${profile?.guest_estimate ?? '?'} to ${profile?.guest_max ?? '?'}` : 'Not set in Dream.'}</p>
@@ -136,6 +141,11 @@ export default async function GuestsPage({ searchParams }: { searchParams: Promi
         <section className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
           <p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">What this affects</p>
           <p className="mt-2 text-sm text-[var(--ink-soft)]">Venue, food, seating, invitations, budget, travel, and timeline.</p>
+        </section>
+        <section className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
+          <p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">Hospitality coverage</p>
+          <p className="mt-2 text-sm text-[var(--ink-soft)]">{coverage}% across RSVPs, household addresses, and accepted-guest meals.</p>
+          <p className="mt-1 text-[11px] text-[var(--gold)]">{requirementCount} guests have dietary, accessibility, or transport requirements.</p>
         </section>
       </div>
 

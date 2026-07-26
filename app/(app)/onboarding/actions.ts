@@ -1,12 +1,15 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { buildCompass, type DreamResponses } from '@/lib/engine/compass';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getSessionUser, ensureAppUser } from '@/lib/auth/session';
-import { createWorkspaceWithOwner, firstActiveWorkspaceId } from '@/lib/workspace/create';
+import { createWorkspaceWithMember, createWorkspaceWithOwner, firstActiveWorkspaceId } from '@/lib/workspace/create';
 import { generateWorkspace } from '@/lib/workspace/generate';
 import { track } from '@/lib/analytics';
+import { compassSentence, compassShort, type CloudPriorities } from '@/lib/engine/dream-clouds';
+import { ACTIVE_WORKSPACE_COOKIE } from '@/lib/workspace/current';
 
 type DB = ReturnType<typeof supabaseAdmin>;
 
@@ -36,6 +39,12 @@ async function requireUserId(): Promise<string> {
 }
 
 async function fallbackSummarize(dream: DreamResponses) {
+  if (dream.cloudPriorities && Object.keys(dream.cloudPriorities).length) {
+    return {
+      summary: compassSentence(dream.cloudPriorities as CloudPriorities),
+      tone: compassShort(dream.cloudPriorities as CloudPriorities),
+    };
+  }
   const top = (dream.priorities ?? []).slice(0, 3).join(', ') || 'what matters most to you';
   const meaning = dream.sharedMeaning || dream.meaning;
   const tone = [...(dream.priorities ?? []), ...(dream.planningValues ?? [])].slice(0, 4).join(', ') || 'calm, personal';
@@ -116,6 +125,21 @@ function text(formData: FormData, key: string) {
   return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 
+function cloudPriorities(formData: FormData): Record<string, number> {
+  const raw = text(formData, 'cloudPriorities');
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(parsed)
+        .filter(([, value]) => Number.isFinite(Number(value)))
+        .map(([key, value]) => [key, Math.max(0.04, Math.min(1, Number(value)))]),
+    );
+  } catch {
+    return {};
+  }
+}
+
 // Completes the Dream Walk. By this point the user has created their profile (Supabase
 // Auth) and a workspace exists (from the Create-profile step); we resolve or create it,
 // then apply the Dream to it. No Clerk org — the workspace is Postgres-native.
@@ -137,7 +161,7 @@ export async function createWorkspaceFromOnboarding(formData: FormData) {
   const dateRange = seasonRange(dateSeason, dateYear);
   const dream: DreamResponses = {
     priorities: list(formData, 'priorities'),
-    creatorRole: (String(formData.get('creatorRole') || 'couple') as 'couple' | 'planner'),
+    creatorRole: (String(formData.get('creatorRole') || 'couple') as 'couple' | 'planner' | 'dreamer'),
     partnerOneReflection: text(formData, 'partnerOneReflection'),
     partnerTwoReflection: text(formData, 'partnerTwoReflection'),
     sharedMeaning: text(formData, 'sharedMeaning'),
@@ -154,6 +178,9 @@ export async function createWorkspaceFromOnboarding(formData: FormData) {
     dateSeason,
     dateYear,
     desiredYear,
+    cloudPriorities: cloudPriorities(formData),
+    light: text(formData, 'light'),
+    guestScale: text(formData, 'guestScale'),
   };
 
   await applyOnboarding(db, workspaceId, userId, {
@@ -173,5 +200,57 @@ export async function createWorkspaceFromOnboarding(formData: FormData) {
     dream,
   });
 
+  track('dream_walk_completed', { creatorRole: dream.creatorRole, stepsCompleted: 3 }, { workspaceId, userId, surface: 'server' });
+  track('compass_revealed', {}, { workspaceId, userId, surface: 'server' });
+
   redirect('/dream?reveal=1');
+}
+
+export async function createPlannerWorkspaceFromWalk(formData: FormData) {
+  const userId = await requireUserId();
+  const db = supabaseAdmin();
+  const partnerOne = text(formData, 'partnerOneLabel') || 'Partner One';
+  const partnerTwo = text(formData, 'partnerTwoLabel') || 'Partner Two';
+  const workspaceName = text(formData, 'workspaceName') || `${partnerOne} & ${partnerTwo}`;
+  const workspaceId = await createWorkspaceWithMember(userId, workspaceName, 'planner');
+  const priorities = cloudPriorities(formData);
+  const dateRange = seasonRange(text(formData, 'dateSeason'), text(formData, 'dateYear'));
+  const dream: DreamResponses = {
+    creatorRole: 'planner',
+    partnerOneReflection: text(formData, 'coupleFeeling'),
+    sharedMeaning: compassSentence(priorities),
+    priorities: list(formData, 'priorities'),
+    cloudPriorities: priorities,
+    dateSeason: text(formData, 'dateSeason'),
+    dateYear: text(formData, 'dateYear'),
+    light: text(formData, 'light'),
+    guestScale: text(formData, 'guestScale'),
+    planningValues: ['Carry the couple’s feeling into every decision'],
+  };
+
+  await applyOnboarding(db, workspaceId, userId, {
+    workspaceId,
+    partnerOneLabel: partnerOne,
+    partnerTwoLabel: partnerTwo,
+    dateStatus: 'range',
+    dateRangeStart: dateRange.start,
+    dateRangeEnd: dateRange.end,
+    planningStage: text(formData, 'planningStage') || 'just_engaged',
+    guestEstimate: num(formData.get('guestEstimate')),
+    guestMax: num(formData.get('guestMax')),
+    budgetConfidence: 'unknown',
+    dream,
+  });
+
+  (await cookies()).set(ACTIVE_WORKSPACE_COOKIE, workspaceId, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+  track('workspace_created', { source: 'onboarding' }, { workspaceId, userId, surface: 'server' });
+  track('dream_walk_completed', { creatorRole: 'planner', stepsCompleted: 3 }, { workspaceId, userId, surface: 'server' });
+  track('compass_revealed', {}, { workspaceId, userId, surface: 'server' });
+  redirect('/planner?created=1');
 }

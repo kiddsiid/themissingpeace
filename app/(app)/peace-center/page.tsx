@@ -9,6 +9,7 @@ import type { DreamResponses } from '@/lib/engine/compass';
 import type { Citation } from '@/lib/engine/weaver';
 import { InsightActions } from '@/components/peace/InsightActions';
 import { RippleFeed, type RippleRow } from '@/components/peace/RippleFeed';
+import { Chip } from '@/design-system';
 
 function timeAgo(iso?: string | null): string {
   if (!iso) return '';
@@ -108,11 +109,12 @@ export default async function PeaceCenter() {
     budgetItemsRes,
     budgetCatsRes,
     guestsRes,
+    latestRunRes,
   ] = await Promise.all([
     db.from('wedding_profiles').select('planning_stage, guest_estimate, guest_max, budget_total, budget_confidence, honeymoon_enabled').eq('workspace_id', workspace.id).maybeSingle(),
     db.from('dreams').select('responses_json, created_at').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
     db.from('wedding_compass').select('summary, tone').eq('workspace_id', workspace.id).maybeSingle(),
-    db.from('planning_recommendations').select('id, title, description, recommendation_type, priority, reason, linked_entity_type, suggested_owner_id, suggested_due_date, status, created_at, citations_json, source').eq('workspace_id', workspace.id).eq('status', 'new').order('created_at', { ascending: false }).limit(5),
+    db.from('planning_recommendations').select('id, title, description, recommendation_type, priority, reason, linked_entity_type, linked_entity_id, suggested_owner_id, suggested_due_date, status, created_at, citations_json, source').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(20),
     db.from('planning_risks').select('id, risk_type, severity, title, description, suggested_resolution, status, created_at').eq('workspace_id', workspace.id).eq('status', 'open').order('created_at', { ascending: false }).limit(12),
     db.from('workspace_members').select('role, user_id').eq('workspace_id', workspace.id).eq('status', 'active'),
     db.from('board_items').select('id, title, created_at, created_by').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(6),
@@ -123,12 +125,16 @@ export default async function PeaceCenter() {
     db.from('budget_items').select('id, title, estimated_cost, quoted_cost, committed_cost, paid_amount').eq('workspace_id', workspace.id),
     db.from('budget_categories').select('id, name, planned_amount').eq('workspace_id', workspace.id),
     db.from('guests').select('id, is_child, rsvp_status, traveling_from, meal_choice').eq('workspace_id', workspace.id),
+    db.from('planning_engine_runs').select('citation_coverage, status, created_at').eq('workspace_id', workspace.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
   ]);
 
   const profile = profileRes.data;
   const dream = (dreamRes.data?.responses_json ?? null) as DreamResponses | null;
   const compass = compassRes.data;
   const recommendations = recsRes.data ?? [];
+  const activeRecommendations = recommendations.filter((recommendation: any) => recommendation.status === 'new');
+  const handledRecommendations = recommendations.filter((recommendation: any) => recommendation.status !== 'new');
+  const latestRun = latestRunRes.data;
   const risks = risksRes.data ?? [];
   const vendors = vendorsAllRes.data ?? [];
   const decisions = decisionsRes.data ?? [];
@@ -150,7 +156,7 @@ export default async function PeaceCenter() {
     .select('id, source_type, change_kind, summary, impact_json, created_at')
     .eq('workspace_id', workspace.id)
     .order('created_at', { ascending: false })
-    .limit(8);
+    .limit(15);
   const ripples = (ripplesRes.data ?? []) as RippleRow[];
 
   const unresolvedDecisions = decisions.filter((decision: any) => !['approved', 'deferred', 'rejected'].includes(decision.status));
@@ -175,7 +181,7 @@ export default async function PeaceCenter() {
         ? 'A little to tend'
         : 'Peaceful';
 
-  const nextActions = recommendations.map((rec: any) => {
+  const nextActions = activeRecommendations.map((rec: any) => {
     const mod = moduleFor(rec.linked_entity_type || rec.recommendation_type);
     return {
       key: rec.id as string,
@@ -189,6 +195,7 @@ export default async function PeaceCenter() {
       owner: rec.suggested_owner_id ? nameOf(userMap.get(rec.suggested_owner_id)) : 'Best owner',
       due: rec.suggested_due_date,
       priority: rec.priority,
+      status: rec.status,
     };
   });
 
@@ -196,8 +203,12 @@ export default async function PeaceCenter() {
     if (nextActions.length >= 5 || nextActions.some((action) => action.key === key || action.title === title)) return;
     const mod = moduleFor(type);
     // Fallbacks are heuristic (not real recommendation rows) → no recId, no state controls.
-    nextActions.push({ key, recId: undefined, citations: [], source: 'ai', title, reason, module: mod.label, href: mod.href, owner: 'You two', due: null, priority: 'med' });
+    nextActions.push({ key, recId: undefined, citations: [], source: 'ai', title, reason, module: mod.label, href: mod.href, owner: 'You two', due: null, priority: 'med', status: 'new' });
   }
+
+  const coverage = latestRun?.citation_coverage == null
+    ? null
+    : Math.max(0, Math.min(100, Math.round(Number(latestRun.citation_coverage) * 100)));
 
   if (dreamStatus(dream, !!compass?.summary) !== 'Compass ready') {
     addFallback('dream', 'Complete the Dream', 'The Compass powers decision guidance, vendor priorities, budget guidance, guest rules, and timeline suggestions.', 'dream');
@@ -244,9 +255,20 @@ export default async function PeaceCenter() {
           </div>
           <InviteCircle />
           {can(workspace.role, 'plan.full') && (
-            <form action={runPeaceEngineAction}>
-              <button className="rounded-full bg-[var(--clay)] px-4 py-2 text-sm text-white hover:opacity-90">Ask the Peacekeeper</button>
-            </form>
+            <div className="max-w-xs text-right">
+              <form action={runPeaceEngineAction}>
+                <button className="rounded-full bg-[var(--clay)] px-4 py-2 text-sm text-white hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--clay)]">
+                  Ask the Peacekeeper
+                </button>
+              </form>
+              {coverage != null && (
+                <p className="mt-1 text-[11px] leading-4 text-[var(--ink-soft)]">
+                  {coverage === 100
+                    ? 'Every AI insight here is backed by your plan — coverage 100%.'
+                    : `Coverage ${coverage}%. Low-confidence AI insights were withheld.`}
+                </p>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -290,7 +312,18 @@ export default async function PeaceCenter() {
             <article key={action.key} className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-sm font-medium text-[var(--ink)]">{action.title}</h3>
-                <span className="rounded-full bg-[var(--gold-bg)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--gold)]">{action.priority}</span>
+                <div className="flex flex-wrap justify-end gap-1">
+                  <span
+                    className={
+                      action.source === 'deterministic'
+                        ? 'rounded-full bg-[var(--ink)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--pearl)]'
+                        : 'rounded-full border border-[var(--gold)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--gold)]'
+                    }
+                  >
+                    {action.source === 'deterministic' ? 'Deterministic' : 'AI'}
+                  </span>
+                  <span className="rounded-full bg-[var(--gold-bg)] px-2 py-0.5 text-[10px] uppercase tracking-wide text-[var(--gold)]">{action.priority}</span>
+                </div>
               </div>
               <p className="mt-2 text-xs leading-5 text-[var(--ink-soft)]">{action.reason}</p>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-[var(--ink-faint)]">
@@ -300,7 +333,7 @@ export default async function PeaceCenter() {
               </div>
               {action.recId ? (
                 <>
-                  <InsightActions recId={action.recId} citations={action.citations} source={action.source} />
+                  <InsightActions recId={action.recId} citations={action.citations} source={action.source} reason={action.reason} />
                   <Link href={action.href} className="mt-2 inline-flex text-xs text-[var(--clay-ink)] underline underline-offset-2">Open {action.module}</Link>
                 </>
               ) : (
@@ -310,6 +343,32 @@ export default async function PeaceCenter() {
           ))}
         </div>
       </section>
+
+      {handledRecommendations.length > 0 && (
+        <details className="mt-4 rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
+          <summary className="cursor-pointer text-sm font-medium text-[var(--ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--clay)]">
+            Handled insights ({handledRecommendations.length})
+          </summary>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {handledRecommendations.map((recommendation: any) => (
+              <article key={recommendation.id} className="rounded-[12px] border border-[var(--line)] bg-[var(--cream)]/45 p-3">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-sm font-medium text-[var(--ink)]">{recommendation.title}</h3>
+                  <Chip tone={recommendation.status === 'accepted' || recommendation.status === 'completed' ? 'sage' : 'neutral'}>
+                    {label(recommendation.status)}
+                  </Chip>
+                </div>
+                <p className="mt-2 text-xs leading-5 text-[var(--ink-soft)]">
+                  {recommendation.reason || recommendation.description}
+                </p>
+                <p className="mt-2 text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">
+                  {recommendation.source === 'deterministic' ? 'Deterministic source' : 'Cited AI source'}
+                </p>
+              </article>
+            ))}
+          </div>
+        </details>
+      )}
 
       <div className="mt-7 grid gap-6 lg:grid-cols-2">
         <section>

@@ -4,6 +4,9 @@ import { uploadDocument } from '@/app/(app)/documents/upload';
 import { signUploads } from '@/lib/supabase/storage';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getActiveWorkspace } from '@/lib/workspace/current';
+import { outputSourceHash, regenerateOutput } from '@/app/(app)/outputs/actions';
+import { staleOutput } from '@/lib/outputs/freshness';
+import { Chip } from '@/design-system';
 
 const TYPES = ['contracts', 'quotes', 'invoices', 'mood_sheets', 'menu', 'floor_plans', 'guest_lists', 'legal', 'insurance', 'honeymoon', 'attire', 'venue', 'seating_charts', 'misc'];
 const CONTRACT = ['', 'draft', 'sent', 'signed', 'expired'];
@@ -13,10 +16,11 @@ export default async function DocumentsPage() {
   const ws = await getActiveWorkspace();
   if (!ws) redirect('/onboarding');
   const db = supabaseAdmin();
-  const [docsRes, vendorsRes, decisionsRes] = await Promise.all([
+  const [docsRes, vendorsRes, decisionsRes, outputRes] = await Promise.all([
     db.from('documents').select('id, folder, title, created_at, upload_id, contract_status, due_date, notes, linked_vendor_id, linked_decision_id').eq('workspace_id', ws.id).order('created_at', { ascending: false }),
     db.from('vendors').select('id, name').eq('workspace_id', ws.id).order('name'),
     db.from('decisions').select('id, title').eq('workspace_id', ws.id).order('created_at', { ascending: false }),
+    db.from('output_versions').select('id, source_hash, is_stale, version, created_at').eq('workspace_id', ws.id).eq('output_kind', 'document-index').order('version', { ascending: false }).limit(1).maybeSingle(),
   ]);
   const list = docsRes.data ?? [];
   const vendors = vendorsRes.data ?? [];
@@ -29,6 +33,8 @@ export default async function DocumentsPage() {
   const noFile = list.filter((doc: any) => !doc.upload_id).length;
   const expiringSoon = list.filter((doc: any) => doc.due_date && doc.due_date >= today).length;
   const unsigned = list.filter((doc: any) => doc.folder === 'contracts' && doc.contract_status && doc.contract_status !== 'signed').length;
+  const currentSourceHash = await outputSourceHash(ws.id, 'document-index');
+  const indexNeedsUpdate = staleOutput(currentSourceHash, outputRes.data);
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -43,6 +49,27 @@ export default async function DocumentsPage() {
         <section className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4"><p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">What does this affect?</p><p className="mt-2 text-sm text-[var(--ink-soft)]">Vendor status, Money Map payments, and decision records stay aligned to signed paperwork.</p></section>
         <section className="rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4"><p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">Next best action</p><p className="mt-2 text-sm text-[var(--ink-soft)]">Upload signed contracts first, then link each to its vendor.</p></section>
       </div>
+
+      <section className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-4">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-[11px] uppercase tracking-wide text-[var(--ink-faint)]">Draft document index</p>
+            <Chip tone={indexNeedsUpdate ? 'gold' : 'sage'}>
+              {outputRes.data ? (indexNeedsUpdate ? 'Update available' : 'Current') : 'Not generated'}
+            </Chip>
+          </div>
+          <p className="mt-1 text-sm text-[var(--ink-soft)]">
+            Source · document records, linked vendors, linked decisions, and attached-file state.
+            {outputRes.data ? ` Version ${outputRes.data.version} remains preserved.` : ''}
+          </p>
+        </div>
+        <form action={regenerateOutput}>
+          <input type="hidden" name="kind" value="document-index" />
+          <button className="rounded-full bg-[var(--clay)] px-4 py-2 text-sm text-white">
+            {outputRes.data ? 'Generate new version' : 'Generate draft index'}
+          </button>
+        </form>
+      </section>
 
       <form action={uploadDocument} className="mt-5 grid gap-2 rounded-[14px] border border-[var(--line)] bg-[var(--pearl)] p-3 sm:grid-cols-2">
         <input name="title" required placeholder="Document name" className="rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm sm:col-span-2" />
@@ -69,6 +96,11 @@ export default async function DocumentsPage() {
                   <span className="min-w-0 flex-1 truncate text-sm">{signed?.url ? <a href={signed.url} target="_blank" rel="noreferrer" className="hover:underline">{doc.title}</a> : doc.title}</span>
                   <form action={deleteDocumentRecord}><input type="hidden" name="id" value={doc.id} /><button className="text-xs text-[var(--ink-faint)] hover:text-[var(--clay-ink)]" aria-label="Remove">Remove</button></form>
                 </div>
+                <p className="mt-1.5 text-[10px] uppercase tracking-[0.12em] text-[var(--gold)]">
+                  Source · {doc.upload_id ? 'attached file' : 'record only'}
+                  {doc.linked_vendor_id ? ' + vendor' : ''}
+                  {doc.linked_decision_id ? ' + decision' : ''}
+                </p>
                 {(doc.contract_status || doc.due_date || doc.linked_vendor_id || doc.linked_decision_id || doc.notes) && (
                   <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-[var(--ink-faint)]">
                     {doc.contract_status && <span>📝 {doc.contract_status}</span>}

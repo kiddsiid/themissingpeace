@@ -7,6 +7,7 @@ import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 import { defaultFrame, firstOpenSeat, type TableShape } from '@/lib/seating/layout';
+import { markSeatingOutputsStale } from '@/app/(app)/outputs/actions';
 
 async function requireWrite() {
   const ws = await requireActiveWorkspace();
@@ -57,6 +58,7 @@ export async function addTable(args: {
     capacity, x, y, w, h, sort: n,
   }).select('id').single();
   if (error) throw error;
+  await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
   return { id: data!.id as string };
 }
@@ -80,6 +82,7 @@ export async function updateTable(args: {
     const { data: t } = await db.from('seating_tables').select('capacity').eq('id', args.tableId).maybeSingle();
     if (t) await db.from('seat_assignments').delete().eq('table_id', args.tableId).gte('seat_index', t.capacity);
   }
+  await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
 }
 
@@ -87,6 +90,7 @@ export async function deleteTable(workspaceId: string, tableId: string) {
   const ws = await requireWrite();
   if (ws.id !== workspaceId) throw new Error('Workspace mismatch');
   await supabaseAdmin().from('seating_tables').delete().eq('id', tableId).eq('workspace_id', ws.id);
+  await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
 }
 
@@ -126,6 +130,7 @@ export async function assignSeat(args: {
     seat_index: seatIndex, created_by: ws.userId,
   });
   if (error) throw error;
+  await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
   return { seated: true as const, seatIndex };
 }
@@ -135,6 +140,7 @@ export async function unassignSeat(workspaceId: string, chartId: string, guestId
   if (ws.id !== workspaceId) throw new Error('Workspace mismatch');
   await assertChart(ws.id, chartId);
   await supabaseAdmin().from('seat_assignments').delete().eq('chart_id', chartId).eq('guest_id', guestId);
+  await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
 }
 
@@ -160,6 +166,7 @@ export async function seatHousehold(args: { workspaceId: string; chartId: string
     });
     seatedCount++;
   }
+  if (seatedCount) await markSeatingOutputsStale(ws.id);
   revalidatePath('/seating');
   return { seatedCount, total: (members ?? []).length };
 }

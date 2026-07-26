@@ -4,6 +4,7 @@ import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 import { uploadFile } from '@/lib/supabase/storage';
+import { markOutputsStale } from '@/app/(app)/outputs/actions';
 
 // Create a document record, optionally with an attached file.
 export async function uploadDocument(formData: FormData) {
@@ -30,5 +31,6 @@ export async function uploadDocument(formData: FormData) {
     linked_vendor_id: val('linked_vendor_id'),
     linked_decision_id: val('linked_decision_id'),
   });
+  await markOutputsStale(ws.id, ['document-index']);
   revalidatePath('/documents');
 }

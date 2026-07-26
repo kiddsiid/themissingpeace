@@ -62,6 +62,25 @@ export default async function SeatingPage({ searchParams }: { searchParams: Prom
   const assignments: StudioAssignment[] = (assignRes.data ?? []).map((a: any) => ({
     tableId: a.table_id, guestId: a.guest_id, seatIndex: a.seat_index,
   }));
+  const conflicts: string[] = [];
+  const assignedByGuest = new Map(assignments.map((assignment) => [assignment.guestId, assignment]));
+  const declinedSeated = guests.filter((guest) => guest.rsvp === 'declined' && assignedByGuest.has(guest.id));
+  if (declinedSeated.length) conflicts.push(`${declinedSeated.length} declined guest${declinedSeated.length === 1 ? ' is' : 's are'} still seated.`);
+  for (const table of tables) {
+    const occupied = assignments.filter((assignment) => assignment.tableId === table.id).length;
+    if (occupied > table.capacity) conflicts.push(`${table.label} has ${occupied} guests for ${table.capacity} seats.`);
+  }
+  const householdTables = new Map<string, Set<string>>();
+  for (const guest of guests) {
+    if (!guest.householdId) continue;
+    const assignment = assignedByGuest.get(guest.id);
+    if (!assignment) continue;
+    if (!householdTables.has(guest.householdId)) householdTables.set(guest.householdId, new Set());
+    householdTables.get(guest.householdId)!.add(assignment.tableId);
+  }
+  for (const [householdId, tableIds] of householdTables) {
+    if (tableIds.size > 1) conflicts.push(`${householdName.get(householdId) || 'A household'} is split across ${tableIds.size} tables.`);
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -80,6 +99,14 @@ export default async function SeatingPage({ searchParams }: { searchParams: Prom
           </Link>
         ))}
       </div>
+      <section className={'mt-4 rounded-[14px] border p-3 ' + (conflicts.length ? 'border-[#E8C3B5] bg-[var(--clay-bg)]' : 'border-[#C9D3C1] bg-[var(--sage-bg)]')}>
+        <p className="text-[10px] uppercase tracking-[0.16em] text-[var(--ink-faint)]">Seating conflict check</p>
+        {conflicts.length ? (
+          <ul className="mt-1 space-y-1 text-sm text-[var(--clay-ink)]">{conflicts.map((conflict) => <li key={conflict}>• {conflict}</li>)}</ul>
+        ) : (
+          <p className="mt-1 text-sm text-[#566049]">No over-capacity, declined-guest, or split-household conflicts found.</p>
+        )}
+      </section>
       <SeatingStudio
         workspaceId={ws.id}
         chartId={chart.id}

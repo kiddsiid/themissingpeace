@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 import { buildCompass, type DreamResponses } from '@/lib/engine/compass';
 import { emitRipple } from '@/lib/engine/ripple';
+import { compassSentence, compassShort, type CloudPriorities } from '@/lib/engine/dream-clouds';
 
 function text(formData: FormData, key: string): string | null {
   const value = formData.get(key);
@@ -26,6 +27,12 @@ function num(formData: FormData, key: string): number | null {
 }
 
 async function fallbackSummarize(dream: DreamResponses) {
+  if (dream.cloudPriorities && Object.keys(dream.cloudPriorities).length) {
+    return {
+      summary: compassSentence(dream.cloudPriorities as CloudPriorities),
+      tone: compassShort(dream.cloudPriorities as CloudPriorities),
+    };
+  }
   const meaning = dream.sharedMeaning || dream.meaning;
   const priorities = (dream.priorities ?? []).slice(0, 3);
   const values = (dream.planningValues ?? []).slice(0, 2);
@@ -56,8 +63,16 @@ export async function saveDream(formData: FormData) {
   const dateYear = text(formData, 'date_year');
   const desiredYear = text(formData, 'desired_year');
   const dateRange = seasonRange(dateSeason, dateYear);
+  const { data: existingDreamRow } = await db
+    .from('dreams')
+    .select('responses_json')
+    .eq('workspace_id', workspace.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const existingDream = (existingDreamRow?.responses_json ?? {}) as DreamResponses;
   const dream: DreamResponses = {
-    creatorRole: (text(formData, 'creator_role') ?? 'couple') as 'couple' | 'planner',
+    creatorRole: (text(formData, 'creator_role') ?? existingDream.creatorRole ?? 'couple') as 'couple' | 'planner' | 'dreamer',
     partnerOneReflection: text(formData, 'partner_one_reflection') ?? undefined,
     partnerTwoReflection: text(formData, 'partner_two_reflection') ?? undefined,
     sharedMeaning: text(formData, 'shared_meaning') ?? undefined,
@@ -75,6 +90,9 @@ export async function saveDream(formData: FormData) {
     dateSeason: dateSeason ?? undefined,
     dateYear: dateYear ?? undefined,
     desiredYear: desiredYear ?? undefined,
+    cloudPriorities: existingDream.cloudPriorities,
+    light: existingDream.light,
+    guestScale: existingDream.guestScale,
   };
 
   const { error: profileError } = await db.from('wedding_profiles').upsert({

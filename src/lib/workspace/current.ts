@@ -1,6 +1,9 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getSessionUser, ensureAppUser } from '@/lib/auth/session';
 import type { MemberRole } from '@/lib/types';
+import { cookies } from 'next/headers';
+
+export const ACTIVE_WORKSPACE_COOKIE = 'tmp_active_workspace';
 
 export interface ActiveWorkspace {
   id: string;
@@ -27,16 +30,16 @@ export async function getActiveWorkspace(): Promise<ActiveWorkspace | null> {
   if (!userId) return null;
   const db = supabaseAdmin();
 
-  const membership = (
+  const memberships = (
     await db
       .from('workspace_members')
       .select('workspace_id, role')
       .eq('user_id', userId)
       .eq('status', 'active')
       .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle()
-  ).data;
+  ).data ?? [];
+  const preferredId = (await cookies()).get(ACTIVE_WORKSPACE_COOKIE)?.value;
+  const membership = memberships.find((item) => item.workspace_id === preferredId) ?? memberships[0];
   if (!membership) return null;
 
   const workspace = await workspaceById(membership.workspace_id as string);

@@ -5,6 +5,7 @@ import { can } from '@/lib/auth/permissions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { requireActiveWorkspace } from '@/lib/workspace/current';
 import { emitRipple } from '@/lib/engine/ripple';
+import { deriveDecisionRipple } from '@/lib/engine/decision-ripple';
 
 // Decision statuses that represent a settled outcome worth rippling.
 const SETTLED_DECISION_STATUSES = new Set(['approved', 'rejected', 'changed', 'deferred']);
@@ -70,12 +71,24 @@ export async function updateVendorStatus(formData: FormData) {
   const status = text(formData, 'status');
   if (!id || !status) throw new Error('Vendor and status are required');
 
-  const { error } = await supabaseAdmin()
+  const { data: updated, error } = await supabaseAdmin()
     .from('vendors')
     .update({ status })
     .eq('id', id)
-    .eq('workspace_id', workspace.id);
+    .eq('workspace_id', workspace.id)
+    .select('id, name, category, status')
+    .single();
   if (error) throw error;
+
+  // Ripple: a vendor status change (esp. → booked) touches budget, timeline, seating. Non-blocking.
+  await emitRipple(workspace.id, {
+    sourceType: 'vendor',
+    sourceId: id,
+    changeKind: 'status_changed',
+    category: updated?.category ?? undefined,
+    summary: updated?.name ? `${updated.name} — ${status}` : `Vendor ${status}`,
+    createdBy: workspace.userId,
+  });
   revalidatePath('/vendors');
 }
 
@@ -114,7 +127,7 @@ export async function createBudgetItem(formData: FormData) {
   const title = text(formData, 'title');
   if (!title) throw new Error('Budget item title is required');
 
-  const { error } = await supabaseAdmin().from('budget_items').insert({
+  const { data: created, error } = await supabaseAdmin().from('budget_items').insert({
     workspace_id: workspace.id,
     category_id: text(formData, 'category_id'),
     title,
@@ -123,8 +136,17 @@ export async function createBudgetItem(formData: FormData) {
     paid_amount: numberValue(formData, 'paid_amount'),
     notes: text(formData, 'notes'),
     created_by: workspace.userId,
-  });
+  }).select('id').single();
   if (error) throw error;
+
+  // Ripple: a new/changed budget line shifts totals + payment schedule. Non-blocking.
+  await emitRipple(workspace.id, {
+    sourceType: 'budget_item',
+    sourceId: created?.id ?? undefined,
+    changeKind: 'created',
+    summary: `Budget item added — ${title}`,
+    createdBy: workspace.userId,
+  });
   revalidatePath('/budget');
 }
 
@@ -291,6 +313,8 @@ export async function deleteDocumentRecord(formData: FormData) {
 
   const { error } = await supabaseAdmin().from('documents').delete().eq('id', id).eq('workspace_id', workspace.id);
   if (error) throw error;
+  const { markOutputsStale } = await import('@/app/(app)/outputs/actions');
+  await markOutputsStale(workspace.id, ['document-index']);
   revalidatePath('/documents');
 }
 
@@ -316,21 +340,139 @@ export async function voteDecisionOption(formData: FormData) {
   revalidatePath('/decisions');
 }
 
-export async function setDecisionFinal(formData: FormData) {
+export interface DecisionSaveResult {
+  ok: boolean;
+  conflict?: {
+    base: Record<string, unknown>;
+    mine: Record<string, unknown>;
+    theirs: Record<string, unknown>;
+    currentVersion: number;
+  };
+}
+
+function jsonObject(value: string | null): Record<string, unknown> {
+  if (!value) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {};
+  } catch {
+    return {};
+  }
+}
+
+export async function setDecisionFinal(formData: FormData): Promise<DecisionSaveResult> {
   const workspace = await requirePlanWrite();
   const id = text(formData, 'id');
   if (!id) throw new Error('Decision is required');
+  const db = supabaseAdmin();
+  const { data: current, error: currentError } = await db
+    .from('decisions')
+    .select('id, title, category, final_choice, rationale, linked_dream_value, linked_dream_ids, affected_objects_json, status, version')
+    .eq('id', id)
+    .eq('workspace_id', workspace.id)
+    .single();
+  if (currentError) throw currentError;
+
   const status = text(formData, 'status') ?? 'approved';
-  const update: Record<string, unknown> = {
-    final_choice: text(formData, 'final_choice'),
-    rationale: text(formData, 'rationale'),
-    linked_dream_value: text(formData, 'linked_dream_value'),
+  const finalChoice = text(formData, 'final_choice');
+  const rationale = text(formData, 'rationale');
+  const linkedDreamValue = text(formData, 'linked_dream_value');
+  const linkedDreamId = text(formData, 'linked_dream_id');
+  const baseVersion = Number(text(formData, 'base_version') ?? current.version ?? 1);
+  const base = jsonObject(text(formData, 'base_json'));
+  const mine: Record<string, unknown> = {
+    final_choice: finalChoice,
+    rationale,
+    linked_dream_value: linkedDreamValue,
     status,
   };
+  const theirs: Record<string, unknown> = {
+    final_choice: current.final_choice,
+    rationale: current.rationale,
+    linked_dream_value: current.linked_dream_value,
+    status: current.status,
+  };
+
+  if (baseVersion !== Number(current.version ?? 1) && text(formData, 'force') !== 'true') {
+    return {
+      ok: false,
+      conflict: { base, mine, theirs, currentVersion: Number(current.version ?? 1) },
+    };
+  }
+
+  const affectedObjects = deriveDecisionRipple(current.category, current.final_choice, finalChoice);
+  const update: Record<string, unknown> = {
+    final_choice: finalChoice,
+    rationale,
+    linked_dream_value: linkedDreamValue,
+    linked_dream_ids: linkedDreamId ? [linkedDreamId] : current.linked_dream_ids ?? [],
+    affected_objects_json: affectedObjects,
+    status,
+    version: Number(current.version ?? 1) + 1,
+  };
   if (status === 'approved') { update.approved_by = workspace.userId; update.approved_at = new Date().toISOString(); }
-  const { error } = await supabaseAdmin().from('decisions').update(update).eq('id', id).eq('workspace_id', workspace.id);
+  const { data: updated, error } = await db
+    .from('decisions')
+    .update(update)
+    .eq('id', id)
+    .eq('workspace_id', workspace.id)
+    .eq('version', current.version)
+    .select('version')
+    .maybeSingle();
   if (error) throw error;
+  if (!updated) {
+    const { data: latest } = await db
+      .from('decisions')
+      .select('final_choice, rationale, linked_dream_value, status, version')
+      .eq('id', id)
+      .eq('workspace_id', workspace.id)
+      .single();
+    return {
+      ok: false,
+      conflict: {
+        base,
+        mine,
+        theirs: {
+          final_choice: latest?.final_choice,
+          rationale: latest?.rationale,
+          linked_dream_value: latest?.linked_dream_value,
+          status: latest?.status,
+        },
+        currentVersion: Number(latest?.version ?? current.version ?? 1),
+      },
+    };
+  }
+
+  if (SETTLED_DECISION_STATUSES.has(status)) {
+    await emitRipple(workspace.id, {
+      sourceType: 'decision',
+      sourceId: id,
+      changeKind: status,
+      category: current.category,
+      summary: `${current.title} — ${status}`,
+      createdBy: workspace.userId,
+      impact: affectedObjects.map((object) => ({
+        area: object.type,
+        note: object.note,
+        severity: object.severity,
+      })),
+    });
+  }
+  await db.from('audit_events').insert({
+    workspace_id: workspace.id,
+    actor_id: workspace.userId,
+    action: 'decision_settled',
+    entity_type: 'decision',
+    entity_id: id,
+    meta: { status, affected_object_types: affectedObjects.map((object) => object.type) },
+  });
   revalidatePath('/decisions');
+  revalidatePath('/peace-center');
+  revalidatePath('/budget');
+  revalidatePath('/timeline');
+  revalidatePath('/seating');
+  revalidatePath('/printables');
+  return { ok: true };
 }
 
 export async function createMilestone(formData: FormData) {

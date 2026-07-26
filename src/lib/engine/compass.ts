@@ -19,8 +19,10 @@ export interface DreamResponses {
   dateSeason?: string;
   dateYear?: string;
   desiredYear?: string;
-  creatorRole?: 'couple' | 'planner';
+  creatorRole?: 'couple' | 'planner' | 'dreamer';
   cloudPriorities?: Record<string, number>;
+  light?: string;
+  guestScale?: string;
   compassApproved?: boolean;
   compassApprovedAt?: string;
 }

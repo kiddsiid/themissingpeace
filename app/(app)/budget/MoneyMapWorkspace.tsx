@@ -79,6 +79,8 @@ type Props = {
   scenarios: Scenario[];
   dream: DreamResponses | null;
   compass: Compass;
+  projectionDrivers: { label: string; value: string; source: string }[];
+  latestChange: string | null;
 };
 
 const WEDDING_TYPES = [
@@ -156,7 +158,19 @@ function Metric({ label: title, value, detail }: { label: string; value: string;
   );
 }
 
-export function MoneyMapWorkspace({ profile, categories, items, vendors, payments, contributions, scenarios, dream, compass }: Props) {
+export function MoneyMapWorkspace({
+  profile,
+  categories,
+  items,
+  vendors,
+  payments,
+  contributions,
+  scenarios,
+  dream,
+  compass,
+  projectionDrivers,
+  latestChange,
+}: Props) {
   const reduceMotion = useReducedMotion();
   const priorities = useMemo(() => dreamPriorities(dream, compass), [dream, compass]);
   const [location, setLocation] = useState(profile?.wedding_location || 'National average');
@@ -251,6 +265,25 @@ export function MoneyMapWorkspace({ profile, categories, items, vendors, payment
         </div>
         <div className={`rounded-full border px-4 py-2 text-sm capitalize ${FIT_STYLES[estimate.fit]}`}>{estimate.fit}</div>
       </div>
+
+      <section className="mt-5 rounded-[12px] border border-[var(--line)] bg-[var(--pearl)] p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">Live advisory · no duplicate total</p>
+            <h2 className="voice mt-1 text-2xl">What is driving this map</h2>
+          </div>
+          {latestChange && <p className="max-w-md text-right text-xs leading-5 text-[var(--ink-soft)]">Latest change · {latestChange}</p>}
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          {projectionDrivers.map((driver) => (
+            <div key={driver.label} className="rounded-[10px] bg-[var(--cream)] p-3">
+              <p className="text-[10px] uppercase tracking-wide text-[var(--ink-faint)]">{driver.source}</p>
+              <p className="mt-1 text-sm text-[var(--ink)]">{driver.value}</p>
+              <p className="mt-1 text-[11px] text-[var(--ink-faint)]">{driver.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-6 overflow-hidden rounded-[8px] border border-[var(--line)] bg-[var(--pearl)]">
         <div className="grid gap-0 lg:grid-cols-[0.95fr_1.25fr]">

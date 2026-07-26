@@ -3,7 +3,7 @@
 // chart built on the guest CRM: drag tables around the room, drag guests (or whole
 // households) onto tables, click seats to place or release. planning.wedding's most-loved
 // tool, rebuilt through the engine — seats know RSVPs, households, meals, and dietary needs.
-import { useMemo, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { addTable, updateTable, deleteTable, assignSeat, unassignSeat, seatHousehold } from '@/app/(app)/seating/actions';
@@ -20,6 +20,11 @@ export interface StudioTable {
   x: number; y: number; w: number; h: number; rotation: number;
 }
 export interface StudioAssignment { tableId: string; guestId: string; seatIndex: number }
+interface SeatUndo {
+  guestId: string;
+  before: StudioAssignment | null;
+  after: StudioAssignment | null;
+}
 
 const SHAPES: { value: TableShape; label: string }[] = [
   { value: 'round', label: 'Round table' },
@@ -50,18 +55,25 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
   const [shape, setShape] = useState<TableShape>(chartKind === 'ceremony' ? 'row' : 'round');
   const [capacity, setCapacity] = useState(chartKind === 'ceremony' ? 10 : 8);
   const [notice, setNotice] = useState<string | null>(null);
+  const [liveAssignments, setLiveAssignments] = useState(assignments);
+  const [lastSeatChange, setLastSeatChange] = useState<SeatUndo | null>(null);
+  const [arrangeMode, setArrangeMode] = useState(false);
+  const [guestDrawerOpen, setGuestDrawerOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
   const dragRef = useRef<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
+
+  useEffect(() => setLiveAssignments(assignments), [assignments]);
 
   const guestById = useMemo(() => new Map(guests.map((g) => [g.id, g])), [guests]);
   const byTable = useMemo(() => {
     const m = new Map<string, Map<number, string>>();
-    for (const a of assignments) {
+    for (const a of liveAssignments) {
       if (!m.has(a.tableId)) m.set(a.tableId, new Map());
       m.get(a.tableId)!.set(a.seatIndex, a.guestId);
     }
     return m;
-  }, [assignments]);
-  const seatedGuestIds = useMemo(() => new Set(assignments.map((a) => a.guestId)), [assignments]);
+  }, [liveAssignments]);
+  const seatedGuestIds = useMemo(() => new Set(liveAssignments.map((a) => a.guestId)), [liveAssignments]);
 
   const unseated = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -102,7 +114,11 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
     if (!d) return;
     setTables((ts) => ({
       ...ts,
-      [d.id]: { ...ts[d.id], x: Math.max(0, d.origX + e.clientX - d.startX), y: Math.max(0, d.origY + e.clientY - d.startY) },
+      [d.id]: {
+        ...ts[d.id],
+        x: Math.max(0, d.origX + (e.clientX - d.startX) / zoom),
+        y: Math.max(0, d.origY + (e.clientY - d.startY) / zoom),
+      },
     }));
   }
   function onTablePointerUp() {
@@ -117,15 +133,62 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
 
   // ── seating ──
   function placeGuest(tableId: string, guestId: string, seatIndex?: number) {
+    const before = liveAssignments.find((assignment) => assignment.guestId === guestId) ?? null;
     start(async () => {
       const r = await assignSeat({ workspaceId, chartId, tableId, guestId, seatIndex });
       if (!r.seated) flash(r.reason === 'table_full' ? 'That table is full — try another, or add a seat.' : 'That seat is taken.');
-      else setSelectedGuest(null);
+      else {
+        const after = { tableId, guestId, seatIndex: r.seatIndex! };
+        setLiveAssignments((current) => [
+          ...current.filter((assignment) =>
+            assignment.guestId !== guestId &&
+            !(assignment.tableId === tableId && assignment.seatIndex === r.seatIndex)),
+          after,
+        ]);
+        setLastSeatChange({ guestId, before, after });
+        setSelectedGuest(null);
+      }
       router.refresh();
     });
   }
   function releaseGuest(guestId: string) {
-    start(async () => { await unassignSeat(workspaceId, chartId, guestId); router.refresh(); });
+    const before = liveAssignments.find((assignment) => assignment.guestId === guestId) ?? null;
+    start(async () => {
+      await unassignSeat(workspaceId, chartId, guestId);
+      setLiveAssignments((current) => current.filter((assignment) => assignment.guestId !== guestId));
+      setLastSeatChange({ guestId, before, after: null });
+      router.refresh();
+    });
+  }
+  function undoSeatChange() {
+    const change = lastSeatChange;
+    if (!change) return;
+    setLastSeatChange(null);
+    start(async () => {
+      if (change.before) {
+        const result = await assignSeat({
+          workspaceId,
+          chartId,
+          tableId: change.before.tableId,
+          guestId: change.guestId,
+          seatIndex: change.before.seatIndex,
+        });
+        if (result.seated) {
+          setLiveAssignments((current) => [
+            ...current.filter((assignment) => assignment.guestId !== change.guestId),
+            change.before!,
+          ]);
+          flash('Seat change undone.');
+        } else {
+          flash('That earlier seat is no longer available.');
+        }
+      } else {
+        await unassignSeat(workspaceId, chartId, change.guestId);
+        setLiveAssignments((current) => current.filter((assignment) => assignment.guestId !== change.guestId));
+        flash('Seat change undone.');
+      }
+      router.refresh();
+    });
   }
   function onTableDrop(e: React.DragEvent, tableId: string) {
     e.preventDefault();
@@ -148,11 +211,29 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
   const sel = selectedTable ? tables[selectedTable] : null;
 
   return (
-    <div className="mt-4 flex flex-col gap-4 lg:flex-row">
+    <div className={'mt-4 flex flex-col gap-4 lg:flex-row ' + (arrangeMode ? 'fixed inset-0 z-50 m-0 overflow-hidden bg-[var(--cream)] p-3 lg:relative lg:inset-auto lg:z-auto lg:mt-4 lg:overflow-visible lg:p-0' : '')}>
       {/* ─── guest sidebar ─── */}
-      <aside className="w-full shrink-0 rounded-[16px] border border-[var(--line)] bg-[var(--pearl)] p-3 lg:w-72">
+      {arrangeMode && guestDrawerOpen && (
+        <button
+          type="button"
+          aria-label="Close guest drawer"
+          onClick={() => setGuestDrawerOpen(false)}
+          className="fixed inset-0 z-10 bg-black/20 lg:hidden"
+        />
+      )}
+      <aside className={
+        'w-full shrink-0 rounded-[16px] border border-[var(--line)] bg-[var(--pearl)] p-3 lg:w-72 ' +
+        (arrangeMode
+          ? (guestDrawerOpen ? 'fixed inset-y-3 left-3 z-20 max-w-[min(21rem,calc(100vw-1.5rem))] shadow-xl lg:static lg:max-w-none lg:shadow-none' : 'hidden lg:block')
+          : '')
+      }>
         <div className="flex items-center justify-between">
           <h2 className="voice text-lg">Still to seat <span className="text-xs text-[var(--ink-faint)]">· {unseated.length}</span></h2>
+          {arrangeMode && (
+            <button type="button" onClick={() => setGuestDrawerOpen(false)} className="rounded-full px-2 py-1 text-sm text-[var(--ink-soft)] lg:hidden">
+              Close
+            </button>
+          )}
         </div>
         <input
           value={search}
@@ -214,10 +295,35 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
             <button onClick={onAddTable} className="rounded-full bg-[var(--clay)] px-4 py-1.5 text-sm text-white transition-transform hover:-translate-y-0.5">+ Add</button>
           </div>
           <div className="flex items-center gap-3 text-sm text-[var(--ink-soft)]">
+            {lastSeatChange && (
+              <button type="button" onClick={undoSeatChange} className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-[var(--clay-ink)]">
+                Undo seat
+              </button>
+            )}
             {everyoneSeated
               ? <motion.span initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="rounded-full bg-[var(--sage)] px-3 py-1 text-white">✦ Everyone seated</motion.span>
               : <span>{seatedAccepted} of {acceptedCount} accepted guests seated</span>}
           </div>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between gap-2 lg:hidden">
+          {arrangeMode ? (
+            <>
+              <button type="button" onClick={() => setGuestDrawerOpen(true)} className="rounded-full bg-[var(--clay)] px-4 py-2 text-sm text-white">
+                Guests · {unseated.length}
+              </button>
+              <div className="flex items-center gap-1">
+                <button type="button" aria-label="Zoom out" onClick={() => setZoom((value) => Math.max(0.7, value - 0.1))} className="rounded-full border border-[var(--line)] bg-white px-3 py-1.5">−</button>
+                <span className="min-w-12 text-center text-xs text-[var(--ink-faint)]">{Math.round(zoom * 100)}%</span>
+                <button type="button" aria-label="Zoom in" onClick={() => setZoom((value) => Math.min(1.5, value + 0.1))} className="rounded-full border border-[var(--line)] bg-white px-3 py-1.5">+</button>
+                <button type="button" onClick={() => { setArrangeMode(false); setGuestDrawerOpen(false); }} className="ml-1 rounded-full border border-[var(--line)] bg-white px-3 py-1.5 text-sm">Done</button>
+              </div>
+            </>
+          ) : (
+            <button type="button" onClick={() => setArrangeMode(true)} className="w-full rounded-full bg-[var(--ink)] px-4 py-2.5 text-sm text-white">
+              Open Arrange Mode
+            </button>
+          )}
         </div>
 
         {sel && (
@@ -239,8 +345,13 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
 
         {notice && <p className="mt-2 text-sm text-[var(--clay-ink)]">{notice}</p>}
 
-        <div className="relative mt-3 h-[68vh] overflow-auto rounded-[18px] border border-[var(--line)] bg-[var(--cream)]" onClick={() => setSelectedTable(null)}>
-          <div className="relative" style={{ width: 1600, height: 1000, backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
+        <div
+          className={'relative mt-3 overflow-auto rounded-[18px] border border-[var(--line)] bg-[var(--cream)] ' + (arrangeMode ? 'h-[calc(100vh-9.5rem)] lg:h-[68vh]' : 'h-[68vh]')}
+          style={{ touchAction: 'pan-x pan-y pinch-zoom' }}
+          onClick={() => setSelectedTable(null)}
+        >
+          <div className="relative" style={{ width: 1600 * zoom, height: 1000 * zoom }}>
+          <div className="relative origin-top-left" style={{ width: 1600, height: 1000, transform: `scale(${zoom})`, backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
             {Object.values(tables).length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <p className="max-w-sm text-center text-sm text-[var(--ink-faint)]">The room is empty. Add a table above — round, long, head table, or ceremony rows — then drag your people to their places.</p>
@@ -305,6 +416,7 @@ export function SeatingStudio({ workspaceId, chartId, chartKind, tables: initial
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export const NAV = [
+  { href: '/planner', label: 'Planner Home', icon: 'portfolio' },
   { href: '/dream', label: 'Dream', icon: 'dream' },
   { href: '/peace-center', label: 'Peace Center', icon: 'sparkles' },
   { href: '/canvas', label: 'Living Canvas', icon: 'board' },
@@ -23,16 +24,23 @@ export const NAV = [
 
 export const MOBILE_NAV = ['/dream', '/peace-center', '/canvas', '/guests'] as const;
 
-export function SideNav() {
+export function SideNav({ backendAdmin = false }: { backendAdmin?: boolean }) {
   const path = usePathname();
   return (
     <nav className="hidden w-56 shrink-0 border-r border-[var(--line)] bg-[var(--pearl)] p-3 md:block">
       <div className="px-2 pb-4">
         <div className="voice text-lg">The Missing Peace</div>
-        <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--ink-faint)]">Wedding Planning Engine</div>
+        <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--ink-faint)]">Begin with the feeling</div>
+        {backendAdmin ? (
+          <div className="mt-2 inline-flex rounded-full border border-[#A8782A]/35 bg-[#F4EBDD] px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#6C4712]">
+            Backend admin · test
+          </div>
+        ) : null}
       </div>
       {NAV.map((item) => {
-        const active = path === item.href || path?.startsWith(`${item.href}/`);
+        const active = item.href === '/canvas'
+          ? path === '/canvas' || Boolean(path?.startsWith('/canvas/'))
+          : path === item.href || path?.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}

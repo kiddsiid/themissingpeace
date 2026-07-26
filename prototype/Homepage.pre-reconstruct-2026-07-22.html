@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Missing Peace — Wedding Planning Engine | Turn the Feeling Into the Plan</title>
+<meta name="description" content="Before the budget and the guest list, there is a feeling. The Missing Peace is a wedding planning engine: a free two-minute Dream Walk becomes your Wedding Compass, and every decision — guests, feast, budget, timeline — stays connected in one collaborative wedding planning workspace. Early access.">
+<link rel="canonical" href="https://themissingpeace.pages.dev/">
+<meta name="theme-color" content="#F6F1E8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Missing Peace">
+<meta property="og:title" content="The Missing Peace — turn the feeling into the plan">
+<meta property="og:description" content="A free two-minute Dream Walk becomes your Wedding Compass — three priorities, one guiding sentence, and a living plan that keeps every wedding decision connected. Early access.">
+<meta property="og:url" content="https://themissingpeace.pages.dev/">
+<meta property="og:image" content="https://themissingpeace.pages.dev/uploads/og-compass.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Missing Peace — a Wedding Compass card under a luminous arch, with the words: before the decisions, there is a feeling.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Missing Peace — turn the feeling into the plan">
+<meta name="twitter:description" content="A free two-minute Dream Walk becomes your Wedding Compass. Early access to the wedding planning engine.">
+<meta name="twitter:image" content="https://themissingpeace.pages.dev/uploads/og-compass.png">
+<!--__LANDING_JSONLD__-->
+<!--__LANDING_CONFIG__-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pearl:#FCF9F3;--cream:#F6F1E8;--ink:#3A3631;--ink-soft:#6E655B;--ink-faint:#A99A86;--ink-label:#75695C;--line:#E5DCCD;--gold:#B8924A;--gold-ink:#8A6A2C;--gold-bg:#F4ECDA;--sage:#8A9A80;--sage-ink:#5A6B50;--sage-bg:#EDF0E9;--clay:#BC7459;--clay-btn:#A65B41;--clay-ink:#8A4A33;--clay-bg:#F3E2DB;--blush:#E7D2C8;--slate:#7C93A6;--slate-ink:#54718A;--plum:#A1748F;--plum-ink:#7E5670;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
+.voice{font-family:'Cormorant Garamond',Georgia,serif}
+a{color:var(--clay-ink)}a:hover{color:var(--gold-ink)}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.08;margin:0}
+p{margin:0}
+button{font-family:inherit}
+img{max-width:100%}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:10px 18px;border-radius:0 0 10px 0;z-index:100}
+.skip-link:focus{left:0;color:#fff}
+:focus-visible{outline:3px solid var(--clay-btn);outline-offset:2px;border-radius:4px}
+
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-label)}
+.eyebrow-gold{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-ink)}
+.rule{display:inline-block;width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--line));vertical-align:middle}
+.rule.rev{background:linear-gradient(270deg,transparent,var(--line))}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:14.5px;font-weight:500;color:#fff;background:var(--clay-btn);border:none;border-radius:999px;padding:14px 30px;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(166,91,65,.32);transition:transform .18s,box-shadow .18s}
+.btn:hover{color:#fff;transform:translateY(-1px);box-shadow:0 9px 26px rgba(166,91,65,.4)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-soft);border:1px solid var(--line);background:var(--pearl);border-radius:999px;padding:12px 22px;cursor:pointer;text-decoration:none}
+.btn-ghost:hover{color:var(--ink);border-color:var(--gold)}
+.chip-btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:10px 16px;border-radius:999px;cursor:pointer;transition:all .18s;background:rgba(252,249,243,.88);border:1px solid var(--line);color:var(--ink-soft)}
+.chip-btn .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--line);transition:background .2s}
+.chip-btn[aria-pressed="true"],.chip-btn.on{background:var(--clay-bg);border-color:#D9C7B0;color:var(--clay-ink);box-shadow:0 4px 14px rgba(188,116,89,.14)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);background:var(--pearl);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.tag .dot{width:7px;height:7px;border-radius:50%}
+
+.card{background:rgba(252,249,243,.9);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 22px rgba(58,54,49,.06)}
+.gold-card{background:linear-gradient(160deg,var(--gold-bg),var(--pearl) 72%);border:1px solid #E4D3AC;border-radius:18px;box-shadow:0 14px 40px rgba(184,146,74,.14)}
+
+.wrap{position:relative;max-width:1060px;margin:0 auto;padding:0 24px}
+section{position:relative;padding:72px 0}
+.section-head{text-align:center;max-width:640px;margin:0 auto 40px}
+.section-head h2{font-size:38px}
+.section-head .lede{font-size:15px;color:var(--ink-soft);margin-top:14px}
+
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.95;transform:scale(1.15)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes arch-glow{0%,100%{opacity:.5}50%{opacity:.85}}
+@keyframes petal{0%{transform:translateY(-10px) rotate(0);opacity:0}10%{opacity:.7}100%{transform:translateY(320px) rotate(220deg);opacity:0}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+
+/* header */
+.site-bar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 34px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:12px;text-decoration:none;color:var(--ink)}
+.brand .voice{font-size:20px}
+.brand small{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-label)}
+.site-nav{display:flex;align-items:center;gap:18px;font-size:12.5px}
+.site-nav a{text-decoration:none;color:var(--ink-soft)}
+.site-nav a:hover{color:var(--clay-ink)}
+.ea-chip{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-ink);border:1px solid rgba(184,146,74,.45);border-radius:999px;padding:5px 12px;background:rgba(244,236,218,.6)}
+
+/* hero */
+.hero{padding:34px 0 80px;text-align:center;overflow:hidden}
+.hero-inner{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center}
+.hero .seal{width:44px;height:44px;border-radius:50%;border:1px solid rgba(184,146,74,.38);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;box-shadow:0 0 26px rgba(184,146,74,.15)}
+.hero .brand-display{font-family:'Cormorant Garamond',Georgia,serif;font-size:58px;font-weight:600;line-height:1;letter-spacing:.4px;margin-top:12px}
+.hero h1{font-size:30px;font-weight:500;font-style:italic;max-width:640px;margin-top:26px;color:var(--ink)}
+.hero .explain{font-size:15px;line-height:1.7;color:var(--ink-soft);max-width:560px;margin-top:16px}
+.hero .micro{font-size:12px;color:var(--ink-label);margin-top:14px}
+.arch{position:absolute;left:50%;top:40px;transform:translateX(-50%);width:352px;height:412px;border-radius:176px 176px 26px 26px;background:radial-gradient(78% 66% at 50% 30%,rgba(255,251,240,.96),rgba(244,236,218,.5) 60%,rgba(244,236,218,0));border:2px solid rgba(184,146,74,.42);box-shadow:0 0 60px rgba(184,146,74,.15),inset 0 0 70px rgba(255,251,240,.6);animation:arch-glow 7s ease-in-out infinite;pointer-events:none}
+.arch2{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:270px;height:330px;border-radius:135px 135px 20px 20px;border:1.5px solid rgba(184,146,74,.3);box-shadow:inset 0 0 46px rgba(255,251,240,.55);animation:arch-glow 7s ease-in-out 1s infinite;pointer-events:none}
+.cloud{position:absolute;opacity:.5;animation:floaty 10s ease-in-out infinite;pointer-events:none}
+.twinkle{position:absolute;color:var(--gold);animation:twinkle 4s ease-in-out infinite;pointer-events:none;z-index:1}
+.petal{position:absolute;border-radius:50%;animation:petal 10s linear infinite;pointer-events:none}
+
+/* dream walk */
+.walk-shell{max-width:820px;margin:0 auto}
+.walk-card{position:relative;background:radial-gradient(120% 90% at 50% 0%,#FDF9F0 0%,#F6F0E1 70%,#F1E9D8 100%);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 50px rgba(58,54,49,.08);padding:34px 36px 26px;overflow:hidden}
+.walk-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.walk-progress{display:flex;align-items:center;gap:12px}
+.walk-progress .label{text-align:right}
+.walk-progress .label b{display:block;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-label);font-weight:500}
+.walk-progress .label span{font-size:12px;color:var(--gold-ink)}
+.moon{position:relative;width:46px;height:46px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 40% 34%,#FDF3D8,#E7CB88);border:1px solid rgba(184,146,74,.3);box-shadow:0 0 18px rgba(184,146,74,.28)}
+.moon i{position:absolute;top:-3px;bottom:-3px;width:50px;border-radius:50%;background:var(--cream);transition:left .6s ease;left:0}
+.walk-stage{min-height:330px;display:flex;flex-direction:column;justify-content:center}
+.walk-step{animation:rise .5s ease both}
+.walk-step .q-eyebrow{font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold-ink)}
+.walk-step .q-note{font-size:11px;color:var(--ink-label);margin-left:10px;letter-spacing:0}
+.walk-step h3{font-size:31px;line-height:1.12;margin-top:8px;max-width:620px}
+.walk-choices{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+.walk-free{margin-top:16px;width:100%;max-width:420px;border:1px solid var(--line);background:var(--pearl);border-radius:999px;padding:11px 16px;font-size:13.5px;color:var(--ink);font-family:inherit;outline-color:var(--clay-btn)}
+.walk-slider-row{margin-top:26px}
+.walk-slider-row .readout{font-size:18px;color:var(--clay-ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:var(--line);outline-offset:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--clay);cursor:pointer;border:3px solid var(--pearl);box-shadow:0 2px 8px rgba(188,116,89,.4)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--clay);cursor:pointer;border:3px solid var(--pearl);box-shadow:0 2px 8px rgba(188,116,89,.4)}
+.walk-gathered{margin-top:26px;padding-top:16px;border-top:1px solid var(--line)}
+.walk-gathered .glabel{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-label);margin-bottom:9px}
+.walk-gathered .chips{display:flex;flex-wrap:wrap;gap:8px;min-height:28px}
+.walk-gathered .tag{animation:pop .3s ease both}
+.walk-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:22px}
+.walk-nav .stepno{font-size:11px;color:var(--ink-label)}
+.walk-intro{text-align:center}
+.walk-intro h3{font-size:34px;max-width:560px;margin:10px auto 0}
+.walk-intro p{font-size:14px;line-height:1.7;color:var(--ink-soft);max-width:460px;margin:16px auto 0}
+
+/* compass result */
+.compass-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;margin-top:34px;align-items:start}
+.compass-sentence{padding:26px 30px;text-align:center}
+.compass-sentence .voice.big{font-size:24px;line-height:1.45;font-style:italic}
+.priorities{display:grid;gap:12px;margin-top:18px}
+.priority{display:flex;gap:14px;padding:16px 18px;align-items:flex-start}
+.priority .pnum{flex-shrink:0;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:#fff;background:var(--sage)}
+.priority:nth-child(2) .pnum{background:var(--clay)}
+.priority:nth-child(3) .pnum{background:var(--slate)}
+.priority h4{margin:0;font-size:15px;font-weight:600;font-family:'Inter',sans-serif}
+.priority p{font-size:13px;color:var(--ink-soft);margin-top:3px}
+.priority .area{display:block;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-ink);margin-top:7px}
+.ripple-card{padding:20px 22px}
+.ripple-card .rlabel{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink-label)}
+.ripple-card .rtext{font-size:14px;line-height:1.65;margin-top:10px}
+.ripple-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--ink-soft)}
+.ripple-flow .arrow{color:var(--gold);font-size:13px}
+.pc-preview{padding:20px 22px;margin-top:18px}
+.pc-preview .pc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pc-preview .score{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--sage-ink);background:var(--sage-bg);border:1px solid #D6DECF;border-radius:999px;padding:5px 12px}
+.pc-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+.pc-item:first-of-type{border-top:none}
+.pc-item .pc-dot{margin-top:6px;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pc-item small{display:block;color:var(--ink-soft);font-size:12px;margin-top:2px}
+.invite-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;align-items:center}
+
+/* save form */
+.save-card{margin-top:40px;padding:30px 34px}
+.save-card .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+fieldset{border:none;margin:0;padding:0;min-inline-size:0}
+legend{padding:0}
+.legend{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-label);margin-bottom:12px}
+.field label{display:block;font-size:12.5px;font-weight:500;margin-bottom:6px}
+.field label .opt,.opt{font-weight:400;color:var(--ink-label)}
+.field input,.field select{width:100%;border:1px solid var(--line);background:var(--pearl);border-radius:12px;padding:11px 14px;font-size:14px;color:var(--ink);font-family:inherit;outline-color:var(--clay-btn)}
+.field input[aria-invalid="true"]{border-color:#B4543B;background:#FBF1ED}
+.field .err{display:none;font-size:12px;color:#9C4128;margin-top:5px}
+.field.invalid .err{display:block}
+.consents{margin-top:16px;display:grid;gap:10px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-soft)}
+.consent input{margin-top:3px;width:16px;height:16px;accent-color:var(--clay-btn);flex-shrink:0}
+.form-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:20px}
+.form-msg{font-size:13px;color:#9C4128}
+.form-msg.ok{color:var(--sage-ink)}
+details.more{margin-top:14px}
+details.more summary{cursor:pointer;font-size:13px;color:var(--clay-ink)}
+details.more .form-grid{margin-top:14px}
+
+/* walkthrough */
+.scenes{display:grid;gap:18px;margin-top:8px}
+.scene{display:grid;grid-template-columns:64px 1fr 300px;gap:20px;align-items:center;padding:22px 26px}
+.scene .no{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);line-height:1}
+.scene h3{font-size:21px}
+.scene p{font-size:13.5px;color:var(--ink-soft);margin-top:6px;max-width:520px}
+.scene .mini{justify-self:end;width:100%;max-width:300px;background:var(--pearl);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:11.5px;box-shadow:inset 0 0 30px rgba(255,251,240,.6)}
+.mini .mini-label{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-label);margin-bottom:8px}
+.mini .mrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mini .mtag{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 9px;font-size:10.5px;color:var(--ink-soft)}
+.mini .mtag .dot{width:6px;height:6px;border-radius:50%}
+.mini .voice{font-size:13px;font-style:italic}
+.mini .mbar{height:6px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:6px}
+.mini .mbar i{display:block;height:100%;border-radius:999px}
+.mini .mnote{display:flex;gap:8px;align-items:flex-start;background:var(--gold-bg);border:1px solid #E4D3AC;border-radius:10px;padding:8px 10px;font-size:11px;margin-top:8px}
+.mini .avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:600;border:2px solid var(--pearl)}
+
+/* offer */
+.offer-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start;margin-top:8px}
+.offer-card{padding:28px 30px;position:relative}
+.offer-card.primary{background:linear-gradient(165deg,var(--gold-bg),var(--pearl) 60%);border:1px solid #E4D3AC;box-shadow:0 18px 50px rgba(184,146,74,.16);border-radius:18px}
+.offer-card .oc-aud{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-ink)}
+.offer-card h3{font-size:27px;margin-top:6px}
+.offer-card .oc-head{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--ink-soft);font-size:17px;margin-top:4px}
+.price-row{display:flex;align-items:baseline;gap:10px;margin-top:16px}
+.price-row .amount{font-family:'Cormorant Garamond',serif;font-size:42px;line-height:1}
+.price-row .per{font-size:12px;color:var(--ink-soft)}
+.benefits{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:9px}
+.benefits li{display:flex;gap:10px;font-size:13.5px;align-items:flex-start}
+.benefits li::before{content:"✦";color:var(--gold);font-size:12px;margin-top:2px}
+.offer-terms{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:6px;font-size:12px;color:var(--ink-soft)}
+.offer-terms b{color:var(--ink);font-weight:500}
+.checkout-card{padding:26px 28px}
+.order-summary{background:var(--pearl);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:16px}
+.order-summary .os-row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:4px 0}
+.order-summary .os-row.total{border-top:1px solid var(--line);margin-top:8px;padding-top:10px;font-weight:600;font-size:14px}
+.pay-note{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--ink-soft);margin-top:14px}
+.checkout-state{margin-top:22px;padding:18px 22px;border-radius:14px;font-size:14px}
+.checkout-state.ok{background:var(--sage-bg);border:1px solid #CBD8C2;color:var(--sage-ink)}
+.checkout-state.warn{background:var(--clay-bg);border:1px solid #E0C2B4;color:var(--clay-ink)}
+.checkout-state h3{font-size:20px;margin-bottom:6px}
+.ea-note{display:flex;gap:10px;align-items:flex-start;max-width:640px;margin:0 auto 34px;background:var(--pearl);border:1px solid var(--line);border-radius:14px;padding:14px 18px;font-size:13px;color:var(--ink-soft)}
+
+/* faq + footer */
+.faq{max-width:680px;margin:0 auto;display:grid;gap:10px}
+.faq details{background:var(--pearl);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.faq summary{cursor:pointer;font-weight:500;font-size:14.5px}
+.faq p{font-size:13.5px;color:var(--ink-soft);margin-top:10px}
+footer{border-top:1px solid var(--line);padding:44px 0 34px;background:rgba(252,249,243,.6)}
+.foot-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px}
+.foot-grid nav{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.foot-grid a{text-decoration:none;color:var(--ink-soft)}
+.foot-grid a:hover{color:var(--clay-ink)}
+.foot-note{font-size:12px;color:var(--ink-label);margin-top:26px;max-width:640px}
+[hidden]{display:none!important}
+
+@media(max-width:900px){
+  .compass-grid,.offer-grid{grid-template-columns:1fr}
+  .scene{grid-template-columns:44px 1fr}
+  .scene .mini{grid-column:1/-1;justify-self:stretch;max-width:none}
+}
+@media(max-width:640px){
+  section{padding:52px 0}
+  .hero .brand-display{font-size:42px}
+  .hero h1{font-size:24px}
+  .section-head h2{font-size:30px}
+  .walk-card{padding:24px 18px 18px}
+  .walk-step h3{font-size:24px}
+  .save-card{padding:22px 18px}
+  .save-card .form-grid,.compass-grid,.checkout-card .form-grid{grid-template-columns:1fr}
+  .site-bar{padding:16px 20px}
+  .site-nav{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-bar">
+  <a class="brand" href="/"><span class="voice">The Missing Peace</span><small>Wedding Planning Engine</small></a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="#how">How the engine works</a>
+    <a href="#founding">Founding access</a>
+    <a href="/demo">Explore the demo</a>
+    <span class="ea-chip">Early access</span>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ======================= HERO ======================= -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="arch" aria-hidden="true"></div>
+    <div class="arch2" aria-hidden="true"></div>
+    <div class="cloud" style="left:6%;top:150px;width:150px" aria-hidden="true"><svg viewBox="0 0 260 170" style="width:100%"><defs><linearGradient id="hp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFDF9"/><stop offset="1" stop-color="#F1EBDD"/></linearGradient><linearGradient id="hb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDF3EE"/><stop offset="1" stop-color="#F3E0D5"/></linearGradient></defs><g fill="url(#hp)"><rect x="24" y="106" width="212" height="40" rx="20"/><circle cx="60" cy="106" r="34"/><circle cx="96" cy="82" r="41"/><circle cx="138" cy="64" r="47"/><circle cx="184" cy="80" r="41"/><circle cx="216" cy="106" r="30"/><circle cx="120" cy="102" r="45"/><circle cx="172" cy="106" r="41"/><circle cx="80" cy="115" r="30"/><circle cx="202" cy="118" r="26"/></g></svg></div>
+    <div class="cloud" style="right:5%;top:230px;width:172px;animation-delay:.6s" aria-hidden="true"><svg viewBox="0 0 260 170" style="width:100%"><g fill="url(#hb)"><rect x="24" y="106" width="212" height="40" rx="20"/><circle cx="60" cy="106" r="34"/><circle cx="96" cy="82" r="41"/><circle cx="138" cy="64" r="47"/><circle cx="184" cy="80" r="41"/><circle cx="216" cy="106" r="30"/><circle cx="120" cy="102" r="45"/><circle cx="172" cy="106" r="41"/><circle cx="80" cy="115" r="30"/><circle cx="202" cy="118" r="26"/></g></svg></div>
+    <span class="twinkle" style="left:18%;top:110px;font-size:10px" aria-hidden="true">✦</span>
+    <span class="twinkle" style="left:80%;top:170px;font-size:13px;animation-delay:.8s" aria-hidden="true">✦</span>
+    <span class="twinkle" style="left:30%;top:420px;font-size:9px;animation-delay:1.6s" aria-hidden="true">✦</span>
+    <span class="twinkle" style="left:66%;top:70px;font-size:11px;animation-delay:2.2s" aria-hidden="true">✦</span>
+    <span class="petal" style="left:24%;top:120px;width:7px;height:7px;background:var(--blush)" aria-hidden="true"></span>
+    <span class="petal" style="left:70%;top:80px;width:6px;height:6px;background:var(--gold-bg);animation-delay:2s" aria-hidden="true"></span>
+
+    <div class="wrap hero-inner">
+      <div class="seal" aria-hidden="true">✦</div>
+      <p class="eyebrow" style="margin-top:16px">Your day · your people · your peace</p>
+      <div class="brand-display" aria-hidden="true">The Missing Peace</div>
+      <p style="margin-top:14px"><span class="rule" aria-hidden="true"></span> <span class="eyebrow-gold" style="letter-spacing:3.6px">Where forever begins</span> <span class="rule rev" aria-hidden="true"></span></p>
+      <h1 id="hero-title" class="voice">Before the budget, the guest list, and a thousand decisions — there is a feeling.</h1>
+      <p class="explain">The Missing Peace turns that feeling into your plan. A free, two-minute <b>Dream Walk</b> becomes your <b>Wedding Compass</b> — and the wedding planning engine keeps every decision after it connected: guests, feast, atmosphere, attire, budget, timeline, vendors, seating. One shared wedding planning workspace. One wedding vision, protected.</p>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:30px">
+        <a class="btn" href="#dreamwalk" id="hero-cta">Begin the Free Dream Walk ✦</a>
+        <a class="btn-ghost" href="#how">See how the engine works ↓</a>
+      </div>
+      <p class="micro">Free · No account needed · Your Compass in about two minutes</p>
+    </div>
+  </section>
+
+  <!-- ======================= DREAM WALK ======================= -->
+  <section id="dreamwalk" aria-labelledby="dw-title" style="padding-top:20px">
+    <div class="wrap walk-shell">
+      <div class="walk-card">
+        <div class="walk-top">
+          <div><p class="eyebrow">Dream Walk</p><h2 id="dw-title" class="voice" style="font-size:22px;margin-top:2px">Find the feeling first</h2></div>
+          <div class="walk-progress" aria-hidden="true">
+            <div class="label"><b>The dream, forming</b><span id="dw-pct">0% gathered</span></div>
+            <div class="moon"><i id="dw-moon"></i></div>
+          </div>
+        </div>
+        <div class="walk-stage" id="dw-stage">
+          <noscript><p style="text-align:center;color:var(--ink-soft)">The Dream Walk needs JavaScript. You can also <a href="/demo">explore the demo</a>.</p></noscript>
+        </div>
+        <div class="walk-nav" id="dw-nav" hidden>
+          <button type="button" class="btn-ghost" id="dw-back">← Back</button>
+          <span class="stepno" id="dw-stepno" aria-live="polite"></span>
+          <button type="button" class="btn" id="dw-next">Continue</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= COMPASS RESULT ======================= -->
+  <section id="compass" aria-labelledby="compass-title" hidden>
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">the dream, bottled</p>
+        <h2 id="compass-title">Your Wedding Compass</h2>
+        <p class="lede" id="compass-lede">One guiding sentence, three priorities, and a preview of the workspace that will protect them.</p>
+      </div>
+
+      <div class="gold-card compass-sentence">
+        <div style="font-size:20px;color:var(--gold)" aria-hidden="true">✦</div>
+        <p class="voice big" id="compass-sentence-text"></p>
+      </div>
+
+      <div class="compass-grid">
+        <div>
+          <p class="eyebrow" style="margin-bottom:4px">What your Compass protects first</p>
+          <div class="priorities" id="compass-priorities"></div>
+        </div>
+        <div>
+          <div class="card ripple-card">
+            <p class="rlabel">How one decision ripples</p>
+            <p class="rtext" id="ripple-text"></p>
+            <div class="ripple-flow" id="ripple-flow" aria-hidden="true"></div>
+          </div>
+          <div class="card pc-preview">
+            <div class="pc-head">
+              <p class="rlabel" style="margin:0">Peace Center · preview from your answers</p>
+              <span class="score">✦ watching <span id="pc-count">3</span> things for you</span>
+            </div>
+            <div id="pc-items" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="invite-row">
+        <span style="font-size:13px;color:var(--ink-soft)">Planning is better as two —</span>
+        <button type="button" class="btn-ghost" id="share-copy">⧉ Copy a link to this Compass</button>
+        <a class="btn-ghost" id="share-email" href="#">✉ Email it to your person</a>
+        <button type="button" class="btn-ghost" id="share-native" hidden>↗ Share</button>
+        <span id="share-done" class="form-msg ok" role="status" aria-live="polite"></span>
+      </div>
+
+      <!-- save / contact capture -->
+      <form class="gold-card save-card" id="save-form" novalidate>
+        <fieldset>
+          <legend class="legend">Keep this Compass</legend>
+          <p style="font-size:14px;color:var(--ink-soft);max-width:560px">Your Compass lives only in this browser right now. Tell us where to send it and we'll keep it safe — and bring it with you when early access opens.</p>
+          <div class="form-grid">
+            <div class="field" id="f-firstName">
+              <label for="firstName">First name</label>
+              <input id="firstName" name="firstName" type="text" autocomplete="given-name" required aria-describedby="firstName-err">
+              <p class="err" id="firstName-err"></p>
+            </div>
+            <div class="field" id="f-email">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="email-err">
+              <p class="err" id="email-err"></p>
+            </div>
+          </div>
+          <details class="more">
+            <summary>Add your person &amp; your timing <span class="opt">(optional)</span></summary>
+            <div class="form-grid">
+              <div class="field" id="f-partnerEmail">
+                <label for="partnerEmail">Partner's email <span class="opt">(we'll send them the same Compass)</span></label>
+                <input id="partnerEmail" name="partnerEmail" type="email" autocomplete="off" inputmode="email" aria-describedby="partnerEmail-err">
+                <p class="err" id="partnerEmail-err"></p>
+              </div>
+              <div class="field">
+                <label for="weddingDate">Wedding date <span class="opt">(even a guess)</span></label>
+                <input id="weddingDate" name="weddingDate" type="date" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="planningStage">Where are you in planning?</label>
+                <select id="planningStage" name="planningStage">
+                  <option value="">Choose one…</option>
+                  <option>Just engaged — dreaming</option>
+                  <option>Comparing venues &amp; dates</option>
+                  <option>Deep in vendor decisions</option>
+                  <option>Final stretch</option>
+                  <option>I'm a wedding planner</option>
+                </select>
+              </div>
+            </div>
+          </details>
+        </fieldset>
+        <fieldset>
+          <legend class="legend" style="margin-top:18px">Permissions</legend>
+          <div class="consents">
+            <label class="consent" for="consentDelivery">
+              <input type="checkbox" id="consentDelivery" name="consentDelivery" checked aria-describedby="consentDelivery-err">
+              <span><b>Send my Wedding Compass to this address</b>, plus the essential messages about my saved Compass and early access. <span class="opt">(Required to save.)</span></span>
+            </label>
+            <label class="consent" for="consentMarketing">
+              <input type="checkbox" id="consentMarketing" name="consentMarketing">
+              <span>Also send occasional planning inspiration and product news. <span class="opt">(Optional — unsubscribe anytime.)</span></span>
+            </label>
+          </div>
+          <p class="err" id="consentDelivery-err" style="display:none;font-size:12px;color:#9C4128;margin-top:6px"></p>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="save-submit">Email me my Compass ✦</button>
+          <p class="form-msg" id="save-msg" role="alert" aria-live="assertive"></p>
+        </div>
+        <p style="font-size:11.5px;color:var(--ink-label);margin-top:12px">We store only what you enter here. <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></p>
+      </form>
+      <div class="checkout-state ok" id="save-done" hidden>
+        <h3 class="voice">Your Compass is safe. ✦</h3>
+        <p>We've saved it under your email. Next: a two-minute look at what your Compass unlocks — <a href="#how">the engine that plans by it</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= WALKTHROUGH ======================= -->
+  <section id="how" aria-labelledby="how-title" style="background:rgba(252,249,243,.55);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">the wedding planning engine</p>
+        <h2 id="how-title">From a feeling to a living plan</h2>
+        <p class="lede">Most tools give you a checklist. The Missing Peace gives you an engine: every part of your wedding stays connected to your Compass, so a change in one place is understood everywhere.</p>
+      </div>
+      <div class="scenes">
+        <article class="scene card">
+          <div class="no" aria-hidden="true">1</div>
+          <div><h3>A dream becomes a Wedding Compass</h3><p>Your Dream Walk answers gather like clouds, and the engine writes your Compass — the sentence every later decision answers to. Your wedding vision, in words you'll recognize.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Dream Walk → Compass</div><div class="mrow"><span class="mtag"><span class="dot" style="background:var(--clay)"></span>Warmth</span><span class="mtag"><span class="dot" style="background:var(--gold)"></span>Golden hour</span><span class="mtag"><span class="dot" style="background:var(--sage)"></span>Family peace</span></div><p class="voice" style="margin-top:9px">“A warm, golden-hour celebration that feels like a homecoming.”</p></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">2</div>
+          <div><h3>One choice, felt everywhere</h3><p>Choose one long, generous table — and the engine quietly re-plans around it: the guest list groups into households, the seating studio redraws, the Money Map shifts weight toward food and guest care. Connections, not checklists.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">You chose: one long table</div><div class="mrow"><span class="mtag"><span class="dot" style="background:var(--sage)"></span>Guests · households</span><span class="mtag"><span class="dot" style="background:var(--gold)"></span>Money Map · +food</span><span class="mtag"><span class="dot" style="background:var(--slate)"></span>Seating · redrawn</span><span class="mtag"><span class="dot" style="background:var(--clay)"></span>Timeline · dinner +20m</span></div></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">3</div>
+          <div><h3>Feast Studio adapts food and guest care</h3><p>Menus, dietary needs, kids' plates, the late-night bites — Feast Studio plans hospitality like it's the point (because for most couples, it is). When the guest count moves, the feast moves with it.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Feast Studio</div><div class="mrow"><span class="mtag">Family-style · 92 guests</span><span class="mtag"><span class="dot" style="background:var(--sage)"></span>6 vegetarian</span><span class="mtag"><span class="dot" style="background:var(--clay)"></span>2 gluten-free</span><span class="mtag">4 kids' plates</span></div><div class="mbar"><i style="width:72%;background:var(--gold)"></i></div><p style="margin-top:5px;font-size:10.5px;color:var(--ink-soft)">Guest care · covered for current RSVPs</p></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">4</div>
+          <div><h3>Atmosphere &amp; Atelier shape the visual world</h3><p>Your season and light become a palette; your wedding mood board becomes decisions — florals, candlelight, attire. The Atelier keeps what everyone wears in conversation with where and when you marry.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Atmosphere · Fall, golden hour</div><div class="mrow"><span style="width:18px;height:18px;border-radius:50%;background:#C9A96A;border:2px solid #fff;display:inline-block"></span><span style="width:18px;height:18px;border-radius:50%;background:#8A9A80;border:2px solid #fff;display:inline-block"></span><span style="width:18px;height:18px;border-radius:50%;background:#BC7459;border:2px solid #fff;display:inline-block"></span><span style="width:18px;height:18px;border-radius:50%;background:#E7D2C8;border:2px solid #fff;display:inline-block"></span><span class="mtag" style="margin-left:6px">Atelier: garden formal</span></div></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">5</div>
+          <div><h3>Weaver AI catches what's missing</h3><p>The engine's intelligence reads the whole plan and speaks up with reasons — a conflict between your ceremony light and the photo schedule, a decision that quietly contradicts your Compass, a detail nobody has owned yet.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Weaver AI</div><div class="mnote"><span style="color:var(--gold)">✦</span><span>Your ceremony is set for golden hour, but portraits are scheduled after sunset. Swap portraits before the toasts?</span></div></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">6</div>
+          <div><h3>Peace Center keeps you aligned</h3><p>One calm place that answers the only question that matters on a Tuesday night: <i>what's the next best thing to do?</i> Always with the why — and always in service of the Compass you set.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Peace Center · next best actions</div><div class="mrow" style="flex-direction:column;align-items:stretch;gap:5px"><span class="mtag" style="justify-content:flex-start"><span class="dot" style="background:var(--clay)"></span>Hold the venue date — 3 decisions are waiting on it</span><span class="mtag" style="justify-content:flex-start"><span class="dot" style="background:var(--gold)"></span>Answer the caterer — protects “one long table”</span></div></div>
+        </article>
+        <article class="scene card">
+          <div class="no" aria-hidden="true">7</div>
+          <div><h3>Your person joins the plan</h3><p>Collaborative wedding planning, without the spreadsheet wars: your partner — or your planner — joins the same living plan. Everyone sees the same Compass, the same decisions, the same peace.</p></div>
+          <div class="mini" aria-hidden="true"><div class="mini-label">Shared workspace</div><div class="mrow"><span class="avatar" style="background:var(--clay)">Y</span><span class="avatar" style="background:var(--gold);margin-left:-10px">+</span><span style="margin-left:8px;color:var(--ink-soft)">Your person joined · seeing your Compass</span></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FOUNDING OFFER ======================= -->
+  <section id="founding" aria-labelledby="founding-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">founding access</p>
+        <h2 id="founding-title">Plan the whole wedding by your Compass</h2>
+        <p class="lede">The Dream Walk and your Compass are free, always. The full engine is in early access — and it opens first to its founding members.</p>
+      </div>
+      <div class="ea-note"><span style="color:var(--gold)" aria-hidden="true">✦</span><span><b>Early access, honestly labeled.</b> The Missing Peace is being built in the open. What you saw above is the engine as designed; founding members get it as it ships, wave by wave, and shape what comes next. No inflated member counts, no fake urgency.</span></div>
+
+      <div class="offer-grid">
+        <article class="offer-card primary" id="offer-card-couple" aria-label="Founding Couple offer">
+          <p class="oc-aud" id="oc-couple-aud"></p>
+          <h3 id="oc-couple-name"></h3>
+          <p class="oc-head" id="oc-couple-headline"></p>
+          <div class="price-row"><span class="amount" id="oc-couple-price"></span><span class="per" id="oc-couple-billing"></span></div>
+          <ul class="benefits" id="oc-couple-benefits"></ul>
+          <div class="offer-terms">
+            <span><b>Access:</b> <span id="oc-couple-access"></span></span>
+            <span><b>Cancellation:</b> <span id="oc-couple-cancel"></span></span>
+            <span><b>Refunds:</b> <span id="oc-couple-refund"></span></span>
+          </div>
+        </article>
+
+        <article class="offer-card card" id="offer-card-planner" aria-label="Founding Planner offer">
+          <p class="oc-aud" id="oc-planner-aud"></p>
+          <h3 id="oc-planner-name" style="font-size:22px"></h3>
+          <div class="price-row" style="margin-top:8px"><span class="amount" style="font-size:30px" id="oc-planner-price"></span><span class="per" id="oc-planner-billing"></span></div>
+          <ul class="benefits" id="oc-planner-benefits" style="font-size:12.5px"></ul>
+          <div class="offer-terms">
+            <span><b>Access:</b> <span id="oc-planner-access"></span></span>
+            <span><b>Cancellation:</b> <span id="oc-planner-cancel"></span></span>
+            <span><b>Refunds:</b> <span id="oc-planner-refund"></span></span>
+          </div>
+        </article>
+      </div>
+
+      <!-- checkout -->
+      <form class="card checkout-card" id="checkout-form" style="margin-top:22px" novalidate>
+        <fieldset>
+          <legend class="legend">Your founding seat</legend>
+          <div style="display:flex;gap:10px;flex-wrap:wrap" role="radiogroup" aria-label="Choose your founding offer">
+            <label class="chip-btn" id="seat-couple-label" style="cursor:pointer"><input type="radio" name="offer" value="founding-couple" checked style="accent-color:var(--clay-btn)"> <span id="seat-couple-text"></span></label>
+            <label class="chip-btn" id="seat-planner-label" style="cursor:pointer"><input type="radio" name="offer" value="founding-planner" style="accent-color:var(--clay-btn)"> <span id="seat-planner-text"></span></label>
+          </div>
+        </fieldset>
+        <fieldset style="margin-top:18px">
+          <legend class="legend">Your details</legend>
+          <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="field" id="f-coName">
+              <label for="coName">Full name</label>
+              <input id="coName" name="coName" type="text" autocomplete="name" required aria-describedby="coName-err">
+              <p class="err" id="coName-err"></p>
+            </div>
+            <div class="field" id="f-coEmail">
+              <label for="coEmail">Email address</label>
+              <input id="coEmail" name="coEmail" type="email" autocomplete="email" inputmode="email" required aria-describedby="coEmail-err">
+              <p class="err" id="coEmail-err"></p>
+            </div>
+          </div>
+        </fieldset>
+        <div class="order-summary" aria-label="Order summary">
+          <p class="legend" style="margin-bottom:6px">Order summary</p>
+          <div class="os-row"><span id="os-name"></span><span id="os-price"></span></div>
+          <div class="os-row" style="color:var(--ink-soft)"><span>Billing</span><span id="os-billing"></span></div>
+          <div class="os-row" style="color:var(--ink-soft)"><span>Access</span><span>Early access · first wave</span></div>
+          <div class="os-row total"><span>Due today</span><span id="os-total"></span></div>
+        </div>
+        <div class="consents" style="margin-top:16px">
+          <label class="consent" for="coTerms">
+            <input type="checkbox" id="coTerms" name="coTerms" aria-describedby="coTerms-err">
+            <span>I agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>, including the cancellation and refund terms above.</span>
+          </label>
+          <p class="err" id="coTerms-err" style="display:none;font-size:12px;color:#9C4128"></p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="checkout-submit">Continue to secure checkout →</button>
+          <p class="form-msg" id="checkout-msg" role="alert" aria-live="assertive"></p>
+        </div>
+        <p class="pay-note" id="pay-note"><span aria-hidden="true">🔒</span><span>Payment is processed by <b>Stripe</b> on a secure checkout page. Your card details never touch our servers, and your seat is only confirmed after Stripe confirms the payment.</span></p>
+        <p class="pay-note" id="reserve-note" hidden><span aria-hidden="true">✦</span><span><b>Payments haven't opened yet.</b> Reserving a founding seat is free and non-binding — we'll save your place, email you before payments open, and nothing is ever charged without you choosing it on a secure Stripe page.</span></p>
+      </form>
+
+      <!-- checkout result states -->
+      <div class="checkout-state ok" id="state-success" role="status" aria-live="polite" hidden>
+        <h3 class="voice">Welcome, founding member. ✦</h3>
+        <p id="state-success-text">Your payment is confirmed and your founding seat is held. A receipt is on its way from Stripe, and your early-access invitation will come from us by email.</p>
+      </div>
+      <div class="checkout-state warn" id="state-cancelled" role="status" aria-live="polite" hidden>
+        <h3 class="voice">No harm done.</h3>
+        <p>You left checkout before paying — nothing was charged. Your Compass is still yours, free. If you'd like your founding seat, you can <button type="button" id="retry-cancelled" class="btn-ghost" style="padding:6px 14px">try checkout again</button> whenever you're ready.</p>
+      </div>
+      <div class="checkout-state warn" id="state-failed" role="alert" hidden>
+        <h3 class="voice">The payment didn't go through.</h3>
+        <p id="state-failed-text">Stripe couldn't confirm this payment, so nothing was finalized. You can <button type="button" id="retry-failed" class="btn-ghost" style="padding:6px 14px">try again</button> — or write to us and we'll help.</p>
+      </div>
+      <div class="checkout-state ok" id="state-reserved" role="status" aria-live="polite" hidden>
+        <h3 class="voice">Your founding seat is reserved. ✦</h3>
+        <p>It's saved under your email — free and non-binding. We'll write to you before payments open, and your founding price is locked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FAQ ======================= -->
+  <section aria-labelledby="faq-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head" style="margin-bottom:26px">
+        <h2 id="faq-title" style="font-size:28px">Fair questions</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Is the Dream Walk really free?</summary>
+          <p>Yes — the Dream Walk and your Wedding Compass are free, with no account and no card. Saving your Compass takes just a first name and an email so we can send it to you.</p>
+        </details>
+        <details>
+          <summary>What exactly is "early access"?</summary>
+          <p>The Missing Peace is a young product being built in the open. Parts of what this page shows are working today in our prototype (you can <a href="/demo">wander a demo wedding</a>); the rest ships to founding members wave by wave. We label previews as previews — if a screen is a prototype, we say so.</p>
+        </details>
+        <details>
+          <summary>What happens after I pay for a founding seat?</summary>
+          <p>Stripe confirms your payment and emails a receipt; we hold your seat and email your invitation when your access wave opens. Cancel before your access begins for a full refund, and there's a 14-day full refund after access begins — one email is enough.</p>
+        </details>
+        <details>
+          <summary>What do you do with my email?</summary>
+          <p>We send your Compass and the essential messages about your saved plan and early access. Anything more — inspiration, product news — only if you tick the separate optional box, and you can unsubscribe anytime. Details in the <a href="/privacy">privacy policy</a>.</p>
+        </details>
+        <details>
+          <summary>I'm a wedding planner — is this for me?</summary>
+          <p>Yes. A Founding Planner seat covers a multi-wedding workspace, so every client couple gets the same engine. Professional access follows the first couples wave.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="/"><span class="voice">The Missing Peace</span><small>Wedding Planning Engine</small></a>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:12px;max-width:340px">Turn the feeling into the plan. A wedding planning engine for couples who want their day to feel like <i>them</i>.</p>
+      </div>
+      <nav aria-label="Product">
+        <span class="legend" style="margin-bottom:2px">Product</span>
+        <a href="#dreamwalk">Dream Walk (free)</a>
+        <a href="#how">How the engine works</a>
+        <a href="#founding">Founding access</a>
+        <a href="/demo">Explore the demo wedding</a>
+      </nav>
+      <nav aria-label="Company">
+        <span class="legend" style="margin-bottom:2px">The fine print</span>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="mailto:hello@themissingpeace.app" id="foot-contact">Write to us</a>
+      </nav>
+    </div>
+    <p class="foot-note"><b>Early access notice:</b> The Missing Peace is an early-access product; some screens shown on this page and in the demo are prototype previews of the wedding planning engine. We don't publish testimonials or member counts yet — there's nothing real to publish, and we won't invent them. ✦</p>
+  </div>
+</footer>
+
+<script src="/wedding-state.js"></script>
+<script>
+/* ============ The Missing Peace — landing funnel app ============ */
+(function () {
+  'use strict';
+  var CFG = window.TMP_LANDING || { site: {}, offers: {} };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- UTM + referral capture (first touch) ---------- */
+  var params = new URLSearchParams(location.search);
+  var UTM = null;
+  try { UTM = JSON.parse(localStorage.getItem('tmp_utm') || 'null'); } catch (e) {}
+  var fresh = {};
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) {
+    if (params.get(k)) fresh[k] = params.get(k).slice(0, 120);
+  });
+  if (params.get('ref')) fresh.ref = params.get('ref').slice(0, 60);
+  if (Object.keys(fresh).length && !UTM) {
+    UTM = fresh;
+    try { localStorage.setItem('tmp_utm', JSON.stringify(UTM)); } catch (e) {}
+  }
+
+  /* ---------- first-party analytics (+ dataLayer for any tag manager) ---------- */
+  var SID = null;
+  try {
+    SID = localStorage.getItem('tmp_sid');
+    if (!SID) { SID = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('tmp_sid', SID); }
+  } catch (e) { SID = 'nostorage'; }
+  window.dataLayer = window.dataLayer || [];
+  function track(event, props) {
+    window.dataLayer.push({ event: event, props: props || {} });
+    var body = JSON.stringify({ event: event, props: props || {}, sid: SID, url: location.pathname + location.search, utm: UTM });
+    try {
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/event', body);
+      else fetch('/api/event', { method: 'POST', body: body, keepalive: true });
+    } catch (e) {}
+  }
+  track('page_view');
+
+  /* ---------- Dream Walk ---------- */
+  var HUES = { clay: 'var(--clay)', gold: 'var(--gold)', sage: 'var(--sage)', slate: 'var(--slate)', plum: 'var(--plum)' };
+  var STEPS = [
+    { kind: 'intro' },
+    { kind: 'choices', id: 'feeling', hue: 'clay', eyebrow: 'the first breath', q: 'When your people walk in, what should they feel first?', choices: ['Warmth', 'Awe', 'Peace', 'Joy', 'Intimacy', 'Celebration', 'Nostalgia', 'Belonging'] },
+    { kind: 'shape' },
+    { kind: 'slider' },
+    { kind: 'choices', id: 'meaning', hue: 'gold', eyebrow: 'what this day carries', q: 'What do you want this wedding to mean?', choices: ['A beginning', 'A homecoming', 'A promise', 'A family gathering', 'A sacred moment', 'A joyful feast', 'A second chance', 'A quiet vow'] },
+    { kind: 'choices', id: 'protect', hue: 'sage', eyebrow: 'the meaningful details', q: 'What must never get lost in the planning?', choices: ['Time together', 'Private vows', 'Family peace', 'A clear budget', 'Grandma’s recipe', 'The dance floor', 'Enough rest', 'Being present'], free: true },
+    { kind: 'finish' },
+  ];
+  var walk = { step: 0, ans: { feeling: [], meaning: [], protect: [] }, free: '', season: 'Fall', light: 'Golden hour', intimacy: 90, started: false, revealed: false };
+
+  var stage = $('dw-stage'), nav = $('dw-nav');
+  function intimacyWord(n) { return n < 20 ? 'Just us' : n < 60 ? 'Intimate' : n < 120 ? 'Gathered' : n < 210 ? 'A big celebration' : 'Everyone we know'; }
+  function art(w) { return /^[aeiou]/i.test((w || '').trim()) ? 'an' : 'a'; }
+  function firstOf(id, fb) { var a = walk.ans[id] || []; return a.length ? a[0] : fb; }
+
+  function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
+
+  function chipButton(label, pressed, hue, onToggle) {
+    var b = el('button', 'chip-btn');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    var dot = el('span', 'dot'); if (pressed) dot.style.background = HUES[hue];
+    b.appendChild(dot); b.appendChild(document.createTextNode(label));
+    b.addEventListener('click', function () { onToggle(); });
+    return b;
+  }
+
+  function markStarted() {
+    if (!walk.started) { walk.started = true; track('dream_walk_started'); }
+  }
+
+  function gatheredChips() {
+    var box = el('div', 'walk-gathered');
+    box.appendChild(el('p', 'glabel', 'Your dream, gathering'));
+    var chips = el('div', 'chips');
+    var items = [];
+    (walk.ans.feeling || []).slice(0, 1).forEach(function (v) { items.push([v, 'clay']); });
+    if (walk.step > 2) items.push([walk.season + ' · ' + walk.light, 'gold']);
+    if (walk.step > 3) items.push([intimacyWord(walk.intimacy) + ' · ~' + walk.intimacy, 'slate']);
+    (walk.ans.meaning || []).slice(0, 1).forEach(function (v) { items.push([v, 'gold']); });
+    (walk.ans.protect || []).slice(0, 2).forEach(function (v) { items.push([v, 'sage']); });
+    if (walk.free.trim()) items.push([walk.free.trim(), 'plum']);
+    if (!items.length) chips.appendChild(el('span', null, '<span style="font-size:12px;color:var(--ink-faint)">Choose above and watch your clouds appear…</span>'));
+    items.forEach(function (it) {
+      var t = el('span', 'tag'); var d = el('span', 'dot'); d.style.background = HUES[it[1]];
+      t.appendChild(d); t.appendChild(document.createTextNode(it[0])); chips.appendChild(t);
+    });
+    box.appendChild(chips);
+    return box;
+  }
+
+  function render() {
+    var s = STEPS[walk.step], total = STEPS.length;
+    var progress = walk.step / (total - 1);
+    $('dw-pct').textContent = Math.round(progress * 100) + '% gathered';
+    $('dw-moon').style.left = (-(progress * 50)).toFixed(0) + 'px';
+    stage.innerHTML = '';
+    nav.hidden = false;
+
+    var back = $('dw-back'), next = $('dw-next'), stepno = $('dw-stepno');
+    back.style.visibility = walk.step === 0 ? 'hidden' : 'visible';
+    stepno.textContent = s.kind === 'intro' ? 'Welcome' : s.kind === 'finish' ? 'Ready below' : 'Step ' + walk.step + ' of ' + (total - 2);
+    next.textContent = s.kind === 'intro' ? 'Begin the Dream Walk ✦' : walk.step === total - 2 ? 'Reveal my Compass ✦' : 'Continue';
+    next.hidden = s.kind === 'finish';
+
+    var wrap = el('div', 'walk-step');
+    if (s.kind === 'intro') {
+      wrap.className = 'walk-step walk-intro';
+      wrap.appendChild(el('p', 'eyebrow', 'free · two minutes · no account'));
+      wrap.appendChild(el('h3', 'voice', 'You don’t have to imagine it all yet.'));
+      wrap.appendChild(el('p', null, 'Just choose what’s true. Five gentle questions about the feeling, the season, the light, the people — each answer becomes a Dream Cloud, and together they write your Wedding Compass.'));
+    } else if (s.kind === 'choices') {
+      wrap.appendChild(el('p', null, '<span class="q-eyebrow">' + s.eyebrow + '</span><span class="q-note">· choose all that feel true</span>'));
+      wrap.appendChild(el('h3', 'voice', s.q));
+      var row = el('div', 'walk-choices');
+      s.choices.forEach(function (c) {
+        var on = (walk.ans[s.id] || []).indexOf(c) !== -1;
+        row.appendChild(chipButton(c, on, s.hue, function () {
+          markStarted();
+          var cur = walk.ans[s.id] || [];
+          var i = cur.indexOf(c);
+          if (i === -1) cur.push(c); else cur.splice(i, 1);
+          walk.ans[s.id] = cur; render();
+        }));
+      });
+      wrap.appendChild(row);
+      if (s.free) {
+        var inp = el('input', 'walk-free'); inp.type = 'text'; inp.placeholder = '＋ add your own, in your words'; inp.value = walk.free;
+        inp.setAttribute('aria-label', 'A meaningful detail in your own words');
+        inp.maxLength = 90;
+        inp.addEventListener('input', function () { markStarted(); walk.free = inp.value; });
+        wrap.appendChild(inp);
+      }
+      wrap.appendChild(gatheredChips());
+    } else if (s.kind === 'shape') {
+      wrap.appendChild(el('p', null, '<span class="q-eyebrow">the shape of the day</span>'));
+      wrap.appendChild(el('h3', 'voice', 'Which season — and which light?'));
+      wrap.appendChild(el('p', null, '<span style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-label);display:block;margin-top:18px;margin-bottom:8px">The season you dream of</span>'));
+      var seasons = [['Spring', '#A9C6A0'], ['Summer', '#E7C86A'], ['Fall', '#D08A5B'], ['Winter', '#9DB4C4']];
+      var g1 = el('div', 'walk-choices'); g1.style.marginTop = '0';
+      seasons.forEach(function (sv) {
+        var b = el('button', 'chip-btn'); b.type = 'button';
+        b.setAttribute('aria-pressed', walk.season === sv[0] ? 'true' : 'false');
+        var d = el('span', 'dot'); d.style.background = sv[1]; b.appendChild(d); b.appendChild(document.createTextNode(sv[0]));
+        b.addEventListener('click', function () { markStarted(); walk.season = sv[0]; render(); });
+        g1.appendChild(b);
+      });
+      wrap.appendChild(g1);
+      wrap.appendChild(el('p', null, '<span style="font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-label);display:block;margin-top:18px;margin-bottom:8px">The light you marry in</span>'));
+      var g2 = el('div', 'walk-choices'); g2.style.marginTop = '0';
+      ['Sunrise', 'Golden hour', 'Candlelight', 'Starlight'].forEach(function (l) {
+        var b = el('button', 'chip-btn'); b.type = 'button';
+        b.setAttribute('aria-pressed', walk.light === l ? 'true' : 'false');
+        b.appendChild(document.createTextNode(l));
+        b.addEventListener('click', function () { markStarted(); walk.light = l; render(); });
+        g2.appendChild(b);
+      });
+      wrap.appendChild(g2);
+      wrap.appendChild(gatheredChips());
+    } else if (s.kind === 'slider') {
+      wrap.appendChild(el('p', null, '<span class="q-eyebrow">the people in the room</span>'));
+      wrap.appendChild(el('h3', 'voice', 'How many people belong in this memory?'));
+      var row2 = el('div', 'walk-slider-row');
+      var readout = el('div', null, '<span class="voice readout" id="dw-intimacy-word">' + intimacyWord(walk.intimacy) + ' · ~' + walk.intimacy + '</span>');
+      readout.style.marginBottom = '12px';
+      var slider = el('input'); slider.type = 'range'; slider.min = '2'; slider.max = '300'; slider.value = String(walk.intimacy);
+      slider.setAttribute('aria-label', 'Roughly how many guests');
+      slider.setAttribute('aria-valuetext', intimacyWord(walk.intimacy) + ', about ' + walk.intimacy + ' guests');
+      slider.addEventListener('input', function () {
+        markStarted(); walk.intimacy = Number(slider.value);
+        slider.setAttribute('aria-valuetext', intimacyWord(walk.intimacy) + ', about ' + walk.intimacy + ' guests');
+        var w = document.getElementById('dw-intimacy-word'); if (w) w.textContent = intimacyWord(walk.intimacy) + ' · ~' + walk.intimacy;
+      });
+      var ends = el('div', null, '<span>Just us</span><span>Everyone we know</span>');
+      ends.style.cssText = 'display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-label);margin-top:6px';
+      row2.appendChild(readout); row2.appendChild(slider); row2.appendChild(ends);
+      wrap.appendChild(row2);
+      wrap.appendChild(gatheredChips());
+    } else if (s.kind === 'finish') {
+      wrap.className = 'walk-step walk-intro';
+      wrap.appendChild(el('p', 'eyebrow', 'the dream, bottled'));
+      wrap.appendChild(el('h3', 'voice', 'Your Compass has found its words.'));
+      wrap.appendChild(el('p', null, 'Scroll down — your Wedding Compass is waiting below, with the first three things it will protect.'));
+      var again = el('button', 'btn-ghost'); again.type = 'button'; again.textContent = '↺ Walk it again';
+      again.style.marginTop = '18px';
+      again.addEventListener('click', function () { walk.step = 0; walk.revealed = false; render(); });
+      wrap.appendChild(again);
+    }
+    stage.appendChild(wrap);
+    var h3 = wrap.querySelector('h3');
+    if (h3 && walk.step > 0) { h3.setAttribute('tabindex', '-1'); h3.focus({ preventScroll: true }); }
+  }
+
+  var FEEL_ADJ = { warmth: 'warm', awe: 'breathtaking', peace: 'peaceful', joy: 'joyful', intimacy: 'intimate', celebration: 'celebratory', nostalgia: 'nostalgic', belonging: 'welcoming' };
+  function compassData() {
+    var feelRaw = firstOf('feeling', 'Warmth').toLowerCase();
+    var adj = FEEL_ADJ[feelRaw] || feelRaw;
+    var meaning = firstOf('meaning', 'a beginning').toLowerCase();
+    var protect = firstOf('protect', 'time together').toLowerCase();
+    var freeBit = walk.free.trim();
+    var n = walk.intimacy;
+    var scale = n < 20 ? 'just the two of you' : n < 60 ? 'an intimate circle of about ' + n : n < 120 ? 'about ' + n + ' of your people gathered close' : 'a big, open-armed celebration of about ' + n;
+    var sentence = art(adj) + ' ' + adj + ', ' + walk.light.toLowerCase() + ' ' + walk.season.toLowerCase() + ' celebration that feels like ' + meaning + ' — ' + scale + (freeBit ? ', ' + freeBit.toLowerCase() : '') + ', and above all, ' + protect + '.';
+    var short = meaning.charAt(0).toUpperCase() + meaning.slice(1) + ', held in ' + adj + '.';
+    return { adj: adj, meaning: meaning, protect: protect, free: freeBit, scale: scale, sentence: sentence, short: short,
+      season: walk.season, light: walk.light, intimacy: n,
+      feelings: walk.ans.feeling.slice(), meanings: walk.ans.meaning.slice(), protects: walk.ans.protect.slice() };
+  }
+
+  function persistToWorkspace(d) {
+    var clouds = [];
+    d.feelings.slice(0, 2).forEach(function (v) { clouds.push({ id: 'feel-' + v, label: v, type: 'The feeling', grad: 'gc' }); });
+    d.meanings.slice(0, 2).forEach(function (v) { clouds.push({ id: 'mean-' + v, label: v, type: 'What it means', grad: 'gg' }); });
+    d.protects.slice(0, 3).forEach(function (v) { clouds.push({ id: 'prot-' + v, label: v, type: 'A boundary', grad: 'gs' }); });
+    if (d.free) clouds.push({ id: 'free-own', label: d.free, type: 'A wish', grad: 'gp' });
+    try { localStorage.setItem('tmp_dream', JSON.stringify({ season: d.season, light: d.light, intimacy: d.intimacy, clouds: clouds, compass: d.sentence, compassShort: d.short, ts: Date.now() })); } catch (e) {}
+    if (window.WeddingState) {
+      var SLOTS = [[0, -104], [156, -52], [-156, -52], [224, 40], [-224, 40], [104, 120], [-104, 120], [0, 146]];
+      try {
+        WeddingState.update(function (st) {
+          st.wedding.season = d.season; st.wedding.light = d.light; st.wedding.intimacy = d.intimacy;
+          if (clouds.length) {
+            st.dreams = clouds.slice(0, 8).map(function (c, i) {
+              return { id: c.id, label: c.label, type: c.type, grad: c.grad, reflection: c.label, phrase: (c.label || '').toLowerCase(), x: SLOTS[i][0], y: SLOTS[i][1], status: 'dream' };
+            });
+            st.compass.sentence = d.sentence; st.compass.short = d.short;
+          }
+        });
+      } catch (e) {}
+    }
+  }
+
+  /* ---------- Compass section rendering ---------- */
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  function priorityList(d) {
+    var p = [];
+    var careMap = {
+      'time together': ['Protect your time together', 'The schedule gets breathing room before it gets line items — Weaver AI flags anything that crowds you two out of your own day.', 'Peace Center · Timeline'],
+      'private vows': ['A moment that stays private', 'The timeline holds space nobody else can book, and the day-of plan routes people away from it.', 'Timeline · Peace Center'],
+      'family peace': ['Keep the family peace', 'Seating, invitations, and roles get planned with the tender spots in view — before they become day-of surprises.', 'Guests · Seating Studio'],
+      'a clear budget': ['A budget that stays honest', 'The Money Map ties every cost to what you said mattered, so trade-offs are choices — not accidents.', 'Money Map'],
+      'grandma’s recipe': ['The food that means something', 'Feast Studio starts from the dishes that carry your people’s story, then builds the menu outward.', 'Feast Studio'],
+      'the dance floor': ['Guard the dance floor', 'Music, timeline, and layout conspire to keep the floor full — nothing gets scheduled over the dancing.', 'Atmosphere · Timeline'],
+      'enough rest': ['Enough rest to be present', 'The week-of plan is built around your energy, not just the vendors’ load-in times.', 'Timeline · Peace Center'],
+      'being present': ['Being present, not producing', 'Delegation and day-of roles are planned early so you attend your own wedding.', 'Peace Center'],
+    };
+    var k = (d.protect || '').toLowerCase();
+    p.push(careMap[k] || ['Protect: ' + d.protect, 'Weaver AI will flag any decision that quietly crowds this out.', 'Peace Center']);
+    p.push(['A ' + intimacyWord(d.intimacy).toLowerCase() + ' room that feels ' + d.adj,
+      'Venue size, table shapes, and guest care all get tested against ~' + d.intimacy + ' people and the feeling you chose — before deposits, not after.',
+      'Guests · Feast Studio · Seating']);
+    p.push(['The ' + d.light.toLowerCase() + ' ' + d.season.toLowerCase() + ' you pictured',
+      'Ceremony time, photo plan, and palette are derived from your season and light, so the day looks the way it feels in your head.',
+      'Atmosphere · Atelier · Timeline']);
+    return p;
+  }
+
+  function rippleFor(d) {
+    var n = d.intimacy, n2 = Math.min(300, Math.max(n + 24, Math.round(n * 1.3)));
+    return {
+      text: 'Say the guest list grows from ~' + n + ' to ~' + n2 + ' after invitations go out. The engine doesn’t just update a number — Feast Studio re-plans portions and dietary cover, Seating Studio redraws the room, the Money Map shows exactly which line absorbs it, and Weaver AI checks the change against your Compass: does it still feel like ' + esc(d.meaning) + '?',
+      flow: ['Guest list ~' + n2, 'Feast Studio', 'Seating', 'Money Map', 'Compass check'],
+    };
+  }
+
+  function pcItems(d) {
+    return [
+      ['var(--clay)', 'Season chosen, date not set', d.season + ' is on the Compass — three timeline decisions are waiting on a date.'],
+      ['var(--gold)', 'A room for ~' + d.intimacy, 'Venue conversations should start from your scale and your ' + d.light.toLowerCase() + ' ceremony.'],
+      ['var(--sage)', 'Your person hasn’t joined yet', 'Share the Compass below — planning is lighter as two.'],
+    ];
+  }
+
+  var currentCompass = null;
+  function showCompass(d, shared) {
+    currentCompass = d;
+    $('compass-sentence-text').textContent = '“' + d.sentence.charAt(0).toUpperCase() + d.sentence.slice(1) + '”';
+    var pr = $('compass-priorities'); pr.innerHTML = '';
+    priorityList(d).forEach(function (it, i) {
+      var div = el('article', 'card priority');
+      div.innerHTML = '<span class="pnum" aria-hidden="true">' + (i + 1) + '</span><div><h4>' + esc(it[0]) + '</h4><p>' + esc(it[1]) + '</p><span class="area">' + esc(it[2]) + '</span></div>';
+      pr.appendChild(div);
+    });
+    var r = rippleFor(d);
+    $('ripple-text').innerHTML = r.text;
+    var rf = $('ripple-flow'); rf.innerHTML = '';
+    r.flow.forEach(function (f, i) {
+      if (i) rf.appendChild(el('span', 'arrow', '→'));
+      rf.appendChild(el('span', 'tag', esc(f)));
+    });
+    var pc = $('pc-items'); pc.innerHTML = '';
+    pcItems(d).forEach(function (it) {
+      var div = el('div', 'pc-item');
+      div.innerHTML = '<span class="pc-dot" style="background:' + it[0] + '"></span><div><b style="font-weight:500">' + esc(it[1]) + '</b><small>' + esc(it[2]) + '</small></div>';
+      pc.appendChild(div);
+    });
+    if (shared) {
+      $('compass-title').textContent = 'A Wedding Compass, made for you two';
+      $('compass-lede').innerHTML = 'Someone who loves you made this and wanted you to see it. Read it — then <a href="#dreamwalk">walk the Dream Walk yourself</a> and see how your answers weave together.';
+    }
+    var sec = $('compass'); sec.hidden = false;
+    if (!shared) {
+      track('compass_revealed', { season: d.season, light: d.light, intimacy: d.intimacy });
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var t = $('compass-title'); t.setAttribute('tabindex', '-1'); setTimeout(function () { t.focus({ preventScroll: true }); }, 600);
+    }
+  }
+
+  /* ---------- share links ---------- */
+  function b64url(s) { return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function unb64url(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return decodeURIComponent(escape(atob(s))); }
+  var myRef = null;
+  try { myRef = localStorage.getItem('tmp_refcode'); } catch (e) {}
+  function shareUrl() {
+    if (!currentCompass) return location.origin + '/';
+    var payload = { s: currentCompass.sentence, se: currentCompass.season, li: currentCompass.light, n: currentCompass.intimacy, a: currentCompass.adj, m: currentCompass.meaning, p: currentCompass.protect, f: currentCompass.free };
+    return location.origin + '/?c=' + b64url(JSON.stringify(payload)) + (myRef ? '&ref=' + encodeURIComponent(myRef) : '');
+  }
+  $('share-copy').addEventListener('click', function () {
+    var u = shareUrl();
+    (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () {
+      $('share-done').textContent = 'Link copied — send it to your person. ✦';
+    }, function () {
+      window.prompt('Copy this link:', u);
+    });
+    track('compass_shared', { channel: 'copy' });
+  });
+  $('share-email').addEventListener('click', function () {
+    var u = shareUrl();
+    this.href = 'mailto:?subject=' + encodeURIComponent('Our Wedding Compass ✦') + '&body=' + encodeURIComponent('I did a two-minute Dream Walk and it wrote this for us:\n\n' + (currentCompass ? '“' + currentCompass.sentence + '”' : '') + '\n\nSee it here (and add your side of the dream):\n' + u);
+    track('compass_shared', { channel: 'email' });
+  });
+  if (navigator.share) {
+    var sn = $('share-native'); sn.hidden = false;
+    sn.addEventListener('click', function () {
+      navigator.share({ title: 'Our Wedding Compass', text: currentCompass ? '“' + currentCompass.sentence + '”' : 'Our Wedding Compass', url: shareUrl() }).catch(function () {});
+      track('compass_shared', { channel: 'native' });
+    });
+  }
+
+  /* ---------- walk nav ---------- */
+  $('dw-back').addEventListener('click', function () { if (walk.step > 0) { walk.step--; render(); } });
+  $('dw-next').addEventListener('click', function () {
+    if (walk.step === 0) markStarted();
+    if (walk.step < STEPS.length - 1) {
+      walk.step++;
+      if (STEPS[walk.step].kind === 'finish' && !walk.revealed) {
+        walk.revealed = true;
+        var d = compassData();
+        persistToWorkspace(d);
+        track('dream_walk_completed');
+        showCompass(d, false);
+      }
+      render();
+    }
+  });
+  render();
+
+  /* ---------- shared compass via ?c= ---------- */
+  if (params.get('c')) {
+    try {
+      var shared = JSON.parse(unb64url(params.get('c')));
+      if (shared && shared.s) {
+        showCompass({ sentence: String(shared.s).slice(0, 400), season: shared.se || 'Fall', light: shared.li || 'Golden hour', intimacy: Number(shared.n) || 90, adj: shared.a || 'warm', meaning: shared.m || 'a beginning', protect: shared.p || 'time together', free: shared.f || '', feelings: [], meanings: [], protects: [] }, true);
+      }
+    } catch (e) {}
+  }
+
+  /* ---------- save form (lead capture) ---------- */
+  function setFieldError(id, msg) {
+    var wrapEl = $('f-' + id), input = $(id), err = $(id + '-err');
+    if (!wrapEl || !input || !err) return;
+    if (msg) { wrapEl.classList.add('invalid'); input.setAttribute('aria-invalid', 'true'); err.textContent = msg; }
+    else { wrapEl.classList.remove('invalid'); input.removeAttribute('aria-invalid'); err.textContent = ''; }
+  }
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  $('save-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var firstName = $('firstName').value.trim();
+    var email = $('email').value.trim();
+    var partnerEmail = $('partnerEmail').value.trim();
+    var ok = true, firstBad = null;
+    setFieldError('firstName', firstName ? '' : 'Please tell us your first name.'); if (!firstName) { ok = false; firstBad = firstBad || $('firstName'); }
+    setFieldError('email', EMAIL_RE.test(email) ? '' : 'That email address doesn’t look complete.'); if (!EMAIL_RE.test(email)) { ok = false; firstBad = firstBad || $('email'); }
+    setFieldError('partnerEmail', (!partnerEmail || EMAIL_RE.test(partnerEmail)) ? '' : 'That email address doesn’t look complete.'); if (partnerEmail && !EMAIL_RE.test(partnerEmail)) { ok = false; firstBad = firstBad || $('partnerEmail'); }
+    var cdErr = $('consentDelivery-err');
+    if (!$('consentDelivery').checked) { cdErr.style.display = 'block'; cdErr.textContent = 'To save and email your Compass, we need this permission.'; ok = false; firstBad = firstBad || $('consentDelivery'); }
+    else { cdErr.style.display = 'none'; cdErr.textContent = ''; }
+    var msg = $('save-msg'); msg.classList.remove('ok');
+    if (!ok) { msg.textContent = 'A detail or two needs attention above.'; if (firstBad) firstBad.focus(); return; }
+
+    msg.textContent = '';
+    var btn = $('save-submit'); btn.disabled = true; btn.textContent = 'Saving your Compass…';
+    fetch('/api/lead', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        firstName: firstName, email: email,
+        partnerEmail: partnerEmail || null,
+        weddingDate: $('weddingDate').value || null,
+        planningStage: $('planningStage').value || null,
+        consentDelivery: $('consentDelivery').checked,
+        consentMarketing: $('consentMarketing').checked,
+        compass: currentCompass, utm: UTM, ref: (UTM && UTM.ref) || null,
+      }),
+    }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); }).then(function (res) {
+      btn.disabled = false; btn.textContent = 'Email me my Compass ✦';
+      if (res.j && res.j.ok) {
+        if (res.j.refCode) { myRef = res.j.refCode; try { localStorage.setItem('tmp_refcode', myRef); } catch (e2) {} }
+        track('email_submitted', { marketing: $('consentMarketing').checked });
+        $('save-form').hidden = true;
+        var done = $('save-done'); done.hidden = false;
+        done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        $('coEmail').value = email; $('coName').value = firstName;
+      } else if (res.j && res.j.error && res.j.error.fields) {
+        Object.keys(res.j.error.fields).forEach(function (k) { setFieldError(k, res.j.error.fields[k]); });
+        msg.textContent = res.j.error.message || 'A detail or two needs attention above.';
+      } else {
+        msg.textContent = (res.j && res.j.error && res.j.error.message) || 'We couldn’t save just now — your Compass is still safe in this browser. Please try again.';
+      }
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = 'Email me my Compass ✦';
+      msg.textContent = 'We couldn’t reach the server — your Compass is still safe in this browser. Please try again.';
+    });
+  });
+
+  /* ---------- offers + checkout ---------- */
+  function money(cents, cur) {
+    try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: (cur || 'usd').toUpperCase(), minimumFractionDigits: cents % 100 ? 2 : 0 }).format(cents / 100); }
+    catch (e) { return '$' + (cents / 100).toFixed(2); }
+  }
+  var OFFERS = CFG.offers || {};
+  function fillOffer(prefix, id, audLabel) {
+    var o = OFFERS[id]; if (!o) return;
+    var set = function (suffix, v) { var n = $('oc-' + prefix + '-' + suffix); if (n) n.textContent = v; };
+    set('aud', audLabel); set('name', o.name); set('headline', o.headline || '');
+    set('price', money(o.priceCents, o.currency)); set('billing', o.billingLabel + ' · early access');
+    var ul = $('oc-' + prefix + '-benefits');
+    if (ul) { ul.innerHTML = ''; (o.benefits || []).forEach(function (b) { var li = document.createElement('li'); li.textContent = b; ul.appendChild(li); }); }
+    set('access', o.accessTiming || ''); set('cancel', o.cancellation || ''); set('refund', o.refundPolicy || '');
+  }
+  fillOffer('couple', 'founding-couple', 'For couples · one wedding');
+  fillOffer('planner', 'founding-planner', 'For wedding planners · every client');
+  if (OFFERS['founding-couple']) $('seat-couple-text').textContent = OFFERS['founding-couple'].name + ' — ' + money(OFFERS['founding-couple'].priceCents, OFFERS['founding-couple'].currency);
+  if (OFFERS['founding-planner']) $('seat-planner-text').textContent = OFFERS['founding-planner'].name + ' — ' + money(OFFERS['founding-planner'].priceCents, OFFERS['founding-planner'].currency);
+  if (!OFFERS['founding-planner'] || !OFFERS['founding-planner'].active) { $('offer-card-planner').hidden = true; $('seat-planner-label').hidden = true; }
+
+  function selectedOffer() {
+    var v = document.querySelector('input[name="offer"]:checked');
+    return (v && OFFERS[v.value]) ? v.value : 'founding-couple';
+  }
+  function refreshSummary() {
+    var id = selectedOffer(), o = OFFERS[id]; if (!o) return;
+    $('os-name').textContent = o.name + ' (early access)';
+    $('os-price').textContent = money(o.priceCents, o.currency);
+    $('os-billing').textContent = o.billingLabel + ' · ' + o.currency.toUpperCase();
+    $('os-total').textContent = money(o.priceCents, o.currency);
+    document.querySelectorAll('input[name="offer"]').forEach(function (r) {
+      var lab = r.closest('label'); if (lab) lab.classList.toggle('on', r.checked);
+    });
+  }
+  document.querySelectorAll('input[name="offer"]').forEach(function (r) { r.addEventListener('change', refreshSummary); });
+  refreshSummary();
+
+  var stripeReady = null;
+  fetch('/api/config').then(function (r) { return r.json(); }).then(function (j) {
+    stripeReady = !!(j && j.stripeConfigured);
+    if (!stripeReady) {
+      $('checkout-submit').textContent = 'Reserve my founding seat — free ✦';
+      $('pay-note').hidden = true; $('reserve-note').hidden = false;
+    }
+  }).catch(function () { stripeReady = null; });
+
+  function showState(id) {
+    ['state-success', 'state-cancelled', 'state-failed', 'state-reserved'].forEach(function (s) { $(s).hidden = (s !== id); });
+    if (id) $(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  $('checkout-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('coName').value.trim(), email = $('coEmail').value.trim();
+    var ok = true, firstBad = null;
+    setFieldError('coName', name ? '' : 'Please tell us your name.'); if (!name) { ok = false; firstBad = $('coName'); }
+    setFieldError('coEmail', EMAIL_RE.test(email) ? '' : 'That email address doesn’t look complete.'); if (!EMAIL_RE.test(email)) { ok = false; firstBad = firstBad || $('coEmail'); }
+    var tErr = $('coTerms-err');
+    if (!$('coTerms').checked) { tErr.style.display = 'block'; tErr.textContent = 'Please agree to the terms to continue.'; ok = false; firstBad = firstBad || $('coTerms'); }
+    else { tErr.style.display = 'none'; }
+    var msg = $('checkout-msg');
+    if (!ok) { msg.textContent = 'A detail or two needs attention above.'; if (firstBad) firstBad.focus(); return; }
+    msg.textContent = '';
+
+    var offerId = selectedOffer();
+    var btn = $('checkout-submit'); btn.disabled = true;
+    track('checkout_started', { offerId: offerId, mode: stripeReady ? 'stripe' : 'reserve' });
+
+    fetch('/api/checkout', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ offerId: offerId, email: email, leadRef: myRef, utmSource: UTM && UTM.utm_source }),
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j && j.ok && j.checkoutUrl) { location.href = j.checkoutUrl; return; }
+      if (j && j.ok && j.fallback === 'reserve') {
+        return fetch('/api/lead', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ firstName: name.split(' ')[0], email: email, consentDelivery: true, consentMarketing: false, compass: currentCompass, utm: UTM, ref: (UTM && UTM.ref) || null, offerInterest: offerId }),
+        }).then(function (r) { return r.json(); }).then(function (j2) {
+          btn.disabled = false;
+          if (j2 && j2.ok) { track('checkout_fallback_reserved', { offerId: offerId }); showState('state-reserved'); }
+          else { msg.textContent = 'We couldn’t reserve just now — please try again.'; }
+        });
+      }
+      btn.disabled = false;
+      msg.textContent = (j && j.error && j.error.message) || 'Checkout couldn’t start — nothing was charged. Please try again.';
+      track('checkout_failed', { offerId: offerId, stage: 'create' });
+    }).catch(function () {
+      btn.disabled = false;
+      msg.textContent = 'We couldn’t reach checkout — nothing was charged. Please try again.';
+      track('checkout_failed', { offerId: offerId, stage: 'network' });
+    });
+  });
+
+  ['retry-cancelled', 'retry-failed'].forEach(function (id) {
+    $(id).addEventListener('click', function () {
+      showState(null);
+      $('checkout-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      $('coName').focus();
+    });
+  });
+
+  /* ---------- checkout return states ---------- */
+  var co = params.get('checkout');
+  if (co === 'cancelled') {
+    track('checkout_cancelled', { offerId: params.get('offer') });
+    document.getElementById('founding').scrollIntoView();
+    showState('state-cancelled');
+  } else if (co === 'success' && params.get('session_id')) {
+    document.getElementById('founding').scrollIntoView();
+    fetch('/api/checkout-status?session_id=' + encodeURIComponent(params.get('session_id')))
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.ok && (j.paymentStatus === 'paid' || j.paymentStatus === 'no_payment_required')) {
+          track('payment_completed', { offerId: j.offerId });
+          showState('state-success');
+        } else if (j && j.ok) {
+          $('state-failed-text').innerHTML = 'Stripe reports this payment as not completed yet, so nothing was finalized. If you did pay, it may still be settling — check your email for a Stripe receipt, or write to us and we’ll sort it out. You can also <button type="button" id="retry-failed2" class="btn-ghost" style="padding:6px 14px">try again</button>.';
+          showState('state-failed');
+          var r2 = document.getElementById('retry-failed2');
+          if (r2) r2.addEventListener('click', function () { showState(null); $('checkout-form').scrollIntoView({ behavior: 'smooth' }); });
+        } else {
+          $('state-failed-text').textContent = 'We couldn’t verify the payment session just now. If you completed payment you’ll have a Stripe receipt by email — nothing further is needed. Otherwise, feel free to try again.';
+          showState('state-failed');
+        }
+      }).catch(function () {
+        $('state-failed-text').textContent = 'We couldn’t verify the payment session just now. If you completed payment you’ll have a Stripe receipt by email — nothing further is needed. Otherwise, feel free to try again.';
+        showState('state-failed');
+      });
+  }
+
+  /* contact email from config */
+  if (CFG.site && CFG.site.contactEmail) {
+    $('foot-contact').href = 'mailto:' + CFG.site.contactEmail;
+  }
+})();
+</script>
+</body>
+</html>

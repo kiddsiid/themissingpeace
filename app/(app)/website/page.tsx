@@ -4,6 +4,49 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import { getActiveWorkspace } from '@/lib/workspace/current';
 import { signUploads } from '@/lib/supabase/storage';
 import { createGuestPage, updateGuestPage, setPublished, setPhotoHidden } from './actions';
+import { outputSourceHash, regenerateOutput } from '@/app/(app)/outputs/actions';
+import { staleOutput } from '@/lib/outputs/freshness';
+
+async function PrivateGuestExperience({ workspaceId }: { workspaceId: string }) {
+  const db = supabaseAdmin();
+  const [compassRes, atmosphereRes, latestPreviewRes, currentHash] = await Promise.all([
+    db.from('wedding_compass').select('summary, tone').eq('workspace_id', workspaceId).maybeSingle(),
+    db.from('atmosphere_plans').select('palette_json').eq('workspace_id', workspaceId).maybeSingle(),
+    db.from('output_versions').select('source_hash, is_stale, version').eq('workspace_id', workspaceId).eq('output_kind', 'guest-experience').order('version', { ascending: false }).limit(1).maybeSingle(),
+    outputSourceHash(workspaceId, 'guest-experience'),
+  ]);
+  const isStale = staleOutput(currentHash, latestPreviewRes.data);
+  const palette = atmosphereRes.data?.palette_json as { primary?: string } | null;
+  return (
+    <section className="mb-8 rounded-[18px] border border-[var(--gold)] bg-[var(--pearl)] p-5" aria-label="Private Guest Experience preview">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]">Private preview · not published</p>
+          <h2 className="voice mt-1 text-2xl">Guest Experience</h2>
+        </div>
+        <span className={`rounded-full px-3 py-1 text-xs ${isStale ? 'bg-[var(--clay-bg)] text-[var(--clay-ink)]' : 'bg-[var(--sage-bg)] text-[var(--ink)]'}`}>
+          {!latestPreviewRes.data ? 'Draft not generated' : isStale ? 'Update available' : `Current · v${latestPreviewRes.data.version}`}
+        </span>
+      </div>
+      <div className="mt-4 overflow-hidden rounded-[14px] border border-[var(--line)]" style={{ background: palette?.primary || 'var(--cream)' }}>
+        <div className="bg-[rgba(255,253,249,.9)] p-6 text-center backdrop-blur-sm">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold)]">A private look at the world your guests will enter</p>
+          <p className="voice mx-auto mt-3 max-w-xl text-2xl leading-snug text-[var(--ink)]">{compassRes.data?.summary || 'Your Compass story will appear here.'}</p>
+          <p className="mt-3 text-sm text-[var(--ink-soft)]">{compassRes.data?.tone || 'Warm, personal, and connected to the plan.'}</p>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="max-w-xl text-xs leading-5 text-[var(--ink-soft)]">This preview has no public URL and does not activate publishing. It is sourced from the Compass and Atmosphere plan.</p>
+        <form action={regenerateOutput}>
+          <input type="hidden" name="kind" value="guest-experience" />
+          <button className="rounded-full bg-[var(--ink)] px-4 py-2 text-xs text-[var(--pearl)]">
+            {!latestPreviewRes.data ? 'Generate private draft' : 'Create updated version'}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
 
 export default async function WebsitePage() {
   const ws = await getActiveWorkspace();
@@ -18,7 +61,9 @@ export default async function WebsitePage() {
 
   if (!page) {
     return (
-      <div className="mx-auto max-w-2xl text-center">
+      <div className="mx-auto max-w-4xl">
+        <PrivateGuestExperience workspaceId={ws.id} />
+        <div className="text-center">
         <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--ink-faint)]">The face your guests see</p>
         <h1 className="voice text-4xl">Your Wedding Website</h1>
         <p className="mt-2 text-sm text-[var(--ink-soft)]">
@@ -28,6 +73,7 @@ export default async function WebsitePage() {
         <form action={createGuestPage} className="mt-5">
           <button className="rounded-full bg-[var(--clay)] px-6 py-2.5 text-sm text-white shadow-sm transition-transform hover:-translate-y-0.5">✦ Create our page</button>
         </form>
+        </div>
       </div>
     );
   }
@@ -46,6 +92,7 @@ export default async function WebsitePage() {
 
   return (
     <div className="mx-auto max-w-4xl">
+      <PrivateGuestExperience workspaceId={ws.id} />
       <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--ink-faint)]">The face your guests see</p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="voice text-4xl">Your Wedding Website</h1>

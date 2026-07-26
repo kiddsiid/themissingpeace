@@ -135,9 +135,9 @@ function statusOf(l: AtelierLook, roles: string[]): Status {
   return touched ? 'refining' : 'dream';
 }
 const STATUS_META: Record<Status, { label: string; color: string; bg: string }> = {
-  dream: { label: 'A dream', color: 'var(--ink-soft)', bg: '#EEE9E0' },
-  refining: { label: 'Refining', color: 'var(--clay-ink)', bg: 'var(--gold-bg)' },
-  blessed: { label: 'Blessed', color: 'var(--sage)', bg: 'var(--sage-bg)' },
+  dream: { label: 'Draft · a dream', color: 'var(--ink-soft)', bg: '#EEE9E0' },
+  refining: { label: 'Proposed · refining', color: 'var(--clay-ink)', bg: 'var(--gold-bg)' },
+  blessed: { label: 'Approved · blessed', color: 'var(--sage)', bg: 'var(--sage-bg)' },
 };
 
 /* ---------- small chip ---------- */

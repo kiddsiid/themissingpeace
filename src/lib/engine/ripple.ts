@@ -23,6 +23,8 @@ export interface RippleInput {
   /** decision/vendor category, when relevant, to sharpen the impact set. */
   category?: string;
   summary?: string;
+  /** Optional explicit consequence set for domain-specific previews (e.g. palette surfaces). */
+  impact?: RippleImpact[];
 }
 
 // Which areas a settled decision ripples into, keyed by decision category.
@@ -73,7 +75,7 @@ export async function emitRipple(
   input: RippleInput & { sourceId?: string | null; originRunId?: string | null; createdBy?: string | null },
 ): Promise<string | null> {
   try {
-    const impact = deriveRippleImpact(input);
+    const impact = input.impact?.length ? input.impact : deriveRippleImpact(input);
     const { data, error } = await supabaseAdmin()
       .from('ripple_events')
       .insert({

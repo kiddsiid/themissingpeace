@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { saveDream, saveCloudPriority, approveCompass } from '@/app/(app)/dream/actions';
 import type { DreamResponses } from '@/lib/engine/compass';
+import {
+  DREAM_CLOUDS,
+  cloudRankLabel,
+  compassShort,
+  rankedDreamClouds,
+  type CloudPriorities,
+} from '@/lib/engine/dream-clouds';
 
 type Profile = {
   date_status?: string | null; wedding_date?: string | null; planning_stage?: string | null;
@@ -23,22 +30,35 @@ function list(values?: string[]) { return values?.join('\n') ?? ''; }
 function splitSentence(value?: string) { return value?.split(/[.\n]/).map((i) => i.trim()).filter(Boolean) ?? []; }
 
 function makeClouds(dream: DreamResponses): DreamCloud[] {
-  const clouds: DreamCloud[] = [];
-  const add = (type: string, title: string, summary: string, tags: string[], grad = 'gp') => {
-    if (!title && !summary && !tags.length) return;
-    clouds.push({ id: `${type}-${clouds.length}`, type, title: title || tags[0] || type, summary: summary || tags.join(', '), tags, grad });
+  const summaries: Record<string, string> = {
+    family: dream.familyMeaning || dream.sharedMeaning || '',
+    warmth: dream.partnerOneReflection || '',
+    table: dream.hospitalityMeaning || '',
+    music: dream.musicAtmosphere || '',
+    beauty: (dream.planningValues ?? []).join(', '),
+    ease: dream.partnerTwoReflection || (dream.nonNegotiables ?? []).join(', '),
+    memory: dream.meaning || (dream.traditions ?? []).join(', '),
   };
-  add('Feeling', 'The first feeling', dream.partnerOneReflection ?? '', dream.priorities ?? [], 'gp');
-  add('Meaning', 'What this day means', dream.sharedMeaning || dream.meaning || '', splitSentence(dream.meaning), 'gg');
-  add('Boundary', 'Protected boundaries', dream.partnerTwoReflection ?? '', dream.nonNegotiables ?? [], 'gc');
-  add('Avoid', 'Gentle no list', '', dream.avoid ?? [], 'gp');
-  add('Tradition', 'Roots and rituals', dream.familyMeaning ?? '', [...(dream.culturalValues ?? []), ...(dream.traditions ?? [])], 'gs');
-  add('Hospitality', 'Hospitality', dream.hospitalityMeaning ?? '', [], 'gg');
-  add('Atmosphere', 'Atmosphere', dream.musicAtmosphere ?? '', [], 'gp');
-  add('Family', 'Family meaning', dream.familyMeaning ?? '', [], 'gs');
-  add('Budget', 'Budget philosophy', dream.budgetValues ?? '', [], 'gc');
-  if ((dream.priorities ?? []).some((i) => i.toLowerCase().includes('honeymoon'))) add('Honeymoon', 'Forever trip', 'The honeymoon belongs in the Dream.', ['honeymoon'], 'gp');
-  return clouds;
+  const tags: Record<string, string[]> = {
+    family: [...(dream.culturalValues ?? []), ...(dream.traditions ?? [])],
+    warmth: dream.priorities ?? [],
+    table: dream.hospitalityMeaning ? splitSentence(dream.hospitalityMeaning) : [],
+    music: dream.musicAtmosphere ? splitSentence(dream.musicAtmosphere) : [],
+    beauty: dream.planningValues ?? [],
+    ease: [...(dream.nonNegotiables ?? []), ...(dream.avoid ?? [])],
+    memory: dream.traditions ?? [],
+  };
+  const gradients: Record<string, string> = {
+    family: 'gs', warmth: 'gc', table: 'gg', music: 'gp', beauty: 'gc', ease: 'gs', memory: 'gg',
+  };
+  return DREAM_CLOUDS.map((cloud) => ({
+    id: cloud.id,
+    type: cloud.type,
+    title: cloud.label,
+    summary: summaries[cloud.id] || cloud.phrase,
+    tags: tags[cloud.id] ?? [],
+    grad: gradients[cloud.id] ?? 'gp',
+  }));
 }
 
 function GradientDefs() {
@@ -57,7 +77,7 @@ function GradientDefs() {
 }
 
 // One cloud: the fluffy SVG silhouette + text embedded in its belly. Sparkles show on hover/active.
-function CloudFace({ cloud, w }: { cloud: DreamCloud; w: number }) {
+function CloudFace({ cloud, w, status }: { cloud: DreamCloud; w: number; status: string }) {
   const h = Math.round((w * 170) / 260);
   return (
     <span className="relative block" style={{ width: w, height: h }}>
@@ -77,6 +97,7 @@ function CloudFace({ cloud, w }: { cloud: DreamCloud; w: number }) {
         <span className="text-[8px] uppercase tracking-[0.1em] text-[var(--ink-faint)]">{cloud.type}</span>
         <span className="voice mt-0.5 line-clamp-2 text-[15px] leading-[1.1] text-[var(--ink)]">{cloud.title}</span>
         {cloud.summary && <span className="mt-1 line-clamp-1 text-[10px] leading-4 text-[var(--ink-soft)]">{cloud.summary}</span>}
+        <span className="mt-1 text-[8px] uppercase tracking-[0.08em] text-[var(--gold)]">{status}</span>
       </span>
     </span>
   );
@@ -116,7 +137,15 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
   const clouds = useMemo(() => makeClouds(dream), [dream]);
   const selected = clouds.find((c) => c.id === selectedId) ?? null;
 
-  const priorities = dream.cloudPriorities ?? {};
+  const [priorities, setPriorities] = useState<Record<string, number>>(dream.cloudPriorities ?? {});
+  const ranked = useMemo(() => rankedDreamClouds(priorities as CloudPriorities), [priorities]);
+  const rankById = useMemo(() => new Map<string, number>(ranked.map((entry, index) => [entry.cloud.id, index])), [ranked]);
+  const statusFor = (cloudId: string) => cloudRankLabel(rankById.get(cloudId) ?? DREAM_CLOUDS.length, priorities[cloudId] ?? 0.4);
+  const updatePriority = (cloudId: string, priority: number) => {
+    const next = Math.max(0.04, Math.min(1, Number(priority.toFixed(2))));
+    setPriorities((current) => ({ ...current, [cloudId]: next }));
+    startPriority(() => { void saveCloudPriority(cloudId, next); });
+  };
   const layout = useMemo(() => {
     const n = clouds.length || 1;
     return clouds.map((c, i) => {
@@ -126,13 +155,13 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
       const ry = 186 + (1 - pr) * 78 + RYV[i % RYV.length] * 0.5;
       return { dx: Math.round(Math.cos(ang) * rx), dy: Math.round(Math.sin(ang) * ry), w: SIZES[i % SIZES.length], fd: 8 + (i % 5) * 0.6, dl: (i % 4) * 0.5 };
     });
-  }, [clouds, dream]);
+  }, [clouds, priorities]);
 
   const Compass = (
     <div className="flex h-[172px] w-[172px] flex-col items-center justify-center rounded-full p-6 text-center"
       style={{ background: 'radial-gradient(70% 70% at 50% 36%, #FFFDF9, #F5EEE0)', boxShadow: '0 0 0 1px rgba(184,146,74,.16), 0 16px 40px rgba(58,54,49,.09)' }}>
       <p className="text-[8px] uppercase tracking-[0.18em] text-[var(--ink-faint)]">Wedding Compass</p>
-      <p className="voice mt-1.5 line-clamp-4 text-[13px] leading-[1.25] text-[var(--ink)]">{compass?.summary || 'Your north star will appear here once your Dream is set.'}</p>
+      <p className="voice mt-1.5 line-clamp-4 text-[13px] leading-[1.25] text-[var(--ink)]">{compass?.summary || compassShort(priorities as CloudPriorities)}</p>
       {compass?.summary && (
         <button type="button" onClick={() => { setApproved(true); startApprove(() => { void approveCompass(); }); }} className="mt-3 rounded-full bg-[var(--clay-bg)] px-2.5 py-1 text-[10px] text-[var(--clay-ink)]">{approved ? '✦ approved' : 'Approve'}</button>
       )}
@@ -180,7 +209,7 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
                     const r = scene.getBoundingClientRect();
                     const dist = Math.hypot(info.point.x - (r.left + r.width / 2), info.point.y - (r.top + r.height / 2));
                     const pr = Math.max(0, Math.min(1, 1 - dist / (420 * scale)));
-                    startPriority(() => { void saveCloudPriority(cloud.id, Number(pr.toFixed(2))); });
+                    updatePriority(cloud.id, pr);
                   }}
                 >
                   <motion.div
@@ -193,7 +222,7 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
                         onPointerDown={() => { draggedRef.current = false; }}
                         onClick={() => { if (draggedRef.current) { draggedRef.current = false; return; } setSelectedId(cloud.id); }}
                         data-open={selectedId === cloud.id ? 'true' : 'false'} data-spark={spark ? 'true' : 'false'} className="dream-cloud w-full">
-                        <CloudFace cloud={cloud} w={w} />
+                        <CloudFace cloud={cloud} w={w} status={statusFor(cloud.id)} />
                       </button>
                     </div>
                   </motion.div>
@@ -208,7 +237,7 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
             <div className="mt-6 grid grid-cols-1 justify-items-center gap-6 sm:grid-cols-2">
               {clouds.map((cloud) => (
                 <button key={cloud.id} type="button" onClick={() => setSelectedId(cloud.id)} data-open={selectedId === cloud.id ? 'true' : 'false'} className="dream-cloud">
-                  <CloudFace cloud={cloud} w={196} />
+                  <CloudFace cloud={cloud} w={196} status={statusFor(cloud.id)} />
                 </button>
               ))}
             </div>
@@ -233,6 +262,26 @@ export function DreamWorkspace({ dream, profile, compass, reveal = false }: { dr
               <h2 className="voice mt-1 text-3xl">{selected.title}</h2>
               <p className="mt-3 text-sm leading-6 text-[var(--ink-soft)]">{selected.summary || 'This cloud is ready to be shaped.'}</p>
               {selected.tags.length > 0 && <div className="mt-4 flex flex-wrap gap-1.5">{selected.tags.map((t) => <span key={t} className="rounded-full bg-[var(--cream)] px-2.5 py-0.5 text-[11px] text-[var(--ink-soft)]">{t}</span>)}</div>}
+              <div className="mt-5 rounded-[12px] border border-[var(--line)] bg-[var(--cream)]/50 p-3">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--gold)]">{statusFor(selected.id)}</p>
+                <p className="mt-1 text-xs leading-5 text-[var(--ink-soft)]">Move this cloud with a keyboard-friendly priority control.</p>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updatePriority(selected.id, (priorities[selected.id] ?? 0.4) - 0.15)}
+                    className="flex-1 rounded-full border border-[var(--line)] px-3 py-2 text-xs text-[var(--ink-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--clay)]"
+                  >
+                    Let drift
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updatePriority(selected.id, (priorities[selected.id] ?? 0.4) + 0.15)}
+                    className="flex-1 rounded-full bg-[var(--clay-bg)] px-3 py-2 text-xs text-[var(--clay-ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--clay)]"
+                  >
+                    Bring closer
+                  </button>
+                </div>
+              </div>
               <p className="mt-6 text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">Poof this cloud into</p>
               <div className="mt-2 grid gap-2 text-sm">
                 <Link href="/decisions" className="rounded-full bg-[var(--clay-bg)] px-3 py-2 text-center text-[var(--clay-ink)]">A decision</Link>

@@ -55,20 +55,25 @@ export async function saveWelcome(formData: FormData) {
   redirect('/join');
 }
 
-// Ensures the signed-in user has an app profile row and a workspace, seeding the
-// pre-account "tell us about you" answers. Returns the workspace id.
-async function bootstrapAfterAuth(): Promise<void> {
+// Ensures the signed-in user has an app profile and returns the correct walk.
+// Planners intentionally do not get an empty owner workspace: their distinct
+// Planner Walk creates the first couple workspace with planner membership.
+export async function bootstrapAfterAuth(): Promise<string> {
   const authUser = await getSessionUser();
-  if (!authUser) return;
+  if (!authUser) return '/sign-in';
   const userId = await ensureAppUser(authUser);
   let workspaceId = await firstActiveWorkspaceId(userId);
   const basics = await readWelcome();
-  if (!workspaceId) {
+  const isPlanner = basics.creatorRole === 'planner';
+  if (!workspaceId && !isPlanner) {
     workspaceId = await createWorkspaceWithOwner(userId, basics.workspaceName || 'Our Wedding');
     await seedWelcomeBasics(workspaceId, basics);
   }
   const store = await cookies();
   store.delete(WELCOME_COOKIE);
+  if (isPlanner) return '/planner/walk';
+  if (basics.creatorRole) return '/onboarding';
+  return workspaceId ? '/peace-center' : '/onboarding';
 }
 
 export async function signUpWithPassword(_prev: AuthState, formData: FormData): Promise<AuthState> {
@@ -89,8 +94,7 @@ export async function signUpWithPassword(_prev: AuthState, formData: FormData): 
 
   // Email confirmation disabled -> we already have a session; go straight to the Dream.
   if (data.session) {
-    await bootstrapAfterAuth();
-    redirect('/onboarding');
+    redirect(await bootstrapAfterAuth());
   }
   // Email confirmation enabled -> ask them to confirm; callback finishes the bootstrap.
   return { check: true };

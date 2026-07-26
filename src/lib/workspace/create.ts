@@ -1,8 +1,13 @@
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import type { MemberRole } from '@/lib/types';
 
 // Creates a Supabase-native workspace (no Clerk org) with the given user as the
 // active owner. Returns the new workspace id. clerk_org_id is left null (0021).
 export async function createWorkspaceWithOwner(userId: string, name: string): Promise<string> {
+  return createWorkspaceWithMember(userId, name, 'owner');
+}
+
+export async function createWorkspaceWithMember(userId: string, name: string, role: MemberRole): Promise<string> {
   const db = supabaseAdmin();
 
   const { data: workspace, error } = await db
@@ -15,7 +20,7 @@ export async function createWorkspaceWithOwner(userId: string, name: string): Pr
   const { error: memberError } = await db.from('workspace_members').insert({
     workspace_id: workspace.id,
     user_id: userId,
-    role: 'owner',
+    role,
     status: 'active',
     invited_by: userId,
   });

@@ -24,6 +24,15 @@ export const ANALYTICS_EVENTS = [
   'collaborator_invited',
   'mobile_nav_used',
   'error_encountered',
+  'feast_started',
+  'meal_template_applied',
+  'scene_opened',
+  'dish_created',
+  'dish_assessment_changed',
+  'guest_conflict_resolved',
+  'brief_previewed',
+  'brief_version_created',
+  'sync_conflict_encountered',
 ] as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[number];
@@ -32,12 +41,12 @@ export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[number];
 export type ModuleKey =
   | 'dream' | 'peace-center' | 'canvas' | 'decisions' | 'budget' | 'vendors'
   | 'guests' | 'seating' | 'website' | 'printables' | 'timeline' | 'documents'
-  | 'playlist' | 'honeymoon' | 'peace-notes' | 'settings';
+  | 'playlist' | 'honeymoon' | 'peace-notes' | 'settings' | 'feast';
 
 // Per-event property shapes. Keep every value a scalar id / enum / number / bool.
 export interface EventProps {
-  dream_walk_started: { creatorRole?: 'couple' | 'planner' };
-  dream_walk_completed: { creatorRole?: 'couple' | 'planner'; stepsCompleted?: number };
+  dream_walk_started: { creatorRole?: 'couple' | 'planner' | 'dreamer' };
+  dream_walk_completed: { creatorRole?: 'couple' | 'planner' | 'dreamer'; stepsCompleted?: number };
   compass_revealed: Record<string, never>;
   compass_saved: { version?: number };
   compass_shared: { channel?: 'link' | 'partner' | 'planner' };
@@ -53,11 +62,20 @@ export interface EventProps {
   collaborator_invited: { role?: 'partner' | 'planner' | 'collaborator' | 'viewer' };
   mobile_nav_used: { module?: ModuleKey };
   error_encountered: { scope?: string; code?: string };
+  feast_started: { source?: 'canvas' | 'direct' | 'dream'; template?: string; compassComplete?: boolean };
+  meal_template_applied: { template?: string; scenesCreated?: number; scenesRemoved?: number };
+  scene_opened: { sceneType?: string; completionState?: string };
+  dish_created: { source?: 'manual' | 'suggested' | 'imported'; requiredStepsCompleted?: number };
+  dish_assessment_changed: { requirementCategory?: string; priorState?: string; newState?: string };
+  guest_conflict_resolved: { resolutionType?: string; guestsAffected?: number };
+  brief_previewed: { readiness?: boolean; openQuestions?: number };
+  brief_version_created: { version?: number; completeness?: number; changedSectionCount?: number };
+  sync_conflict_encountered: { objectType?: string; resolution?: string };
 }
 
 /** Shared context attached to every event (all optional, all non-identifying). */
 export interface AnalyticsContext {
   workspaceId?: string;
   userId?: string;
-  surface?: 'web' | 'server';
+  surface?: 'web' | 'client' | 'server';
 }

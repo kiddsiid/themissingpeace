@@ -2,6 +2,17 @@
 -- something "already exists" (i.e. a previous run left objects behind).
 -- Destructive: drops all Missing Peace objects. Safe on a fresh project.
 
+drop table if exists caterer_brief_versions cascade;
+drop table if exists dish_assessments cascade;
+drop table if exists confirmation_evidence cascade;
+drop table if exists guest_requirements cascade;
+drop table if exists dishes cascade;
+drop table if exists meal_scenes cascade;
+drop table if exists feast_plans cascade;
+drop table if exists output_versions cascade;
+drop table if exists object_comments cascade;
+drop table if exists attire_looks cascade;
+drop table if exists atmosphere_plans cascade;
 drop table if exists ripple_events cascade;
 drop table if exists audit_events cascade;
 drop table if exists canvas_state cascade;

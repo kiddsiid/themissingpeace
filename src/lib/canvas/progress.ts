@@ -26,6 +26,26 @@ export function feastProgress(board: CanvasBoard): RoomProgress {
   };
 }
 
+/** Phase 5 Feast progress from the canonical scene/dish tables. */
+export function feastPlanProgress(
+  scenes: Array<{ id: string; status?: string | null }>,
+  dishes: Array<{ scene_id: string }>,
+): RoomProgress {
+  const active = scenes.filter((scene) => scene.status !== 'archived');
+  const shaped = active.filter((scene) => dishes.some((dish) => dish.scene_id === scene.id)).length;
+  const ready = active.filter((scene) => scene.status === 'ready').length;
+  const total = active.length;
+  const pct = total ? Math.round((shaped / total) * 100) : 0;
+  return {
+    pct,
+    aligned: pct >= SAGE_AT,
+    statusLabel: `${shaped} of ${total} moments shaped`,
+    statusSub: ready
+      ? `${ready} ready for the caterer brief`
+      : 'welcome drink → sendoff',
+  };
+}
+
 /**
  * Atmosphere pct = 100 if palette aligned (wedding.palette === board.palette.name)
  * else 55.

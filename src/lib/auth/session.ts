@@ -11,6 +11,14 @@ export async function getSessionUser(): Promise<User | null> {
   return user;
 }
 
+// Platform identity is stored in server-controlled app_metadata. Never use
+// user_metadata for authorization because users can edit it themselves.
+export function isBackendAdmin(
+  authUser: Pick<User, 'app_metadata'> | null | undefined,
+): boolean {
+  return authUser?.app_metadata?.backend_admin === true;
+}
+
 // Ensures a public.users row exists for the signed-in Supabase user and that it is
 // linked via auth_user_id = auth.uid(). Returns the public.users.id (the join key
 // used by workspace_members and every workspace-scoped table).

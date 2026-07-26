@@ -19,3 +19,6 @@ cloudflare-env.d.ts
 next-env.d.ts
 coverage/
 tmp/
+
+# Credentials for the agentic test accounts. Never tracked.
+docs/access/

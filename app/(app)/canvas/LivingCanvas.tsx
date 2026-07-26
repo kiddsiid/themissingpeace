@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { tint, shade } from '@/lib/canvas/color';
 import type { RoomProgress } from '@/lib/canvas/progress';
 import type { Inspiration, RoomKey } from '@/lib/canvas/types';
+import { linkDreamItemToRoom } from './actions';
 
 interface Props {
   projectName: string;
@@ -15,14 +16,16 @@ interface Props {
   inspirations: Inspiration[];
   progress: { feast: RoomProgress; atmosphere: RoomProgress; atelier: RoomProgress };
   peace: { score: number; band: string };
+  peaceInsights: { id: string; title: string; reason: string; source: string }[];
+  recentRipples: { id: string; summary: string }[];
 }
 
 const ROOM_META: Record<RoomKey, {
-  href: string; kicker: string; name: string; promise: string; cta: string; wash: string;
+  href: string; kicker: string; name: string; promise: string; cta: string; wash: string; available: boolean;
 }> = {
-  feast: { href: '/canvas/feast', kicker: 'The table', name: 'Feast Studio', promise: 'Build a meal every guest can enter, understand, and enjoy.', cta: 'Enter the Feast', wash: '#8A4A33' },
-  atmosphere: { href: '/canvas/atmosphere', kicker: 'The feeling', name: 'Atmosphere Lab', promise: 'Design the feeling before anyone says a word.', cta: 'Enter the Lab', wash: '#566049' },
-  atelier: { href: '/canvas/atelier', kicker: 'The story worn', name: 'The Atelier', promise: 'Design the story your love will wear.', cta: 'Enter the Atelier', wash: '#7C5470' },
+  feast: { href: '/canvas/feast', kicker: 'The table', name: 'Feast Studio', promise: 'Build a meal every guest can enter, understand, and enjoy.', cta: 'Enter the Feast', wash: '#8A4A33', available: true },
+  atmosphere: { href: '/canvas/atmosphere', kicker: 'The feeling', name: 'Atmosphere Lab', promise: 'Design the feeling before anyone says a word.', cta: 'Enter the Lab', wash: '#566049', available: true },
+  atelier: { href: '/canvas/atelier', kicker: 'The story worn', name: 'The Atelier', promise: 'Design the story your love will wear.', cta: 'Enter the Atelier', wash: '#7C5470', available: true },
 };
 
 const PRESENCE_COLORS = ['#BC7459', '#7C93A6', '#8A9A80'];
@@ -76,14 +79,17 @@ function Ring({ pct, aligned }: { pct: number; aligned: boolean }) {
   );
 }
 
-export function LivingCanvas({ projectName, compassSentence, palette, approverRoles, inspirations, progress, peace }: Props) {
+export function LivingCanvas({ projectName, compassSentence, palette, approverRoles, inspirations, progress, peace, peaceInsights, recentRipples }: Props) {
   const router = useRouter();
   const c = palette.length >= 5 ? palette : ['#8A9A80', '#BC7459', '#E7D2C8', '#F1EBDD', '#3A3631'];
   const [entering, setEntering] = useState<null | { name: string; baseBg: string; burstBg: string }>(null);
+  const [dreamItems, setDreamItems] = useState(inspirations);
+  const [, startLink] = useTransition();
 
   const enterRoom = (key: RoomKey) => {
     if (entering) return;
     const meta = ROOM_META[key];
+    if (!meta.available) return;
     setEntering({
       name: meta.name,
       baseBg: shade(meta.wash, 0.35),
@@ -97,6 +103,11 @@ export function LivingCanvas({ projectName, compassSentence, palette, approverRo
     { key: 'atmosphere', p: progress.atmosphere },
     { key: 'atelier', p: progress.atelier },
   ];
+
+  const linkDreamItem = (itemId: string, room: RoomKey) => {
+    setDreamItems((current) => current.map((item) => item.id === itemId ? { ...item, room } : item));
+    startLink(() => { void linkDreamItemToRoom(itemId, room); });
+  };
 
   return (
     <div
@@ -173,19 +184,27 @@ export function LivingCanvas({ projectName, compassSentence, palette, approverRo
 
       {/* ROOM CARDS */}
       <div className="flex flex-1 items-start justify-center px-[26px] pb-[30px] pt-[14px]">
-        <div className="grid w-full max-w-[1120px] grid-cols-1 gap-[22px] min-[760px]:grid-cols-2 min-[1000px]:grid-cols-3">
-          {rooms.map(({ key, p }, i) => {
+        <div className="grid w-full max-w-[1180px] gap-[22px] min-[1160px]:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="grid grid-cols-1 gap-[22px] min-[760px]:grid-cols-2 min-[1000px]:grid-cols-3 min-[1160px]:grid-cols-2">
+            {rooms.map(({ key, p }, i) => {
             const meta = ROOM_META[key];
             return (
               <div
                 key={key}
-                role="link"
-                tabIndex={0}
+                role={meta.available ? 'link' : 'status'}
+                tabIndex={meta.available ? 0 : undefined}
+                aria-disabled={!meta.available || undefined}
                 aria-label={meta.cta}
                 className="lc-room"
-                style={{ animationDelay: `${0.16 + i * 0.08}s` }}
-                onClick={() => enterRoom(key)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterRoom(key); } }}
+                style={{ animationDelay: `${0.16 + i * 0.08}s`, cursor: meta.available ? 'pointer' : 'default' }}
+                onClick={() => { if (meta.available) enterRoom(key); }}
+                onKeyDown={(e) => { if (meta.available && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); enterRoom(key); } }}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  const itemId = event.dataTransfer.getData('application/x-missing-peace-dream');
+                  if (itemId) linkDreamItem(itemId, key);
+                }}
               >
                 <RoomMotif room={key} c={c} />
                 <div className="flex flex-1 flex-col p-[20px_22px_22px]">
@@ -199,13 +218,36 @@ export function LivingCanvas({ projectName, compassSentence, palette, approverRo
                       <div className="text-[11px] text-[var(--ink-soft)]">{p.statusSub}</div>
                     </div>
                   </div>
-                  <div className="lc-enter mt-[18px] inline-flex items-center justify-center gap-2 rounded-full bg-[var(--clay)] px-[18px] py-[11px] text-[13px] font-semibold text-[#FFFDFC] transition-[background,gap] duration-200">
+                  <div className={`lc-enter mt-[18px] inline-flex items-center justify-center gap-2 rounded-full px-[18px] py-[11px] text-[13px] font-semibold transition-[background,gap] duration-200 ${meta.available ? 'bg-[var(--clay)] text-[#FFFDFC]' : 'bg-[var(--cream)] text-[var(--ink-soft)]'}`}>
                     {meta.cta} <span>→</span>
                   </div>
                 </div>
               </div>
             );
-          })}
+            })}
+          </div>
+          <aside className="rounded-[18px] border border-[var(--line)] bg-[#FFFDFC] p-4" aria-label="Peace Panel">
+            <p className="text-[10px] uppercase tracking-[1.5px] text-[var(--gold)]">Peace Panel</p>
+            <h2 className="voice mt-1 text-xl text-[var(--ink)]">What this room knows</h2>
+            <div className="mt-4 space-y-3">
+              {peaceInsights.length ? peaceInsights.map((insight) => (
+                <article key={insight.id} className="rounded-[11px] border border-[var(--line)] bg-[var(--cream)]/45 p-3">
+                  <p className="text-sm font-medium text-[var(--ink)]">{insight.title}</p>
+                  <p className="mt-1 line-clamp-3 text-[11px] leading-4 text-[var(--ink-soft)]">{insight.reason}</p>
+                  <p className="mt-2 text-[9px] uppercase tracking-wide text-[var(--gold)]">{insight.source === 'ai' ? 'Cited AI draft' : 'Deterministic'}</p>
+                </article>
+              )) : (
+                <p className="text-xs leading-5 text-[var(--ink-soft)]">Peace insights will appear here in the context of the room you enter.</p>
+              )}
+            </div>
+            <div className="mt-4 border-t border-[var(--line)] pt-3">
+              <p className="text-[10px] uppercase tracking-wide text-[var(--ink-faint)]">Recent ripples</p>
+              <ul className="mt-2 space-y-2">
+                {recentRipples.map((ripple) => <li key={ripple.id} className="text-[11px] leading-4 text-[var(--ink-soft)]">✦ {ripple.summary}</li>)}
+                {!recentRipples.length && <li className="text-[11px] text-[var(--ink-soft)]">Changes will gather here.</li>}
+              </ul>
+            </div>
+          </aside>
         </div>
       </div>
 
@@ -220,10 +262,15 @@ export function LivingCanvas({ projectName, compassSentence, palette, approverRo
             <Link href="/dream" className="text-[12px] text-[var(--clay-ink)]">Open the full Dream →</Link>
           </div>
           <div className="flex gap-[9px] overflow-x-auto pb-1">
-            {inspirations.map((d) => (
+            {dreamItems.map((d) => (
               <button
                 key={d.id}
                 type="button"
+                draggable
+                onDragStart={(event) => {
+                  event.dataTransfer.setData('application/x-missing-peace-dream', d.id);
+                  event.dataTransfer.effectAllowed = 'move';
+                }}
                 onClick={() => enterRoom(d.room)}
                 className="flex min-w-[170px] flex-shrink-0 flex-col gap-[3px] rounded-[12px] border border-[rgba(32,28,24,0.12)] bg-[#FFFDFC] p-[10px_12px] text-left"
               >

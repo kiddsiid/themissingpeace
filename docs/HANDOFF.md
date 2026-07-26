@@ -1,5 +1,12 @@
 # HANDOFF - The Missing Peace (Claude -> Codex)
 
+> **Superseded resume point (2026-07-25):** This file is retained as historical implementation
+> history through the earlier waves. Resume from
+> [`HANDOFF-RESUME-2026-07-22.md`](./HANDOFF-RESUME-2026-07-22.md), which records the completed
+> Phase 2–5 work, Supabase Auth/workspace membership, the live Feast Studio, validation results, and
+> the Maya/Julian/Aria backend-admin showcase workspace. In particular, do not restore the Clerk
+> organization-switching model described below.
+
 Work against **`The Missing Peace - Build Plan v2.md`**. It is the approved spec.
 The Board is now governed by **`The Missing Peace Board Overhaul.pdf`** (2026-07-01).
 **Prioritization is governed by `The Missing Peace - North Star.md`** (2026-07-06): the goal is
