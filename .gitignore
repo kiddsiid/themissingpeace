@@ -2,7 +2,10 @@ node_modules/
 .pnpm-store/
 .next/
 out/
-build/
+# Anchored to the repository root on 2026-07-26. Unanchored, `build/` matched
+# `src/lib/build/` and silently excluded the build-stamp module from the commit
+# while both routes that import it were committed. See One-Engine 26.4.
+/build/
 .env
 .env.local
 .env*.local
