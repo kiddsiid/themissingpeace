@@ -437,7 +437,7 @@ class Component extends DCLogic {
       { code:'dairyfree', label:'Dairy-free', count:9, status:'covered', note:'Dairy-free options run across the meal; dessert uses coconut cream.' },
       { code:'halal', label:'Halal · zabiha', count:18, status:'needs_review', note:'Welcome, grazing, and first course are covered. The main course still needs a verified zabiha meat source.' },
       { code:'vegangf', label:'Vegan · GF', count:12, status:'needs_review', note:'A complete savory meal exists, but dessert still needs a separate plated option beyond fruit and honey.' },
-      { code:'nut', label:'Severe nut allergy', count:5, status:'conflict', note:'The pistachio rose cake lists tree nuts. Needs a separate nut-safe dessert, dedicated utensils, and labeling.' },
+      { code:'nut', label:'Severe nut allergy', count:5, status:'conflict', note:'The pistachio rose cake lists tree nuts. Needs a separate dessert made without tree-nut ingredients, dedicated utensils, and labeling.' },
       { code:'kosher', label:'Kosher certified', count:3, status:'conflict', note:'Not covered unless certified meals are sourced separately with documented supervision. Kosher-style does not qualify.' }
     ],
     scenes: [
@@ -462,7 +462,7 @@ class Component extends DCLogic {
         { id:53, name:'Herbed Orzo & Preserved Lemon', role:'Shared side', service:'Family-style', cost:'$7', status:'confirmed', caresFor:['veg'], assess:[['veg','vendor_confirmed']], story:'', presentation:'Bright, lemony, meant to be spooned across the table.', care:'Vegetarian; pairs with every main.' }
       ]},
       { id:6, name:'Dessert', kind:'Sweetness', time:'8:15', service:'Plated', readiness:'needs_review', purpose:'A sweet pause before the dancing — beautiful, but it must include everyone.', dishes:[
-        { id:61, name:'Pistachio & Rose Olive Oil Cake', role:'Plated dessert', service:'Plated', cost:'$9', status:'needs_confirmation', caresFor:['veg'], assess:[['nut','conflict'],['veg','vendor_confirmed']], story:'Pistachio for luck and long life — but five guests can’t come near it as it stands.', presentation:'Individual plated, rose glaze, crushed pistachio.', care:'Contains tree nuts. Needs a nut-safe alternative and a separate prep station.' },
+        { id:61, name:'Pistachio & Rose Olive Oil Cake', role:'Plated dessert', service:'Plated', cost:'$9', status:'needs_confirmation', caresFor:['veg'], assess:[['nut','conflict'],['veg','vendor_confirmed']], story:'Pistachio for luck and long life — but five guests can’t come near it as it stands.', presentation:'Individual plated, rose glaze, crushed pistachio.', care:'Contains tree nuts. Needs an alternative made without tree-nut ingredients and a separate prep station.' },
         { id:62, name:'Seasonal Fruit & Honey', role:'Plated dessert', service:'Plated', cost:'$5', status:'confirmed', caresFor:['vegangf'], assess:[['vegangf','ingredient_compatible']], story:'', presentation:'Macerated stone fruit, honey, mint.', care:'Nut-free and gluten-free; honey means it is not strictly vegan — a maple version can be split out.' }
       ]},
       { id:7, name:'Late Night Bite', kind:'Second wind', time:'10:30', service:'Passed', readiness:'empty', purpose:'The bite that keeps the dance floor going — comfort food, no ceremony.', dishes:[] },
@@ -611,7 +611,7 @@ class Component extends DCLogic {
     const conflictG = st.groups.find(g=>g.status==='conflict');
     const reviewG = st.groups.find(g=>g.status==='needs_review');
     let nextAction;
-    if(conflictG && conflictG.code==='nut'){ nextAction={ title:'Resolve the nut-allergy conflict', why:'The pistachio rose cake in Dessert contains tree nuts. Five guests need a separate nut-safe dessert with dedicated prep and clear labeling before this scene is brief-ready.', cta:'Open Dessert', onClick:()=>this.selectScene(6) }; }
+    if(conflictG && conflictG.code==='nut'){ nextAction={ title:'Resolve the nut-allergy conflict', why:'The pistachio rose cake in Dessert contains tree nuts. Five guests need a separate dessert made without tree-nut ingredients, with dedicated prep and clear labeling before this scene is brief-ready.', cta:'Open Dessert', onClick:()=>this.selectScene(6) }; }
     else if(conflictG && conflictG.code==='kosher'){ nextAction={ title:'Source certified kosher meals', why:'Three guests need certified kosher food. Kosher-style does not qualify. Record a certified vendor and supervision, or plan separate sealed meals.', cta:'Open guest care', onClick:()=>this.isMobile()?this.setMobilePane('guests'):this.resolveGroup('kosher') }; }
     else if(reviewG){ nextAction={ title:'Verify the zabiha meat source', why:'The braised lamb in the Main Course is the shared centrepiece for 18 halal guests, but its source is unverified. Confirm a zabiha supplier or a fully satisfying alternative.', cta:'Open Main Course', onClick:()=>this.selectScene(5) }; }
     else { nextAction={ title:'Fill the Late Night Bite', why:'Guest care is in strong shape. Three later scenes are still empty before the 11:45 sendoff.', cta:'Open Late Night', onClick:()=>this.selectScene(7) }; }
@@ -619,7 +619,7 @@ class Component extends DCLogic {
     // cost / execution / brief
     const costRange='$92–108 / guest'; const costDrivers='Driven by family-style lamb, plated dessert, and passed arrival service.';
     const execution=[];
-    if(conflictG && conflictG.code==='nut') execution.push('Pistachio dessert needs a separate nut-safe prep station and labeling.');
+    if(conflictG && conflictG.code==='nut') execution.push('Pistachio dessert needs a separate dedicated prep station and labeling.');
     execution.push('Family-style mains need roughly one server per two tables at 7:00.');
     const emptyScenes=st.scenes.filter(s=>s.dishes.length===0).map(s=>s.name);
     if(emptyScenes.length) execution.push(emptyScenes.length+' later scene'+(emptyScenes.length>1?'s are':' is')+' still empty ('+emptyScenes.join(', ')+').');
@@ -643,8 +643,8 @@ class Component extends DCLogic {
       bsec('Meal intention', st.intention, true),
       bsec('Service sequence','Nine scenes from welcome drink to sendoff treat, family-style through the mains.',true),
       bsec('Guest requirements','7 requirement groups. '+cov.conflict+' conflicts, '+cov.needs_review+' need review, '+cov.covered+' covered.', cov.conflict===0),
-      bsec('Preparation protocols','Nut-safe station for the pistachio dessert; zabiha sourcing for the lamb; certified kosher sourced separately.', cov.conflict===0),
-      bsec('Open questions','Verified zabiha supplier; nut-safe dessert; certified kosher meals; final staffing count.', openC===0 && cov.conflict===0)
+      bsec('Preparation protocols','Dedicated allergen-separation station for the pistachio dessert; zabiha sourcing for the lamb; certified kosher sourced separately.', cov.conflict===0),
+      bsec('Open questions','Verified zabiha supplier; tree-nut-free dessert confirmed with the caterer; certified kosher meals; final staffing count.', openC===0 && cov.conflict===0)
     ];
     const briefSubhead='Generated live from '+allDishes.length+' dishes across '+st.scenes.length+' scenes · '+briefPct+' complete';
 
